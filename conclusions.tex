@@ -1,0 +1,38 @@
+\chapter{Conclusions and Future Works}
+\label{chap:conclusions}
+
+% \section{Concluding Remarks}
+%
+In this work, we started by studying the {\it Aedes aegypti}, including its biological aspects, the transmitted diseases, and ground sites.
+We noticed that even though the number of cases of dengue, Zika and Chikungunya has dropped last year, it is still high.
+Hence, we proposed a system to automatically detect potential \textit{Aedes aegypti} breeding grounds in order to help health agents to combat its reproduction.
+
+We described the problem of automatic detection of mosquito foci by using computer vision methods.
+This included a literature review of similar works that use machine learning techniques for this purpose.
+By the end of this study, we noticed the need for creating a new dataset to train models capable of automatically detecting mosquito sites.
+Therefore, a new dataset is proposed. 
+In order to collect these data, we used a UAV, to acquire videos with several containers that accumulate clean water in various settings, covering a wide geographic area.
+Before recording, the camera parameters were manually adjusted, and a calibration procedure was performed.
+After acquired and rectified, the videos are manually annotated with the Zframer software, allowing to train and test different algorithms for the application of interest.
+
+We then review some object detection algorithms present in the literature.
+From the classical ones that use sliding windows; up to the most recent ones, which employs deep learning.
+We performed some experiments using one of the state-of-the-art algorithms for object detection trained with a small dataset.
+The Faster R-CNN trained with CEFET dataset presented the best result of mAP = 66.68, at IoU = 0.50.
+The results are considered as promising, indicating that we can employ this methodology to help the government and other institutions in the combat of the {\textit{Aedes aegypti}}.
+
+
+% \section{Research Directions}
+%
+As future work, we first intend to expand our dataset by recording new videos at other locations, including more realistic areas, and annotating the maximum possible number of potential mosquito sites.
+Also, we would like to employ the trained models in real scenarios its analyze and performance.
+Moreover, we intend to employ and compare other detectors and techniques.
+
+Furthermore, in the future would like to create a final product that can be used as a decision-making support for organizations dedicated to the combat of the \textit{Aedes aegypti}.
+Our aim is to employ the system for flying over areas and generate a heat maps highlighting the places with more risk.
+We can do so by allying the image detections with the drone telemetry data.
+
+% 
+% As future works, the proposed techniques should be evaluated in a real scenario, including an experimental VLC system, so as to analyze the fidelity of the models of the proposed simulator. Furthermore, a deeper analysis regarding the convergence aspects of the algorithms based on different filters should be performed. Moreover, other approaches to reduce the computational complexity of Volterra series, e.g., sparse and tensor analyses, should also be investigated. 
+% 
+% Considering the developed VLC simulator, other features, such as a model for non-line-of-sight channels, multiple LEDs and photodiodes, and other types of such devices should be incorporated to this platform, which would allow for the performance evaluation of MIMO systems. In addition, schemes that consider a nearly constant average optical power and the mitigation of flicker effects should be studied. Furthermore, techniques to address the transmission over low SNR should also be considered as future work.

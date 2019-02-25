@@ -1,0 +1,224 @@
+\chapter{Pseudo-codes of the Adaptive Algorithms}
+\label{appendixB}
+
+This appendix describes the adaptive algorithms in a form of pseudo-code.
+
+\section{SM-PNLMS}
+\label{ap2:SM_PNLMS}
+\begin{algorithm}[H]
+ \caption{Pseudocode of SM-PNLMS.}
+\SetAlgoNoLine
+ Initialization:\\
+ choose $\bar{\gamma}$ and $\kappa$\\
+ set $\delta \ll 1$\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ \For{$k\geq 0$}{
+	$e[k] = d[k] - \wbf^H[k]\xbf[k]$\\
+% 	build input vector $\xbf_N$ by using~\eqref{eq:input_V_SMAF} and~\eqref{eq:input_V_SMAF2} \\
+	 $	\mu[k] = \begin{cases}
+			1 - \frac{\bar{\gamma}}{\vert e[k] \vert}, \!\!\!\!&\mathrm{if\;}  
+			\vert e[k]\vert > \bar{\gamma},\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+$\\
+	\For{$l = 1$ \KwTo $L$}
+	{
+	$\Gbf_{ll}[k] =  \frac{1-\kappa\mu[k]}{L} + \frac{\kappa\mu[k]\vert\wbf_l[k]\vert}{\Vert \wbf[k]\Vert_1}$
+	}
+
+$\wbf[k+1] = \wbf[k] + \mu[k]\Gbf[k]\xbf[k](\xbf^H[k]\Gbf[k]\xbf[k])^{-1}e^*[k]$
+ 
+ }
+\end{algorithm}
+
+
+
+\section{M-BEACON}
+\label{ap2:MBEACON}
+\begin{algorithm}[H]
+ \caption{Pseudocode of M-BEACON.}
+\SetAlgoNoLine
+ Initialization:\\
+ set $\delta \ll 1$\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T$\\
+ $\tilde{\Sbf}^{-1}[0] = \delta\Ibf$\\
+ \For{$k\geq 1$}{
+	$e[k] = d[k] - \wbf^H[k-1]\xbf[k]$\\
+ 
+	 $	\lambda[k] = \begin{cases} 
+		\xbf^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf[k]\frac{1}{\left(\frac{\vert e[k] \vert}{\bar{\gamma}} - 1\right)}  , & 
+		\mathrm{if}\, \vert e[k]\vert > \bar{\gamma},\\
+		0, & \mathrm{otherwise},
+	      \end{cases}
+$\\
+	
+
+$\tilde{\Sbf}^{-1}[k] = \;\lambda[k]\left( \tilde{\Sbf}^{-1}[k-1] - \frac{\tilde{\Sbf}^{-1}[k]\xbf[k]\xbf^H[k] \tilde{\Sbf}^{-1}[k-1]}{\lambda^{-1}[k]+\xbf^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf[k]} \right)$,\\
+$\wbf[k] = \;\wbf[k-1] + \tilde{\Sbf}^{-1}[k]\xbf[k]e^*[k]$,
+ 
+ }
+\end{algorithm}
+
+
+
+\section{VSBSM-PNLMS}
+\label{ap2:VSBSM_PNLMS}
+\begin{algorithm}[H]
+ \caption{Pseudocode of VSBSM-PNLMS.}
+\SetAlgoNoLine
+ Initialization:\\
+ choose $\bar{\gamma}$ and $\kappa$\\
+ set $\delta \ll 1$\\
+ set \emph{Blind Iteration}\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ \For{$k\geq 0$}{
+	build input vector $\xbf_N[k]$ by using~\eqref{eq:input_V_SMAF} and~\eqref{eq:input_V_SMAF2} \\
+	$y[k] = \wbf^H[k]\xbf_N[k]$\\
+	\eIf{$k < Blind\;Iteration$}{
+		$e[k] = d[k] - y[k]$\\
+	}
+	{$b[k] = \mathrm{dec}\{y[k]\}$\\
+	$e[k] = b[k] - y[k]$\\
+	}
+	
+	 $	\mu[k] = \begin{cases}
+			1 - \frac{\bar{\gamma}}{\Vert e[k] \Vert_\infty}, \!\!\!\!&\mathrm{if\;}  
+			\Vert e[k]\Vert_\infty > \bar{\gamma},\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+$\\
+	\For{$l = 1$ \KwTo $L$}
+	{
+	$\Gbf_{ll}[k] =  \frac{1-\kappa\mu[k]}{L} + \frac{\kappa\mu[k]\vert\wbf_l[k]\vert}{\Vert \wbf[k]\Vert_1}$
+	}
+
+$\wbf[k+1] = \wbf[k] + \mu[k]\Gbf[k]\xbf_N[k](\xbf_N^H[k]\Gbf[k]\xbf_N[k])^{-1}e^*[k]$
+ 
+ }
+\end{algorithm}
+
+Note that in the previous pseudo-code, $e_b[k]$ was changed to $e[k]$ in order to avoid code repetition.
+
+
+\section{VSBM-BEACON}
+\label{ap2:VSBMBEACON}
+\begin{algorithm}[H]
+ \caption{Pseudocode of VSBM-BEACON.}
+\SetAlgoNoLine
+ Initialization:\\
+ set $\delta \ll 1$\\
+ set \emph{Blind Iteration}\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T$\\
+ $\tilde{\Sbf}^{-1}[0] = \delta\Ibf$\\
+ \For{$k\geq 1$}{
+	build input vector $\xbf_N[k]$ by using~\eqref{eq:input_V_SMAF} and~\eqref{eq:input_V_SMAF2} \\
+	$y[k] = \wbf^H[k-1]\xbf_N[k]$\\
+	\eIf{$k < Blind\;Iteration$}{
+		$e[k] = d[k] - y[k]$\\
+	}
+	{$b[k] = \mathrm{dec}\{y[k]\}$\\
+	$e[k] = b[k] - y[k]$\\
+	}
+ 
+	 $	\lambda[k] = \begin{cases} 
+		\xbf_N^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf_N[k]\frac{1}{\left(\frac{\Vert e[k] \Vert_\infty}{\bar{\gamma}} - 1\right)}  , & 
+		\mathrm{if}\, \Vert e[k]\Vert_\infty > \bar{\gamma},\\
+		0, & \mathrm{otherwise},
+	      \end{cases}
+$\\
+	
+
+$\tilde{\Sbf}^{-1}[k] = \;\lambda[k]\left( \tilde{\Sbf}^{-1}[k-1] - \frac{\tilde{\Sbf}^{-1}[k]\xbf_N[k]\xbf_N^H[k] \tilde{\Sbf}^{-1}[k-1]}{\lambda^{-1}[k]+\xbf_N^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf_N[k]} \right)$,\\
+$\wbf[k] = \;\wbf[k-1] + \tilde{\Sbf}^{-1}[k]\xbf_N[k]e^*[k]$,
+ 
+ }
+\end{algorithm}
+
+
+\section{VDTSM-PNLMS}
+\label{ap2:VDTSM_PNLMS}
+\begin{algorithm}[H]
+ \caption{Pseudocode of VDTSM-PNLMS.}
+\SetAlgoNoLine
+ Initialization:\\
+ choose $\bar{\gamma}_1$, $\bar{\gamma}_2$, $\kappa_1$, $\kappa_2$, and $\sigma$\\
+ set $C = 2$\\
+ set $\delta \ll 1$\\
+ $\wbf_1[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ $\wbf_2[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T$\\
+ \For{$k\geq 0$}{
+	build input vector $\xbf_N[k]$ by using~\eqref{eq:input_V_SMAF} and~\eqref{eq:input_V_SMAF2} \\
+	$e[k] = d[k] - \wbf^H[k]\xbf_N[k]$\\
+	\For{$c = 1$ \KwTo $C$}{
+	 $	\mu_c[k] = \begin{cases}
+			1 - \frac{\bar{\gamma}_c}{\vert e[k] \vert}, \!\!\!\!&\mathrm{if\;}  
+			\vert e[k]\vert > \bar{\gamma}_c,\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+$\\
+	\For{$l = 1$ \KwTo $L$}
+	{
+	$\Gbf_{c,ll}[k] =  \frac{1-\kappa_c\mu_c[k]}{L} + \frac{\kappa_c\mu_c[k]\vert\wbf_{c,l}[k]\vert}{\Vert \wbf_c[k]\Vert_1}$
+	}
+
+$\wbf_c[k+1] = \wbf_c[k] + \mu_c[k]\Ubf_c\Gbf_c[k]\xbf_N[k](\xbf_N^H[k]\Ubf_c\Gbf_c[k]\xbf_N[k])^{-1}e^*[k]$
+} 
+
+$\wbf[k+1] = \sigma\wbf_1[k+1] + (1-\sigma)\wbf_2[k+1]$ \#Perform combination of parameter vectors\\
+$\wbf_1[k+1] \gets \wbf[k+1]$ \# Assign $\wbf[k+1]$ to $\wbf_1[k+1]$\\ 
+$\wbf_2[k+1] \gets \wbf[k+1]$ \# Assign $\wbf[k+1]$ to $\wbf_2[k+1]$\\
+
+ }
+\end{algorithm}
+
+
+
+
+
+
+\section{VSBDTSM-PNLMS}
+\label{ap2:VSBDTSM-PNLMS}
+\begin{algorithm}[H]
+ \caption{Pseudocode of VSBDTSM-PNLMS.}
+\SetAlgoNoLine
+ Initialization:\\
+ choose $\bar{\gamma}_1$, $\bar{\gamma}_2$, $\kappa_1$, $\kappa_2$, and $\sigma$\\
+ set $C = 2$\\
+ set $\delta \ll 1$\\
+ set \emph{Blind Iteration}\\
+ $\wbf_1[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ $\wbf_2[0] = [\,0 \,\cdots\,0\,]^T + \delta$\\
+ $\wbf[0] = [\,0 \,\cdots\,0\,]^T$\\
+ \For{$k\geq 0$}{
+	build input vector $\xbf_N[k]$ by using~\eqref{eq:input_V_SMAF} and~\eqref{eq:input_V_SMAF2} \\
+	$y[k] = \wbf^H[k-1]\xbf_N[k]$\\
+	\eIf{$k < Blind\;Iteration$}{
+		$e[k] = d[k] - y[k]$\\
+	}
+	{$b[k] = \mathrm{dec}\{y[k]\}$\\
+	$e[k] = b[k] - y[k]$\\
+	}
+	\For{$c = 1$ \KwTo $C$}{
+	 $	\mu_c[k] = \begin{cases}
+			1 - \frac{\bar{\gamma}_c}{\Vert e[k] \Vert_\infty}, \!\!\!\!&\mathrm{if\;}  
+			\Vert e[k]\Vert_\infty > \bar{\gamma}_c,\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+$\\
+	\For{$l = 1$ \KwTo $L$}
+	{
+	$\Gbf_{c,ll}[k] =  \frac{1-\kappa_c\mu_c[k]}{L} + \frac{\kappa_c\mu_c[k]\vert\wbf_{c,l}[k]\vert}{\Vert \wbf_c[k]\Vert_1}$
+	}
+
+$\wbf_c[k+1] = \wbf_c[k] + \mu_c[k]\Ubf_c\Gbf_c[k]\xbf_N[k](\xbf_N^H[k]\Ubf_c\Gbf_c[k]\xbf_N[k])^{-1}e^*[k]$
+} 
+
+$\wbf[k+1] = \sigma\wbf_1[k+1] + (1-\sigma)\wbf_2[k+1]$ \#Perform combination of parameter vectors\\
+$\wbf_1[k+1] \gets \wbf[k+1]$ \# Assign $\wbf[k+1]$ to $\wbf_1[k+1]$\\ 
+$\wbf_2[k+1] \gets \wbf[k+1]$ \# Assign $\wbf[k+1]$ to $\wbf_2[k+1]$\\
+ }
+\end{algorithm}
+
+Once again $e_b[k]$ was changed to $e[k]$ in order to avoid code repetition.
+

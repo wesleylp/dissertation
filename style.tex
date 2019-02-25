@@ -1,0 +1,635 @@
+\chapter{Beyond Classification: ConvNets as Feature Extractors}\label{chap:style}
+%After the investigation of convnet architectures (and their motivations) used for image classification, we discuss other applications convnets excel at.
+The most important aspect of a convnet is its feature extractor, that is characterized by convolutional and pooling layers. If the network is used for classification, a simple classifier on top of such features is used to obtain class predictions. The unparalleled results in such tasks are evidence that these features can be learned to be very discriminant~\cite{krizhevsky2012imagenet,simonyan2014very,szegedy2015going,he2016deep}. Other applications may require features with different characteristics. This chapter discusses:
+\begin{enumerate}
+	\item the transferability of features learned by convolutional networks;
+	\item convnets as off-the-shelf feature extractors;
+	\item alternative computer vision tasks at which convnets excel;
+	\item class activation maps: a technique that uses features learned by a convnet for weakly supervised localization and visualization of network predictions;
+	\item neural style transfer: the use of convolutional neural networks for rendering images in the style of another. Iterative method, single-style networks, and multi-style networks.
+\end{enumerate}
+
+Much work has been done to evaluate what features these networks learn and how generic they are. There are several techniques that seek to understand how networks interpret images by visualizing their features~\cite{zeiler2014visualizing,simonyan2014deep,yosinski2015understanding}. Related work reconstructs images based on their feature description~\cite{mahendran2015understanding}.
+
+There are studies that evaluate the transferability of features by using features learned in one dataset on another, which is a technique usually called \textit{transfer learning}. Some of these works show, through several experiments, that off-the-shelf convnet features are very powerful and can obtain state-of-the-art performance even when compared to task-specific handcrafted features~\cite{razavian2014cnn,donahue2014decaf}. The authors of \cite{yosinski2014how} demonstrate how features get progressively more specialized the deeper the layer they are extracted from: shallow features are very generic pattern detectors, while deep features are more descriptive and specialized to the particular task the network was trained on. This indicates that the depth at which features are extracted depends on the similarity between the task the network was trained on and the task the features will be transferred to. The work of \cite{oquab2014} demonstrates how one could take advantage of transfer learning on data-restricted settings: a convnet can be trained on a large labeled dataset (such as ImageNet~\cite{deng2009imagenet}) and later fine-tuned to a smaller dataset with state-of-the-art results. This fine-tuning technique was also applied in object detection~\cite{girshick2014rich}.
+
+CNNs can also be trained to perform multiple tasks, such as classification and localization. These tasks are performed with shared features~\cite{sermanet2014overfeat,girshick2014rich}. This makes CNNs particularly useful for object detection~\cite{sermanet2014overfeat,girshick2014rich,girshick2015fast,he2015spatial,ren2015faster,dai2016rfcn,redmon2016yolo}, with some techniques being capable of performing detection in real time~\cite{redmon2016yolo}.
+
+CNN feature extraction has also been applied in image transformation tasks, where an input image is transformed into an output image. This is usually performed by encoding the input image into more abstract features that can then be mapped to the corresponding output image. Image transformation can be done with fully-convolutional neural networks. These networks have the advantage of being able to process images of any size. Examples of image transformation tasks include: semantic segmentation~\cite{long2015fully,jegou2016one}, super-resolution~\cite{dong2014learning,johnson2016perceptual}, colorization~\cite{zhang2016colorful,larsson2016learning,iizuka2016let}, and style transfer~\cite{ulyanov2016texture,johnson2016perceptual}.
+
+%Next, we discuss in detail two techniques: \textit{class activation maps} and \textit{neural style transfer}. The style transfer task consists in rendering an image with the style of another one. We study and reimplement recent work that applies convolutional neural networks to this task with great success.
+
+\section{Understanding Predictions with Class Activation Maps}
+In the last chapter, several architectures for image classification were presented. This section presents a technique that uses the features computed by the networks to visualize how the scores for each class are distributed spatially. There is a variety of work that seeks to understand the predictions of neural networks~\cite{simonyan2014deep,zhou2015object,oquab2015object,zhou2016learning,selvaraju2016gradcam}: \cite{simonyan2014deep} uses saliency maps computed with backprop to determine the importance of input pixels for the predicted class; \cite{zhou2015object} discusses how convnets trained on scene classification learn object detectors, despite not being trained to detect specific objects; \cite{oquab2015object} studies how convnets are able to localize objects despite being trained only with class annotations. These studies are useful for several reasons: they help elucidate how convnets make predictions, which may be used to guide network design as well as to explain mistakes; and they show the potential of convnets for weakly supervised localization. This type of learning is termed weakly supervised because there is no specific annotation for localization bounding boxes. The network learns to localize objects when trained only with class annotations.
+
+We focus our discussion on \textit{class activation maps} (CAM)~\cite{zhou2016learning}. This technique is able to generate class-specific maps that indicate discriminative regions in the input image. The original work focuses on generating maps for networks that are trained on large images and how these maps can be used for understanding predictions and localizing class objects; we apply these maps to the networks discussed in Chapter~\ref{chap:arch}. Experiments show how CAMs may be used for weakly supervised localization as well as to better understand the ``thought process'' of these networks.
+
+Recall the NiN architecture presented in Section~\ref{sec:nin}: it was composed entirely of convolutional and pooling layers, i.e., there were no FC layers used to compute class predictions. Instead, the output features maps $\v f_i \in \mathbb{R}^{H\times W}$ were averaged with global average pooling and these values were used as class scores $c_i$:
+\begin{equation}
+c_i = \frac{1}{HW}\sum_{h,w}f_{i, h, w}.
+\end{equation}
+This essentially means that the output features in each feature map correspond to how strongly each input region contributes to the respective class. Because of the pooling operations along the network, these feature maps are smaller than the input image. Class activation maps can be easily obtained by upsamping the feature maps back to the input size. These CAMs should roughly correspond to heat maps that indicate input regions that activate their respective classes. One could interpret these heat maps as to \textit{where} in the image the network pays attention to when it makes its prediction. An example of a CAM obtained through this method is available in Fig.~\ref{fig:cam-plane-nin}: it demonstrates that the network pays attention to the airplane on the left and ignores the object on the right when making its prediction. In this and all the following examples the feature maps were upsampled using bilinear interpolation.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-input}
+		\caption{Input image.}
+	\end{subfigure}\quad
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-map-nin}
+		\caption{Generated activation map for predicted class 'airplane'.}
+	\end{subfigure}\quad
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-heatmap-nin}
+		\caption{Heat map on top of the reference image.}
+	\end{subfigure}
+	\caption{Example of a class activation map obtained with the NiN architecture. Images were scaled for easier visualization.\label{fig:cam-plane-nin}}
+\end{figure}
+
+Obtaining CAMs is fairly simple in architectures that already have feature maps that encode class-level features. This was, in fact, one of the advantages claimed by the authors of the NiN architecture~\cite{lin2013network}. Several other architectures use GAP in a slightly different way: they perform pooling of convolutional features and then map the resulting vector into class scores using a fully-connected layer. Denoting $\v v$ the vector of features obtained after GAP, $\v W$ the weight matrix of the FC layer, and $\v b$ the corresponding bias vector, this operation is described as below:
+\begin{equation}\label{eq:CAM}
+\begin{split}
+v_i &= \text{GAP}(f_{i, h, w})\\
+v_i &= \frac{1}{HW}\sum_{h,w}f_{i, h, w}\\
+c_j &= \text{FC}(\v v)\\
+&= \v w^\T_{j}\v v + \v b\\
+&= \sum_{i} w_{j,i}v_{i} + b_j\\
+&= \frac{1}{HW}\sum_{h,w,i}w_{j,i}f_{i, h, w} + b_j.
+\end{split}
+\end{equation}
+In short, each weight matrix column $\v w_j$ encodes how important each feature map is for its respective class. Note that Eq.~\ref{eq:CAM} can be rewritten as
+\begin{equation}\label{eq:conv-CAM}
+\begin{split}
+c_j &= \frac{1}{HW}\sum_{h,w}\left(\sum_{i}w_{j,i}f_{i,h,w} + b_j\right)\\
+&= \text{GAP}\left(\sum_{i}w_{j,i}f_{i,h,w} + b_j\right)\\
+&= \text{GAP}(m_{j,h,w}).
+\end{split}
+\end{equation}
+Eq.~\ref{eq:conv-CAM} demonstrates that using an FC layer after GAP is equivalent to performing GAP on a transformation of the feature maps $\v f_j$, denoted as $\v m_{j}$. In fact, this transformation is easily implemented as a $1\times 1$ convolutional layer (without any nonlinearity). Note that this equivalent representation has the same form of the NiN architecture: a $1\times 1$ convolution that generates feature maps that encode class-level features before the GAP layer\footnote{The only difference is that the last convolutional layer in NiN includes the nonlinearity, which is not the case for the equivalent representation obtained.}. CAMs may then be extracted by transforming the output feature maps using a $1\times 1$ convolutional layer that shares the weights of the FC layer, $\v W$ and $\v b$.
+
+This transformation can be applied to networks such as the ResNets and DenseNets presented in Chapter~\ref{chap:arch}. An example is shown in Fig.~\ref{fig:cam-plane-densenet}: the CAM for the same input image presented in Fig.~\ref{fig:cam-plane-nin} is obtained using the DenseNet-$(40, 12)$ trained on the CIFAR-10+ dataset. Note that not only the DenseNet-$(40, 12)$ model achieves better classification performance, but its CAM is also more well localized than the NiN model. This agrees with the intuition that networks classify images by learning to detect objects in them~\cite{zhou2015object}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-input}
+		\caption{Input image.}
+	\end{subfigure}\quad
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-map-densenet}
+		\caption{Generated activation map for predicted class 'airplane'.}
+	\end{subfigure}\quad
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{plane-heatmap-densenet}
+		\caption{Heat map on top of the reference image.}
+	\end{subfigure}
+	\caption{Example of a class activation map obtained with the DenseNet architecture. Images were scaled for easier visualization.\label{fig:cam-plane-densenet}}
+\end{figure}
+
+\subsection{Weakly Supervised Localization}
+It is expected that regions that contribute heavily in the classification process are probably regions that contain the object of interest itself. This means that the activation map may be used as a guideline for localizing the object of interest in the image. In order to obtain a bounding box, the activation map is thresholded and the smallest box that contains all activations above such threshold is selected\footnote{This process is simpler than the one used in~\cite{zhou2016learning}, where an algorithm selects the bounding box that covers the largest connected component in the thresholded map. The images studied in this work are smaller (and simpler), so a simpler method still performs adequately for the purposes of this discussion.}. For our experiments, we use the DenseNet-$(40,12)$ architecture trained on CIFAR-10+. Some examples are shown in Fig.~\ref{fig:cam-loc-densenet}. It is interesting that, although the network has never been trained on any localization task, through this simple method we are able to extract reasonable bounding boxes. In several examples, the bounding boxes only contain part of the object in the image: this is because the network focuses mostly on the most discriminant parts of each class, such as animal faces. Ultimately, the database is very simple, and the small size of the images limits the variations of position and perspective the objects are available on. Despite such limitations, these simple cases are still able to showcase how networks naturally learn to localize objects. More complex examples with larger images are available in works such as~\cite{oquab2015object,zhou2015object,zhou2016learning}.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_2558}\quad
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_3777}\\
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_5035}\quad
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_5372}\\
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_5822}\quad
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_7849}\\
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_8722}\quad
+	\includegraphics[scale=0.4]{cam/loc/densenet_aug_9514}
+	\caption{Examples of weakly supervised localization using thresholded CAMs.\label{fig:cam-loc-densenet}}
+\end{figure}
+
+\subsection{Investigating Classification Mistakes}
+CAMs may also be used to understand mistakes made by the network: by seeing where the network was looking at when it made its prediction, it may be possible to explain why the image was misclassified. Several examples of mistakes are shown in Fig.~\ref{fig:cam-mistakes-densenet}. The first example is the image of a dog that is misclassified as a cat. By looking at the CAM for the predicted class, we see that the network most likely classified the image as a cat because of the apparent striped pattern of the fur. The network seems to ignore the dog's muzzle, probably the most dog-discriminant part of the image, when making its predictions. The second example also features a dog. This image is misclassified as a horse, with the second most probable class being deer. This probably happens because most horse and deer images in the dataset have this sort of perspective, with the animal standing with the whole body exposed. Pictures of dogs are usually taken from a closer perspective, with the face appearing prominently. Also note that the biggest evidence that this is in fact a dog is the person close to it: humans are able to easily perceive the relative sizes of the animal and the person standing close to it. We can see through the CAM that the network does not pay attention to the person standing there: this sort of relationship is not captured by the network. The third example is the image of a frog that is incorrectly classified as a dog. Interestingly, by analyzing the CAM for the ground truth label, we see that the network does identify the correct region as being very ``frog-like''; it just weighs other regions as more strongly discriminant towards other classes. The fourth example is a picture of a white dog with gray ear looking to the right. This image is classified as bird by the network, with the correct class receiving about 35\% probability. The CAM for the dog class indicates that the network is in fact able to localize the dog's face. The CAM for bird, however, is focused on a slight different part of the image: it seems that the network interprets the dog's ear as a gray beak. Because of the low resolution, the dog's muzzle is not very clear, and the image is misinterpreted as a white bird with gray beak looking to the left. One feature that  points to the animal being a dog is the collar: it is much more common for dogs to wear collars than birds. The network, however, is not able to make such indirect associations.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.45]{cam/mistakes/densenet_aug_3669}\\
+	\includegraphics[scale=0.45]{cam/mistakes/densenet_aug_8723}\\
+	\includegraphics[scale=0.45]{cam/mistakes/densenet_aug_8728}\\
+	\includegraphics[scale=0.45]{cam/mistakes/densenet_aug_8776}
+	\caption[Examples of classification mistakes.]{Examples of classification mistakes. First row contains the input image, the CAM for the predicted class and the respective heat map, respectively. Second row contains a bar graph of the predicted class probabilities, the CAM for the ground truth class and the respective heat map. \label{fig:cam-mistakes-densenet}}
+\end{figure}
+
+\section{Neural Style Transfer}
+Consider the task of reproducing an image in the style of another, that is, obtaining an image $\v p$ that is a combination of the \textit{content} of a content image $\v c$ and the \textit{style} of a style image $\v s$. Artists have practiced this art form that is known as pastiche. Our interest is in obtaining an algorithm that is capable of automatically transferring the style from $\v s$ while maintaining the perceived content of $\v c$.
+
+In other words, the desired image $\v p$ is the one that minimizes the loss function
+\begin{equation}
+l(\v p, \v c, \v s) = \lambda_\text{c} l_\text{c}(\v p, \v c) + \lambda_\text{s} l_\text{s}(\v p, \v s),
+\end{equation}
+where $l_\text{s}$ and $l_\text{s}$ are a loss functions that represent how much the content of $\v p$ differs from the content of $\v c$ and the style of $\v p$ differs from the style of $\v s$, respectively. The scalars $\lambda_\text{c}$ and $\lambda_\text{s}$ establish a compromise between the fidelity of the content and how stylized the image is. The quality of the pastiche image depends on how well these two loss functions capture aspects that represent content and style. Because of how the loss functions capture how the images are perceptually different in terms of content and style, or both, they are referred to as \textit{perceptual losses}. $l_\text{c}$ and $l_\text{s}$ are, therefore, the content and style perceptual losses, respectively. $l$ will be called total perceptual loss or simply perceptual loss.
+
+\subsection{Content Representation}\label{sec:content}
+% Reference to mahendran2015understanding
+The content loss should be low for images that share the same perceptual content. Pixel-domain losses such as MSE (mean square error) are not adequate because images rendered in different styles will most likely have very different pixel values even if they have similar perceptual content. It is necessary to compare images on more abstract levels.
+
+Convnets trained in large object recognition datasets extract features that are capable of capturing discriminant aspects of a wide variety of objects. Because of the variability of poses, lighting, and position of the objects, these features must also be able to capture information in a form that is resilient to a variety of transformations. These features can be thought of as alternative representations of the image. Related work has shown that images can be recovered with varying levels of abstraction by finding inputs that share similar feature representations to the original image~\cite{mahendran2015understanding, yosinski2015understanding}. The level of abstraction of the representations depend on the depth of the layer from which the features are obtained. For deeper layers, images may be very different in the pixel domain and still have similar feature representations if they share common elements (borders, objects, etc.).
+
+The content loss function $l_c$ is then characterized by the weighted sum of the MSE between features computed on different layers of a covnet~\cite{gatys2016image}. Consider a convnet with input $\v x$. The output of its $n$-th layer is a tensor that is a function of the input $f^{(n)}(\v x) \in \mathbb{R}^{H^{(n)}\times W^{(n)}\times C^{(n)}}$. For a chosen set of content layers $\mathcal{C}$, the content loss function is
+\begin{equation}
+l_\text{c}(\v p, \v c) = \sum_{n \in \mathcal{C}}\frac{w^{(n)}_\text{c}}{H^{(n)}W^{(n)}C^{(n)}}\sum_{h,w,c}\left(f_{h,w,c}^{(n)} (\v p) - f_{h,w,c}^{(n)}(\v c)\right)^2,
+\end{equation}
+where $w^{(n)}_\text{c}$ is the weight of layer $n$ in the computation of the content loss. $f^{(n)}(\v p)$ and $f^{(n)}(\v c)$ are expected to be similar if $\v p$ and $\v c$ are perceptually alike, even if the pixel values are very different. Because of how the network is used to define the loss function, it is called the loss network.
+
+The depth of the layers affect the representations that are being compared: shallow features are more spatially localized, while deeper features grasp more complex relationships~\cite{mahendran2015understanding, yosinski2015understanding, simonyan2014deep,zeiler2014visualizing, springenberg2014striving}. Shallow output features might be similar if both images contain similar edges and other important object boundaries. Deeper output features might be similar even if spatial arrangements are different so long as both images represent similar objects.
+
+\subsection{Style Representation}\label{sec:style}
+Much like content, style is a relatively loose term. It is used to describe \textit{how} objects are depicted and not \textit{what} they are. In this sense, content and style are disjunct. For this reason, the style loss function should not directly capture how the feature maps differ. Inspired by previous work on texture synthesis~\cite{gatys2015texture,portilla2000parametric}, the authors of \cite{gatys2016image} propose a style representation that essentially captures texture information. Textures are descriptors that preserve local spatial relationships but discard global arrangement. In the case of paintings, textures might represent elements of style such as brush strokes, color arrangements, and common visual motifs.
+
+The textures of an image are represented by correlations between activations of feature maps. Consider again the output of the $n$-th layer of the loss network $f^{(n)}(\v x)$. The texture information is given by the Gram matrix $\v G^{(n)}\in \mathbb{R}^{C^{(n)}\times C^{(n)}}$, whose elements are computed as
+\begin{equation}
+g^{(n)}_{i,j} = \frac{1}{H^{(n)}W^{(n)}}\sum_{h,w}f_{h,w,i}^{(n)}(\v x)f_{h,w,j}^{(n)}(\v x).
+\end{equation}
+Each element $g^{(n)}_{i,j}$ represents the correlation between activations of feature maps $i$ and $j$, with the expectation taken spatially. If we denote as $F^{(n)} \in \mathbb{R}^{H^{(n)}W^{(n)}\times C^{(n)}}$ the matrix of vectorized feature maps, the Gram matrix can be efficiently computed as
+\begin{equation}
+\v G^{(n)} = \frac{1}{H^{(n)} W^{(n)}}\left(F^{(n)}\right)^\T F^{(n)}.
+\end{equation}
+
+By computing correlations between feature maps for different layers, textures can be described in multiple scales. The style loss function is then the weighted sum of the MSE between Gram matrices computed with the feature maps obtained with both $\v p$ and $\v s$ as inputs. $\v G^{(n)}$ and $\bar{\v G}^{(n)}$ denote the Gram matrices computed with features extracted from $f^{(n)}(\v s)$ and  $f^{(n)}(\v p)$, respectively. For a set of style layers $\mathcal{S}$, the style loss is:
+\begin{equation}
+l_\text{s}(\v p, \v s) = \sum_{n\in \mathcal{S}}\frac{w_\text{s}^{(n)}}{\left(C^{(n)}\right)^2}\sum_{i, j}\left(g^{(n)}_{i,j} - \bar{g}^{(n)}_{i,j}\right)^2,
+\end{equation}
+where $w^{(n)}_\text{s}$ is the weight of layer $n$ in the computation of the style loss. Since the Gram matrices sizes only depend on the number of feature maps of the output layer, the style loss is well-defined even if the input and style images $\v x$ and $\v s$ have different spatial dimensions.
+
+\subsection{Total Variation Regularizer}
+A third term may be added to the total loss function. It is the total variation (TV) regularization~\cite{mahendran2015understanding} term
+\begin{equation}
+l_\text{tv}(\v p) = \sum_{h,w,c}\left(\left(p_{h+1,w,c} - p_{h,w,c}\right)^2 + \left(p_{h,w+1,c} - p_{h,w,c}\right)^2\right)^{\frac{\beta}{2}}.
+\end{equation}
+The scalar $\beta$ is a hyperparameter that is originally set to one. However, in the presence of pooling layers, $\beta > 1$ is recomended~\cite{mahendran2015understanding}, so we use $\beta = 2$. The TV regularizer penalizes images that contain high (finite-diference approximations of) gradients. This leads to smoother images with improved local image coherence.
+
+The total perceptual loss that must be minimized is then
+\begin{equation}
+l(\v p, \v c, \v s) = \lambda_\text{c} l_\text{c}(\v p, \v c) + \lambda_\text{s} l_\text{s}(\v p, \v s) + \lambda_\text{tv}l_\text{tv}(\v p),
+\end{equation}
+where $\lambda_\text{tv}$ is the weight of the TV regularizer.
+\section{Iterative Style Transfer}
+The iterative style transfer algorithm consists of optimizing the image $\v p$ so as to minimize loss $l$. The losses defined in Sections \ref{sec:content} and \ref{sec:style} are both differentiable, so the total loss can be optimized with gradient-based methods. The optimization process is carried out by initializing $\v p$ with noise and iteratively modifying it so as to minimize the loss. The optimization process is carried out as follows: obtain layer outputs $f^{(n)}(\v p)$ by computing a forward pass through the network; compute the gram matrices $\bar{\v G}^{(n)}$; compute the loss functions $l_\text{c}$ and $l_\text{s}$. After the total loss is computed, one can compute the gradient w.r.t $\v p$ by backpropagating gradients up to the input. The gradient w.r.t $\v p$ may then be used by an optimizer to make a step that changes the image to minimize the loss. A diagram of the process is available in Fig.~\ref{fig:iterative-diagram}. It is expected that the image converges to an image that simultaneously contains the content of $\v c$ and the style of $\v s$. Since $\v c$ and $\v s$ are fixed during the optimization process, their features can be computed once and reused. Note that the network weights \textit{are not} being optimized: the network is only a part of the loss function used to update $\v p$.
+
+\begin{figure}[b]
+	\centering
+	\begin{subfigure}{\textwidth}
+	\includegraphics[width=0.95\textwidth]{iterative-diagram_v2}
+	\caption{Iterative style transfer.\label{fig:iterative-diagram}}
+	\end{subfigure}
+	
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{fast-diagram}
+		\caption{Fast style transfer.\label{fig:fast-diagram}}
+	\end{subfigure}
+	\caption[Diagrams of style transfer algorithms.]{Diagrams of style transfer algorithms. Blue, green and gray lines represent the forward propagation for the content, style and pastiche images, respectively. Red lines represent gradient flow. Solid red lines indicate that the gradients are used in the update steps.}
+\end{figure}
+
+\subsection{Experiments}
+Several experiments were performed in order to evaluate the quality of the generated images. Images $\v p$ were either initialized with Gaussian noise with a small variance or with the content image itself. Both initialization techniques yield images that combine content and style, but initializing with the content image usually leads to images that more closely resemble the content image. For images such as faces, which humans are very particular about, such content initialized images may appear more appealing because they retain more strongly the content features. Fig.~\ref{fig:iterative} presents some stylized images.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{starry_night}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{matheus}
+		\caption{Random initialization.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{starry_matheus_random}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{shipwreck}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{golden_gate}
+		\caption{Random initialization.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{shipwreck_gate}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{la_muse}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{gandalf}
+		\caption{Content initialization.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.35\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{muse_gandalf_1024}
+	\end{subfigure}\\
+	\caption{Style transfer examples. Columns contain style, content, and resulting images, respectively.\label{fig:iterative}}
+\end{figure}
+
+\subsection{Hyperparameter Discussion}
+In our experiments, as in~\cite{gatys2016image}, we use VGG-19, which was trained on the Imagenet dataset~\cite{ILSVRC15,deng2009imagenet}, as the loss network~\cite{simonyan2014very}. This network (with its pretrained weights) as well as many other popular networks trained on Imagenet are available freely on the internet\footnote{VGG-19 is available in Keras out of the box and its weights are automatically downloaded if necessary.}. The content layer set $\mathcal{C}$ is composed of only one layer: `conv4\_2'. The style layer set $\mathcal{S}$ includes layers `conv1\_1', `conv2\_1', `conv3\_1', `conv4\_1', and `conv5\_1'. In regard to the optimizer, \cite{gatys2016image} proposes the use of L-BFGS~\cite{zhu1997algorithm}. For practical reasons\footnote{Our code is implemented in Keras and Tensorflow, which lack an L-BFGS optimizer implementation.}, our experiments are performed with Adam. Since we use a first-order method, the learning rate is also a hyperparameter (the other Adam parameters are kept at standard values). For the sake of simplicity, all style weights $w^{(n)}_\text{s}$ are the same: this choice removes several hyperparameters and still yields pleasing results~\cite{gatys2016image}.
+
+The hyperparameters used can heavily influence the aspect of the pastiche image. The style image size and loss term weights are particularly important. The loss term weights influence the trade-off between content fidelity, stylization, and smoothness. An image generated with very high content weight will be very similar to the original, but carry little style. If the image is generated with high style weights, the result will not resemble the content image. Instead, it will be a textured version of the style image. The tv regularization term can also influence the image: adding some of it may help smooth the image and avoid pixelated results. If too much regularization is added, images get blurred and may have artifacts. Fig.~\ref{fig:style-weights} shows images obtained from the same content and style images with varying loss term weights.
+
+\begin{figure}
+	\centering
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{tubingen}
+	\caption{Content image.}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{starry_night}
+	\caption{Style image.}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{style_low}
+	\caption{Small style loss weight.}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{style_high}
+	\caption{Large style loss weight.}		
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{tv_low}
+	\caption{Small regularization weight.}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{tv_high}
+	\caption{Large regularization weight.}
+\end{subfigure}
+\caption{Style representation changes with different loss term weights.\label{fig:style-weights}}	
+\end{figure}
+
+It is also very important to choose an appropriate image size for the style image when computing its Gram matrices: images optimized with target Gram matrices computed at larger sizes feature larger smoother patterns. If the style image is scaled to small sizes, the resulting image will have its style represented by small textures. In order to illustrate this effect, Fig.~\ref{ref:style-imsizes} contains images obtained by different scalings of the style image. The style image was scaled preserving its aspect ratio so that its maximum size (height or width) was a set value. This maximum size was varied so that the algorithm could be evaluated with different image scales.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{tubingen}
+		\caption{Content image.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{starry_night}
+		\caption{Style image.}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{starry_tubingen_sw1e-4_tw1e-3_180_style0_1}
+		\caption{Largest size of 180 pixels.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{starry_tubingen_sw1e-4_tw1e-3_256_style0_1}
+		\caption{Largest size of 256 pixels.}		
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{starry_tubingen_sw1e-4_tw1e-3_384_style0_1}
+		\caption{Largest size 384 pixels.}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{starry_tubingen_sw1e-4_tw1e-3_512_style0_1}
+		\caption{Largest size 512 pixels.}
+	\end{subfigure}
+	\caption{Style representation changes with different style image sizes.\label{ref:style-imsizes}}
+\end{figure}
+%THE REASON FOR THIS IS PROBABLY WHEN COMPARING THE GRAM MATRICES OF THE IMAGES P AND S IN DIFFERENT RESOLUTIONS.
+
+%TESTS WITH DIFFERENT HYPERPARAMETERS.
+
+\section{Fast Style Transfer}\label{sec:fast-style}
+The iterative algorithm has some drawbacks. Namely, its optimization procedure requires several forward and backward passes through a big neural network. This makes the algorithm quite slow: images take several minutes to be generated. The time also scales with the input image size: the larger the image, the more time it takes. This makes the algorithm impractical for large images or in restricted computation environments.
+
+In place of iteratively refining an initial image, one could train a neural network, which we call pastiche network, to perform stylization. After the network is trained, style transfer could be achieved in a single forward pass of the pastiche network. Two distinct network architectures were proposed~\cite{ulyanov2016texture, johnson2016perceptual}. We follow the work of~\cite{johnson2016perceptual}.
+
+The pastiche network works as follows: it receives as input a content image $\v c$ and outputs a pastiche image $\v p = \mathcal{P}(\v c; \v \theta)$, where $\mathcal{P}$ represents the pastiche function realized by the network with weights $\v \theta$. The pastiche image $\v p$ has the content of $\v c$ and the style of a style image $\v s$.
+
+\subsection{Training procedure}
+The learning procedure is performed by minimizing expected perceptual loss over \textit{the pastiche network weights}:
+\begin{equation}
+\min_{\v{\theta}}\mathbb{E}_{\v c}\left[l(\mathcal{P}(\v c; \v \theta), \v c, \v s)\right].
+\end{equation}
+Note that, after training, the network does not require the style image to generate outputs: \textit{the style is encoded in the network weights}. Conversely, the network learns to stylize according to the single style image that is used during training.
+
+The perceptual loss used is the same: it is computed by comparing features of a loss network. The main difference is that this loss is used to minimized the weights, instead of an input image. The gradients are computed by performing forward and backward passes on both networks: $\v p$ is computed with a forward pass on the pastiche network; $\v c$, $\v s$, and $\v p$ are used to compute the loss, which includes a forward pass on the loss network; finally, the gradients are backpropagated from the loss through the loss and pastiche networks so as to compute the gradients w.r.t $\v \theta$.% The procedure is illustrated in Fig.~\ref{fig:fast-diagram}.
+
+\subsection{Pastiche Network Architecture}
+The pastiche network is a fully convolutional network~\cite{long2015fully}. It features a bottleneck structure where the image is initially downsampled, processed by several convolutional layers, and upsampled back to its original size. This bottleneck structure is interesting because it allows for the use of more filters in the bottleneck layers while keeping computation cost low. It also allows for the output pixels to have larger effective input receptive fields, which is interesting because transferring style might involve coherently changing large patches of the input image~\cite{johnson2016perceptual}.
+
+The image is first transformed a regular convolutional layer. Then, it is downsampled by two stride-2 convolutions. Afterwards, the downsampled feature maps are processed by five residual blocks. The image is then upsampled back to its original spatial dimensions with two upsampling blocks. A last convolutional layer is used to map the upsampled feature maps into an RGB image.
+
+The upsampling blocks in~\cite{johnson2016perceptual} were composed of \textit{transposed convolutional} layers\footnote{This layer is also commonly called \textit{deconvolutional} layer. We avoid this name because the operation performed by this layer is not a deconvolution, i.e., the operation that inverts a convolution. The forward function it implements is actually the backward function of a convolutional layer (and vice-versa). This layer is also called \textit{backwards} convolution, and \textit{fractional-stride} convolution.}~\cite{long2015fully}. These layers can cause checkerboard pattern artifacts on the output image~\cite{odena2016deconvolution}. Instead, we follow~\cite{dumoulin2016learned} and use upsampling blocks that are composed of nearest-neighbor upsampling and a regular stride-1 convolutional layer.
+
+All convolutions are followed by normalization and ReLU nonlinearities, except for the last convolution (that generates the output). The last convolution of the network features $\tanh$ nonlinearity scaled to the range $(-150, 150)$\footnote{This range is chosen so that the network outputs have similar scale to the inputs the loss network was trained on.}. The architecture from~\cite{johnson2016perceptual} uses batch normalization layers. Later work has shown that instance normalization layers can be used for improved perfomance~\cite{ulyanov2016instance}. All our networks are trained with instance normalization layers.
+
+Instance normalization is similar to batch normalization in the sense that samples are normalized by mean and variance. The difference is that, instead of computing batch statistics, mean and variance are computed separately per sample. For the $b$-th sample $\v x^{(b)} \in \mathbb{R}^{H\times W\times C}$ in a mini-batch, the instance normalized output $\hat{\v x}^{(b)}$ is computed according to
+\begin{equation}
+\begin{split}
+\mu_c^{(b)} &= \frac{1}{HW}\sum_{h,w}x^{(b)}_{h,w,c}\\
+v_c^{(b)} &= \frac{1}{HW}\sum_{h,w}\left(x^{(b)}_{h,w,c} - \mu_c^{(b)}\right)^2\\
+\hat{x}_{h,w,c} &= \gamma_c\frac{x_{h,w,c} - \mu_c^{(b)}}{\sqrt{v^{(b)} + \epsilon}} + \beta_c.
+\end{split}
+\end{equation}
+The scalar $\epsilon$ is a small number that avoids division by zero. Like in batchnorm, $\gamma_c$ and $\beta_c$ are learnable parameters. The per-instance normalization used is equivalent to contrast normalization.
+
+The number of filters in the convolutional layers is doubled every time a downsampling occurs and halved every time an upsampling occurs, keeping computation costs similar throughout the network. For a concise representation of the network architecture, see Table ~\ref{tab:fast-arch}.
+
+\begin{table}
+	\centering
+	\caption{Architecture and hyperparameters of the pastiche network.\label{tab:fast-arch}}
+	\begin{adjustbox}{max width=\textwidth}
+		\begin{tabular}{rlllll}
+			\hline
+			Operation                                        & Kernel size & Stride & Feature maps & Nonlinearity & Output size \\ \hline
+			\textbf{Network} - $256\times 256\times 1$ input &             &        &              &         &              \\
+			Convolution                                      & $9\times 9$ & 1      & $16$           & IN-ReLU & $256\times 256\times 3$\\
+			Downsampling                                  &  &       & $32$             &         & $128\times128\times32$\\
+			Downsampling                                  &  &   & $64$            &         & $64\times64\times64$\\
+			Residual Block &  &       & $64$ &     & $64\times64\times64$\\
+			Residual Block &  &       & $64$ &     & $64\times64\times64$\\
+			Residual Block &  &       & $64$ &     & $64\times64\times64$\\
+			Residual Block &  &       & $64$ &     & $64\times64\times64$\\
+			Residual Block &  &       & $64$ &     & $64\times64\times64$\\
+			Upsampling &  &  & $32$ &  & $128\times128\times32$\\
+			Upsampling &  &  & $16$ &  & $256\times256\times16$\\
+			Convolution                                      & $9\times 9$ & 1      & 3           & 150(IN-$\tanh$) & $256\times256\times3$\\
+			\textbf{Downsampling} - $K$ & & & & &\\
+			Convolution & $3\times 3$ & 2 & $K$ & IN-ReLU & \\
+			\textbf{Residual Block} - $K$ & & & & &\\
+			Convolution & $3\times 3$ & 1 & $K$ & IN-ReLU & \\
+			Convolution & $3\times 3$ & 1 & $K$ & \textit{Linear} & \\
+			Shortcut & \multicolumn{5}{l}{\textit{add input to the output}}\\
+			\textbf{Upsampling} - $K$ & & & & &\\
+			Nearest neighbor interpolation & \multicolumn{5}{l}{\textit{upsampling factor of 2}}\\
+			Convolution & $3\times 3$ & 2 & $K$ & IN-ReLU & \\			
+			\hline
+			Preprocessing & \multicolumn{5}{l}{VGG preprocessing}\\
+			Optimizer                                        & \multicolumn{5}{l}{Adam ($\eta = 0.001, \beta_1=0.9, \beta_2=0.999$)}        \\
+			Batch size                                       & \multicolumn{5}{l}{4}                                      \\
+			Epochs                                           & \multicolumn{5}{l}{2}                                       \\
+			Weight initialization                            & \multicolumn{5}{l}{Gaussian with 0.05 standard deviation}            
+		\end{tabular}
+	\end{adjustbox}
+\end{table}
+
+\subsection{Fast Style Transfer Experiments}\label{sec:single-style-exp}
+The experiments were performed as in~\cite{johnson2016perceptual}. The networks were trained on the COCO (Common Objects in COntext) dataset~\cite{lin2014microsoft}. The COCO dataset contains around 80000 images on the training set of varied sizes. Images are resized so that their smallest size is $256$ and center cropped so that all images are $256\times 256$. The images preprocessing is the same as applied to loss network inputs, which is per-channel mean subtraction. Since the loss network was trained on the ImageNet dataset, the means are as computed on that dataset\footnote{The R,G, and B means are $123.68, 116.779, 103.939$, respectively.}. The networks were trained for a total of 40000 iterations with batch size $4$, which corresponds to 2 epochs. The Adam optimizer is used with learning rate of 0.001. Loss term weights $w_\text{s}, w_\text{c}$, and $w_\text{s}$ were determined on a per-style-basis. The loss network in this case is VGG-16 (a smaller version of VGG-19)~\cite{simonyan2014very}. The content layer set is composed of layer conv\_2\_2. The style layer set is composed of layers conv\_1\_2, conv\_1\_2, conv\_3\_3, and conv\_4\_3.
+
+Six networks were trained, each using a different style image. Figs. \ref{fig:fast-style1-3} and \ref{fig:fast-style4-6} presents the stylization obtained by these networks.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{candy}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_candy}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.25\textwidth}
+	\vskip 0pt
+	\includegraphics[width=\textwidth]{the_scream}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_the_scream}
+	\end{subfigure}\\
+		\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{mosaic}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_mosaic}
+	\end{subfigure}
+	\caption[Stylization performed by pastiche networks.]{Stylization performed by pastiche networks. Each network is trained on a different style image. Images were generated with largest size of 1024px and are rescaled (part 1).\label{fig:fast-style1-3}}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{la_muse}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_la_muse}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{feathers}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_feathers}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.25\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{udnie}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.7\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{tubingen_style_udnie}
+	\end{subfigure}
+	\caption[Stylization performed by pastiche networks.]{Stylization performed by pastiche networks. Each network is trained on a different style image. Images were generated with largest size of 1024px and are rescaled (part 2).\label{fig:fast-style4-6}}
+\end{figure}
+\section{Multi-style Networks}
+The fast style transfer algorithm presented in Section \ref{sec:fast-style} has several advantages compared to the original iterative algorithm. After the pastiche network is trained, it is capable of applying the learned style very fast (even in real time\footnote{The authors of \cite{johnson2016perceptual} provide code that is able to stylize images obtained from a webcam. It is available at: \url{https://github.com/jcjohnson/fast-neural-style}.}~\cite{johnson2016perceptual}). Since the network is fully convolutional, it is also able to stylize images of any size, even if it was trained only on $256\times 256$ images. Overall, it is a very fast approximation to the optimization method that still yields high quality style transfer. Its major drawback is that a network is only able to learn a single style: in order to be able to transfer different styles, several networks must be trained (a process that takes several hours). This is not an issue in the iterative method. This weakness can be solved with a simple approach: conditional instance normalization~\cite{dumoulin2016learned}.
+
+Conditional instance normalization layers apply the same contrast normalization technique used in the regular instance normalization layer. Its main feature is the use of conditioned scaling and bias parameters. Instead of a pair of parameters per channel of the input, a set of parameters are trained. This set contains one pair of parameters \textit{per class}. Consider the $b-$th sample $\v x^{(b)} \in \mathbb{R}^{H\times W\times C}$, the conditional instance normalization layer computes the normalized input $\hat{\v x}^{(b, s)} = \text{CIN}(\v x| s)$, which is conditioned on the style $s$, as follows:
+\begin{equation}
+\begin{split}
+	\mu_c^{(b)} &= \frac{1}{HW}\sum_{h,w}x^{(b)}_{h,w,c}\\
+	v_c^{(b)} &= \frac{1}{HW}\sum_{h,w}\left(x^{(b)}_{h,w,c} - \mu_c^{(b)}\right)^2\\
+	\hat{x}^{(b,s)}_{h,w,c} &= \gamma^{(s)}_c\frac{x_{h,w,c} - \mu_c^{(b)}}{\sqrt{v^{(b)} + \epsilon}} + \beta^{(s)}_c.
+\end{split}
+\end{equation}
+In summary, the network learns different styles simply by applying different scaling factors at each normalization layer. This approach requires a very small number of extra parameters and does not increase computation requirements.
+
+\subsection{Multi-style Experiments}
+Training multi-style pastiche networks with conditional instance normalization is very similar to training single style networks. In fact, multi-style networks have convergence properties very similar to those of single-style networks. We trained a 6-style neural network with the same styles as the six single-style networks discussed in Section \ref{sec:single-style-exp}. The 6-style network has almost the same architecture, the only difference being the substitution of instance normalization by its conditioned version. During training, each sample of a batch is assigned a random style label; the network then outputs the image stylized with that specific set of parameters; the loss function is then computed with the corresponding style images. The 6-style network is trained for the same 40000 iterations and is able to reproduce all styles with comparable quality to the single-style networks. Fig. \ref{fig:6v1-style} presents a side-by-side comparison of images stylized by the 6-style network and each of the single-style networks.
+
+\begin{figure}
+	\vspace{-0.7cm}
+	\centering
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{candy}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_candy}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_candy}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{the_scream}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_the_scream}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_the_scream}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{mosaic}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_mosaic}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_mosaic}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{la_muse}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_la_muse}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_la_muse}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{feathers}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_feathers}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_feathers}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{udnie}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_6style_udnie}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{chicago_style_udnie}
+	\end{subfigure}
+	\caption{Visual comparison of style transfer quality between multi (left) and single (right) style networks.\label{fig:6v1-style}}
+\end{figure}
+
+Using a single network for several styles has another advantage: it is possible to very efficiently stylize the input image with a combination of the learned styles using \textit{weighted instance normalization}~\cite{dumoulin2016learned}. Because of how the different styles are encoded in the scale and bias parameters of the normalization layers, using a combination of parameters of different styles during inference yields an image that also combines the stylistic features of the respective styles. Consider a network trained with $S$ styles. An arbitrary combination of such styles is obtained by performing a convex combination of the normalization parameters. Denoting the weight of each style as $\rho_s$, and the scale and shift parameters for the $l$-th layer as $\gamma^{(s,l)}$ and $\beta^{(s,l)}$, the combined parameters are:
+\begin{equation}
+\begin{split}
+\bar{\gamma}^{(l)}_c &= \frac{\sum_{s}^{S}\rho_s\gamma^{(s,l)}}{\sum_{s}^{S}\rho_s}\\
+\bar{\beta}^{(l)}_c &= \frac{\sum_{s}^{S}\rho_s\beta^{(s,l)}}{\sum_{s}^{S}\rho_s}.
+\end{split}
+\end{equation}
+In short, interpolating between the normalization parameters results in an interpolation between the respective styles. Note that the network is never trained on any combination of styles: it is naturally able to combine them at test time without any such consideration. This suggests that these networks obtain a representation for style that consists of relatively generic elements of style (encoded in the shared features) that are combined differently (through the conditional parameters) for each specific style. Examples of combined styles are shown in Fig.~\ref{fig:weightedinstancenorm}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_0}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_1}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_2}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_3}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_4}
+	\end{subfigure}\\
+	\vspace{0.1cm}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{feathers}
+	\end{subfigure}
+	\vspace{0.1cm}
+	\begin{subfigure}[t]{0.3\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{combined/feathers_mosaic_combined_2}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{mosaic}
+	\end{subfigure}\\
+
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_0}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_1}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_2}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_3}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_4}
+	\end{subfigure}\\
+	\vspace{0.1cm}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{candy}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{combined/candy_scream_combined_2}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{the_scream}
+	\end{subfigure}\\
+
+	\vspace{0.1cm}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_0}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_1}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_2}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_3}
+	\end{subfigure}
+	\begin{subfigure}{0.18\textwidth}
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_4}
+	\end{subfigure}\\
+	\vspace{0.1cm}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{la_muse}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.4\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{combined/muse_udnie_combined_2}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.1\textwidth}
+		\vskip 0pt
+		\includegraphics[width=\textwidth]{udnie}
+	\end{subfigure}
+	\caption[Examples of combined styles via weighted instance normalization.]{Examples of combined styles via weighted instance normalization. Odd rows present images rendered with interpolations of two styles. Even rows present the style images on their respective sides and the image with same weight for both styles in more detail.\label{fig:weightedinstancenorm}}
+\end{figure}

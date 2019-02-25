@@ -1,0 +1,341 @@
+\chapter{Derivation of the Adaptive Algorithms}
+\label{appendixA}
+
+\section{SM-PNLMS}
+\label{ap:SM_PNLMS}
+The cost function to be minimized in this technique is expressed as:
+\begin{align}\label{eq:PAPA_der}
+\begin{split}
+	F = &\frac{1}{2}\Vert \wbf[k-1] - \wbf[k] \Vert_{\Gbf^{-1}[k]}^2\\
+	&\mathrm{subject\;\;to:\;} d[k] - 
+\wbf^H[k+1]\xbf[k] = \bar{\gamma}\,\mathrm{sign}\{e[k]\}.
+\end{split}
+\end{align}
+
+Expanding~\eqref{eq:PAPA_der}, and making use of the Lagrange multiplier $\lambda[k]$, results in the following Lagrangian function
+\begin{align}\label{eq:lagrange_SM_PNLMS}
+	\begin{split}
+		\mathcal{L}_F =& \frac{1}{2}(\wbf[k+1] - \wbf[k])^H\Gbf^{-1}[k](\wbf[k+1] - \wbf[k]) + \\
+		&\frac{1}{2}\lambda^*[k]\left(d^*[k] - \wbf^T[k+1]\xbf^*[k] - \bar{\gamma}\mathrm{sign}\{e[k]\}\right) + \\
+		&\frac{1}{2}\lambda[k]\left(d[k] - \wbf^H[k+1]\xbf[k] - \bar{\gamma}\mathrm{sign}\{e[k]\}\right).
+	\end{split}
+\end{align}
+
+Deriving~\eqref{eq:lagrange_SM_PNLMS} with relation to $\wbf^*[k+1]$ and equaling to zero results in
+\begin{align}
+	\frac{\partial \mathcal{L}_F}{\partial \wbf^*[k+1]} &= \Gbf^{-1}[k]\wbf[k+1] - \Gbf^{-1}[k]\wbf[k] - \lambda[k]\xbf[k] = 0, \\
+	\wbf[k+1] &= \wbf[k]+ \lambda[k]\Gbf[k]\xbf[k].\label{eq:gradient_SM_PNLMS}
+\end{align}
+
+By premultiplying~\eqref{eq:gradient_SM_PNLMS} by $\xbf^H[k]$, gives us
+\begin{align}\label{eq:constraint1}
+	\xbf^H[k]\wbf[k+1] = \xbf^H[k]\wbf[k]+ \lambda[k]\xbf^H[k]\Gbf[k]\xbf[k].
+\end{align}
+By using the constraint $d^*[k] - \xbf^H[k]\wbf[k+1] = \bar{\gamma}\mathrm{sign}\{e[k]\}$,~\eqref{eq:constraint1} can be written as
+\begin{align}
+	d^*[k] - \xbf^H[k]\wbf[k+1] &= d^*[k] - \xbf^H[k]\wbf[k] - \lambda[k]\xbf^H[k]\Gbf[k]\xbf[k] \nonumber\\
+	\bar{\gamma}\mathrm{sign}\{e[k]\} &= e^*[k] - \lambda[k]\xbf^H[k]\Gbf[k]\xbf[k]\nonumber \\
+	\lambda[k] & = \frac{e^*[k] - \bar{\gamma}\mathrm{sign}\{e[k]\}}{\xbf^H[k]\Gbf[k]\xbf[k]}.\label{eq:lambda}
+\end{align}
+
+By substituting~\eqref{eq:lambda} in~\eqref{eq:gradient_SM_PNLMS}, gives us
+\begin{align}\label{eq:finalSM_PNLMS}
+	\wbf[k+1] &= \begin{cases}
+				\wbf[k]+ \frac{\Gbf[k]\xbf[k]}{\xbf^H[k]\Gbf[k]\xbf[k]}(e^*[k] - \bar{\gamma}\mathrm{sign}\{e[k]\}) , \!\!\!\!&\mathrm{if\;} \vert e[k]\vert > \bar{\gamma},\\
+				0, & \mathrm{otherwise}.
+	             \end{cases}
+\end{align}
+Nonetheless,~\eqref{eq:finalSM_PNLMS} can still be simplified further by using the fact that
+\begin{align}
+	\bar{\gamma}\mathrm{sign}\{e[k]\} = \frac{\bar{\gamma}e^*[k]}{\vert e[k] \vert}.
+\end{align}
+Hence,
+\begin{align}
+	e^*[k] - \bar{\gamma}\mathrm{sign}\{e[k]\} = e^*[k]\underbrace{\left(1 - \frac{\bar{\gamma}}{\vert e[k]\vert} \right)}_{\mu[k]}.
+\end{align}
+Therefore,~\eqref{eq:finalSM_PNLMS} can be rewritten as
+\begin{align}\label{eq:finalSM_PNLMS_2}
+	\wbf[k+1] &= \wbf[k]+ \mu[k]\frac{\Gbf[k]\xbf[k]}{\xbf^H[k]\Gbf[k]\xbf[k]}e^*[k],
+\end{align}
+with
+\begin{align}
+	\mu[k] = \begin{cases}
+	         	1 - \frac{\bar{\gamma}}{\vert e[k] \vert}, \!\!\!\!&\mathrm{if\;}  
+			\vert e[k]\vert > \bar{\gamma},\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+\end{align}
+
+
+
+
+\section{BEACON}
+\label{ap:BEACON}
+In this case, the cost function to be minimized is
+
+\begin{align}\label{eq:PAPA_der_BEACON}
+\begin{split}
+	F = & \sum_{i = 1}^k \lambda^{k-i}[k] \vert d[i] - \wbf^H[k]\xbf[i]\vert^2 \\
+	&\mathrm{subject\;\;to:\;}  \vert d[k] - \wbf^H[k]\xbf[k]\vert^2 = \bar{\gamma}^2.
+\end{split}
+\end{align}
+Then, by applying Lagrange multipliers, it is possible to express the Lagrangian function as
+\begin{align}\label{eq:lagrange_BEACON}
+	\mathcal{L}_F  = \sum_{i = 0}^k \lambda^{k-i}[k]\left( \vert d[i] -\wbf^H[k]\xbf[k] \vert^2\right) + \lambda[k](\vert d[i] -\wbf^H[k]\xbf[k] \vert^2 - \bar{\gamma}^2).
+\end{align}
+Note that $\lambda[k]$ in~\eqref{eq:PAPA_der_BEACON} is a parameter that can be chosen by the filter designer; in~\eqref{eq:lagrange_BEACON} it is set as the Lagrange multiplier associated with the Lagrangian function ${\cal L}_F$. Deriving~\eqref{eq:lagrange_BEACON} with relation to $\wbf^*[k]$ and equaling to zero results in
+\begin{align}
+	\begin{split}
+		\hspace*{-3cm}\frac{\partial \mathcal{L}_F}{\partial \wbf^*[k]} &= \sum_{i = 0}^k \lambda^{k-i}[k] \left(\xbf[i]\xbf^H[i]\wbf[k] - d^*[i]\xbf[i]\right) + \\
+		&\lambda[k] \left(\xbf[k]\xbf^H[k]\wbf[k] - d^*[k]\xbf[k]\right) = 0,\\
+	\end{split}\\
+	\begin{split}\label{eq:beacon1_1}
+		\wbf[k] &= \underbrace{\left(\sum_{i = 0}^k \lambda^{k-i}[k] \xbf[i]\xbf^H[i] + \lambda[k]\xbf[k]\xbf^H[k]\right)^{-1}}_{\Sbf^{-1}[k]}\times \\
+		&\underbrace{\left(\sum_{i = 0}^k \lambda^{k-i}[k]d^*[i]\xbf[i] + \lambda[k]d^*[k]\xbf[k]\right)}_{\zbf[k]}.
+	\end{split}
+\end{align}
+
+Therefore,~\eqref{eq:beacon1_1} can be rewritten in a more compact fashion as
+\begin{align}\label{eq:w_beacon1}
+	\wbf[k] = \Sbf^{-1}[k] \zbf[k].
+\end{align}
+
+By analyzing the equation of $\Sbf[k]$ and assuming $\lambda[k] \approx \lambda[k-1]$, one can describe the update equation for $\Sbf[k]$ as
+\begin{align}
+	\Sbf[k] &= \sum_{i = 0}^k \lambda^{k-i}[k] \xbf[i]\xbf^H[i] + \lambda[k]\xbf[k]\xbf^H[k], \nonumber\\
+	&= \sum_{i = 0}^{k-1} \lambda^{k-i}[k] \xbf[i]\xbf^H[i] + \lambda[k]\xbf[k-1]\xbf^H[k-1] + \lambda[k]\xbf[k]\xbf^H[k],\nonumber\\
+	&= \Sbf[k-1] + \lambda[k]\xbf[k]\xbf^H[k].\label{eq:s_beacon}
+\end{align}
+
+Analogously, the update equation for $\zbf[k]$ can be expressed as
+\begin{align}
+	\zbf[k] &= \sum_{i = 0}^k \lambda^{k-i}[k]d^*[i]\xbf[i] + \lambda[k]d^*[k]\xbf[k], \nonumber\\
+	&=  \sum_{i = 0}^{k-1} \lambda^{k-i}[k]d^*[i]\xbf[i] + \lambda[k]d^*[k-1]\xbf[k-1] + \lambda[k]d^*[k]\xbf[k], \nonumber\\
+	&= \zbf[k-1] + \lambda[k]d^*[k]\xbf[k].\label{eq:z_beacon}
+\end{align}
+
+Then, by making use of the matrix inversion lemma~\cite{goodwin1977dynamic}, the update equation of $\Sbf[k]$ is described as
+\begin{align}
+	\Sbf^{-1}[k] &= \Sbf^{-1}[k-1] - \frac{\lambda[k]\Sbf^{-1}[k-1]\xbf[k]\xbf^H[k] \Sbf^{-1}[k-1]}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]} \label{eq:BEACON_matrix2} \\
+	&= \Sbf^{-1}[k-1] - \lambda[k]\Sbf^{-1}[k-1] \xbf[k] \kbf^T[k],\label{eq:BEACON_matrix}
+\end{align}
+where
+\begin{align}\label{eq:beaconK}
+	\kbf[k] = \frac{\Sbf^{-1}[k-1]\xbf^*[k]}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}.
+\end{align}
+
+Therefore, by using~\eqref{eq:z_beacon} and~\eqref{eq:BEACON_matrix} in~\eqref{eq:w_beacon1}, results in
+\begin{align}
+	\wbf[k] &= \Sbf^{-1}[k]\left(\zbf[k-1] + \lambda[k]d^*[k]\xbf[k]\right), \nonumber \\
+	&= \Sbf^{-1}[k]\left( \Sbf[k-1]\wbf[k-1] + \lambda[k]d^*[k]\xbf[k]\right), \nonumber \\
+	&= \Sbf^{-1}[k]\Sbf[k-1]\wbf[k-1] + \Sbf^{-1}[k]\lambda[k]d^*[k]\xbf[k] ,\nonumber \\
+	&= \left(\Sbf^{-1}[k-1] - \lambda[k]\Sbf^{-1}[k-1] \xbf[k] \kbf^T[k]\right) \left( \Sbf[k-1]\wbf[k-1]\right) + \Sbf^{-1}[k]\lambda[k]d^*[k]\xbf[k],\nonumber\\
+	&= \wbf[k-1] - \lambda[k]\Sbf^{-1}[k-1]\xbf[k] \kbf^T[k]\Sbf[k-1]\wbf[k-1] + \Sbf^{-1}[k]\lambda[k]d^*[k]\xbf[k].\label{eq:beacon3}
+\end{align}
+
+By using~\eqref{eq:beaconK} in~\eqref{eq:beacon3}, results in
+\begin{align}
+	\wbf[k] = \wbf[k-1] - \lambda[k]\xbf^H[k] \wbf[k-1]\kbf^*[k] + \lambda[k]d^*[k]\Sbf^{-1}[k]\xbf[k].
+\end{align}
+
+Using the fact that $\kbf^*[k] = \Sbf^{-1}[k]\xbf[k]$, the previous equation is rewritten as
+\begin{align}
+	\wbf[k] &= \wbf[k-1] + \lambda[k] \left(-\xbf^H\wbf[k-1] \kbf[k] +  d^*[k]\Sbf^{-1}[k]\xbf[k] \right), \nonumber \\
+	&= \wbf[k-1] + \lambda[k]\left(-\xbf^H\wbf[k-1] +  d^*[k]\right)\kbf^*[k], \nonumber \\
+	&= \wbf[k-1] + \lambda[k]e^*[k]\kbf^*[k], \nonumber\\ 
+	&= \wbf[k-1] + \lambda[k]\Sbf^{-1}[k]\xbf[k]e^*[k],\label{eq:beacon_final}
+\end{align}
+where the \emph{a priori} error is defined here as $e[k] = d[k] - \wbf^H[k-1]\xbf[k]$. Now, it is only left the evaluation of $\lambda[k]$. To do that, let us premultiply~\eqref{eq:beacon_final} by $\xbf^H[k]$, which leads
+\begin{align}
+	\xbf^H[k]\wbf[k] = \xbf^H[k]\wbf[k-1] + \lambda[k]\xbf^H[k]\Sbf^{-1}[k]\xbf[k]e^*[k].
+\end{align}
+Then, by subtracting $d^*[k]$ of the previous equation, it can be rewritten as
+\begin{align}
+	d^*[k] - \xbf^H[k]\wbf[k] = e^*[k] - \lambda[k]\xbf^H[k]\Sbf^{-1}[k]\xbf[k]e^*[k],
+\end{align}
+which can be rewritten once again by using~\eqref{eq:BEACON_matrix2} as
+\begin{align}
+	\begin{split}\label{eq:beacon_lambda}
+		&d^*[k] - \xbf^H[k]\wbf[k] = e^*[k] - \lambda[k]\xbf^H[k]\times\\
+		& \left(\Sbf^{-1}[k-1] - \frac{\lambda[k]\Sbf^{-1}[k-1]\xbf[k]\xbf^H[k] \Sbf^{-1}[k-1]}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\right)\xbf[k]e^*[k],
+	\end{split}.
+\end{align}
+After some algebraic manipulation,~\eqref{eq:beacon_lambda} is simplified and rewritten as
+\begin{align}
+	d^*[k] - \xbf^H[k]\wbf[k] &= e^*[k] - \left(\frac{\lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\right)\xbf[k]e^*[k], \nonumber \\
+	&= e^*[k] \left(1 - \frac{\lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]} \right)\nonumber, \\
+	&= e^*[k] \left(\frac{1}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\right).
+\end{align}
+Thus, by using the constraint of~\eqref{eq:PAPA_der_BEACON} and using the fact that $\Sbf^{-1}[k-1]$ is a real and positive-definite matrix, $\lambda[k]$ is expressed mathematically as
+\begin{align}
+	\bar{\gamma} &= \left| e^*[k] \left(\frac{1}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\right)  \right|, \nonumber\\
+	&= \vert e^*[k]\vert \left(\frac{1}{1 + \lambda[k]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\right), \\
+	\lambda[k] &= \frac{1}{\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\left(\frac{\vert e^*[k]\vert}{\bar{\gamma}} - 1\right), \nonumber \\
+	&= \frac{1}{\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}\left(\frac{\vert e[k]\vert}{\bar{\gamma}} - 1\right).\label{eq:lambda_final}
+\end{align}
+
+
+
+
+
+
+\section{M-BEACON}
+\label{ap:MBEACON}
+The derivation of this algorithm is very similar to BEACON's. In order to present its derivation, let us first define the following variables:
+\begin{align}	
+	\tilde{\Sbf}[k] &= \lambda^{-1}[k]\Sbf[k], \\
+	\tilde{\zbf}[k] &= \lambda^{-1}[k]\zbf[k],\\
+	l[k] &= \frac{\lambda[k-1]}{\lambda[k]}.\label{eq:l_MBEACON}
+\end{align}
+Therefore, by multiplying both sides of~\eqref{eq:s_beacon} and~\eqref{eq:z_beacon} by $\lambda^{-1}[k]$, and using this previous definitions, one can rewrite these equations as
+\begin{align}
+	\tilde{\Sbf}[k] &= l[k]\tilde{\Sbf}[k-1] + \xbf[k]\xbf^H[k],\\
+	\tilde{\zbf}[k] &= l[k] \tilde{\zbf}[k-1] +  d^*[k]\xbf[k] \label{eq:z_beacon_2}.
+\end{align}
+Once again employing the matrix inversion lemma yields
+\begin{align}
+	\tilde{\Sbf}^{-1}[k] &= l^{-1}[k] \left(\tilde{\Sbf}^{-1}[k-1] - \frac{\tilde{\Sbf}^{-1}[k-1]\xbf[k]\xbf^H[k] \tilde{\Sbf}^{-1}[k-1]}{l[k] + \xbf^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf[k]}\right),\\
+	&= l^{-1}[k] \left(\tilde{\Sbf}^{-1}[k-1] - \tilde{\Sbf}^{-1}[k-1] \xbf[k] \kbf^T[k]\right),\label{eq:BEACON_matrix_2}
+\end{align}
+where $\kbf[k]$ is here redefined as
+\begin{align}\label{eq:beaconK_2}
+	\kbf[k] = \frac{\tilde{\Sbf}^{-1}[k-1]\xbf^*[k]}{l[k] + \xbf^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf[k]}.
+\end{align}
+
+
+
+Therefore, by using~\eqref{eq:z_beacon_2} and~\eqref{eq:BEACON_matrix_2} in~\eqref{eq:w_beacon1}, results in
+\begin{align}
+	\wbf[k] &= \tilde{\Sbf}^{-1}[k]\left(\tilde{\zbf}[k-1]l[k] + d^*[k]\xbf[k]\right), \nonumber \\
+	&= \tilde{\Sbf}^{-1}[k]\left(\tilde{\Sbf}[k-1]\wbf[k-1]l[k] + d^*[k]\xbf[k]\right), \nonumber \\
+	&= \tilde{\Sbf}^{-1}[k]\tilde{\Sbf}[k-1]\wbf[k-1]l[k] + \tilde{\Sbf}^{-1}[k]d^*[k]\xbf[k], \nonumber \\
+	\begin{split}
+		&= l^{-1}[k]\left(\tilde{\Sbf}^{-1}[k-1] - \tilde{\Sbf}^{-1}[k-1] \xbf[k] \kbf^T[k]\right) \left( \tilde{\Sbf}[k-1]\wbf[k-1]l[k]\right)+ \\
+		& \tilde{\Sbf}^{-1}[k]d^*[k]\xbf[k],
+	\end{split}\nonumber\\
+	&= \wbf[k-1] - \tilde{\Sbf}^{-1}[k-1]\xbf[k] \kbf^T[k]\tilde{\Sbf}[k-1]\wbf[k-1] + \tilde{\Sbf}^{-1}[k]d^*[k]\xbf[k].\label{eq:beacon3_2}
+\end{align}
+
+
+By using~\eqref{eq:beaconK_2} in~\eqref{eq:beacon3_2}, results in
+\begin{align}
+	\wbf[k] = \wbf[k-1] - \xbf^H[k] \wbf[k-1]\kbf^*[k] + d^*[k]\tilde{\Sbf}^{-1}[k]\xbf[k].
+\end{align}
+
+Over again using the fact that $\kbf^*[k] = \tilde{\Sbf}^{-1}[k]\xbf[k]$, the previous equation is rewritten as
+\begin{align}
+	\wbf[k] &= \wbf[k-1] + \left(-\xbf^H\wbf[k-1] \kbf[k] +  d^*[k]\tilde{\Sbf}^{-1}[k]\xbf[k] \right), \nonumber \\
+	&= \wbf[k-1] + \left(-\xbf^H\wbf[k-1] +  d^*[k]\right)\kbf^*[k], \nonumber \\
+	&= \wbf[k-1] + e^*[k]\kbf^*[k], \nonumber\\ 
+	&= \wbf[k-1] +\tilde{\Sbf}^{-1}[k]\xbf[k]e^*[k],\label{eq:beacon_final_2}
+\end{align}
+
+In order to assess $l[k]$, one can substitute~\eqref{eq:lambda_final} in~\eqref{eq:l_MBEACON}, yielding
+\begin{align}\label{eq:l_MBEACON_2}
+	l[k] = \frac{\lambda[k-1]\xbf^H[k]\Sbf^{-1}[k-1]\xbf[k]}{\left(\frac{\vert e[k]\vert}{\bar{\gamma}} - 1\right)}.
+\end{align}
+Once $\lambda[k-1]\Sbf^{-1}[k-1] = l^{-1}[k-1]\tilde{\Sbf}[k-1]$,~\eqref{eq:l_MBEACON_2} can be rewritten as
+\begin{align}
+	l[k] = \frac{\xbf^H[k]\tilde{\Sbf}^{-1}[k-1]\xbf[k]}{\left(\frac{\vert e[k]\vert}{\bar{\gamma}} - 1\right)}.
+\end{align}
+
+
+
+
+\section{Volterra Semi-blind SM-PNLMS}
+\label{app:SB}
+During the supervised period, the cost function to be minimized in this case is described as
+\begin{align}\label{eq:SB_PAPA}
+\begin{split}
+	F = &\frac{1}{2}\Vert \wbf[k-1] - \wbf[k] \Vert_{\Gbf^{-1}[k]}^2\\
+	&\mathrm{subject\;\;to:\;} \Vert d[k] - \wbf^H[k+1]\xbf_N[k]- \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}\Vert_\infty = 0.
+\end{split}
+\end{align}
+
+Expanding~\eqref{eq:SB_PAPA} and  making use of the Lagrange multiplier $\lambda[k]$, results in the following Lagrangian function
+
+\begin{align}\label{eq:lagrange_SB_SM_PNLMS}
+	\begin{split}
+		\mathcal{L}_F =& \frac{1}{2}(\wbf[k+1] - \wbf[k])^H\Gbf^{-1}[k](\wbf[k+1] - \wbf[k]) + \\
+		&\frac{1}{2}\lambda^*[k] \Vert d^*[k] - \wbf^T[k]\xbf_N^*[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}\Vert_\infty+ \\
+		&\frac{1}{2}\lambda[k] \Vert d[k] - \wbf^H[k]\xbf_N[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}\Vert_\infty.
+	\end{split}
+\end{align}
+
+
+Defining as $a[k] = d[k] - \wbf^H[k+1]\xbf_N[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}$, one can derive~\eqref{eq:lagrange_SB_SM_PNLMS} with relation to $\wbf^*[k+1]$ as follows
+\begin{align}\label{eq:SB_1}
+	\frac{\partial \mathcal{L}_F}{\partial \wbf^*[k+1]} &= \Gbf^{-1}[k]\wbf[k+1] - \Gbf^{-1}[k]\wbf[k] - \lambda[k]\frac{\partial \Vert a[k]\Vert_\infty}{\partial a[k]}\frac{\partial a[k]}{\partial \wbf^*[k+1]},\nonumber\\
+	 &= \Gbf^{-1}[k]\wbf[k+1] - \Gbf^{-1}[k]\wbf[k] - \lambda[k]\frac{\partial \Vert a[k]\Vert_\infty}{\partial a[k]}\xbf_N[k],
+\end{align}
+Defining as $b[k] = \lambda[k]\frac{\partial \Vert a[k]\Vert_\infty}{\partial a[k]}$ and by setting~\eqref{eq:SB_1} to zero, leads to 
+\begin{align}\label{eq:gradient_SM_SB_PNLMS}
+	\wbf[k+1] &= \wbf[k]+ \Gbf[k]\xbf_N[k]b[k].
+\end{align}
+By premultiplying~\eqref{eq:gradient_SM_SB_PNLMS} by $\xbf_N^H[k]$, subtracting $d^*[k]$ and $\bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}$ from both sides of this equation, results in
+\begin{align}\label{eq:b_SB_SM_PNLMS}
+	0 &= d^*[k] - \xbf_N^H[k]\wbf[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\} - \xbf_N^H[k]\Gbf[k]\xbf_N[k]b[k] \nonumber\\
+	b[k] & = \frac{e^*[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}}{\xbf_N^H[k]\Gbf[k]\xbf_N[k]}.
+\end{align}
+Hence, by substituting~\eqref{eq:b_SB_SM_PNLMS} in~\eqref{eq:gradient_SM_SB_PNLMS} leads to
+\begin{align}\label{eq:finalSB_SM_PNLMS}
+	\wbf[k+1] &= \begin{cases}
+				\wbf[k]+ \frac{\Gbf[k]\xbf_N[k]}{\xbf_N^H[k]\Gbf[k]\xbf_N[k]}(e^*[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\}) , \!\!\!\!&\mathrm{if\;} \vert e[k]\vert > \bar{\gamma},\\
+				0, & \mathrm{otherwise}.
+	             \end{cases}
+\end{align}
+
+
+Nonetheless,~\eqref{eq:finalSB_SM_PNLMS} can still be simplified further by using the fact that
+\begin{align}
+	\bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\} = \frac{\bar{\gamma}e^*[k]}{\Vert e[k] \Vert_\infty}.
+\end{align}
+Hence,
+\begin{align}
+	e^*[k] - \bar{\gamma}\mathrm{sign}_{\infty}\{e[k]\} = e^*[k]\underbrace{\left(1 - \frac{\bar{\gamma}}{\Vert e[k]\Vert_\infty} \right)}_{\mu[k]}.
+\end{align}
+Therefore,~\eqref{eq:finalSM_PNLMS_2} can be rewritten as
+\begin{align}\label{eq:finalSM_PNLMS_3}
+	\wbf[k+1] &= \wbf[k]+ \mu[k]\frac{\Gbf[k]\xbf_N[k]}{\xbf_N^H[k]\Gbf[k]\xbf_N[k]}e^*[k],
+\end{align}
+with
+\begin{align}
+	\mu[k] = \begin{cases}
+	         	1 - \frac{\bar{\gamma}}{\Vert e[k]\Vert_\infty}, \!\!\!\!&\mathrm{if\;} \Vert e[k]\Vert_\infty > \bar{\gamma},\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+\end{align}
+
+During the unsupervised period, the only modification to be made is to replace the reference signal $d[k]$ by the decided symbol $b[k]$. For this case, the error is defined as
+\begin{align}
+	e_\mathrm{b}[k] = b[k] - \wbf^H[k]\xbf_N[k].
+\end{align}
+Thus,~\eqref{eq:SB_PAPA} is modified as follows:
+\begin{align}\label{eq:SB_PAPA_2}
+	\begin{split}
+		F = &\frac{1}{2}\Vert \wbf[k-1] - \wbf[k] \Vert_{\Gbf^{-1}[k]}^2\\
+		&\mathrm{subject\;\;to:\;} \Vert b[k] - \wbf^H[k+1]\xbf_N[k]- \bar{\gamma}\mathrm{sign}_{\infty}\{e_\mathrm{b}[k]\}\Vert_\infty = 0.
+	\end{split}
+\end{align}
+Following the same steps that yielded~\eqref{eq:finalSM_PNLMS_2}, it is possible to describe the update equation in the unsupervised period as
+\begin{align}
+	\wbf[k+1] &= \wbf[k]+ \mu_\mathrm{b}[k]\frac{\Gbf[k]\xbf_N[k]}{\xbf_N^H[k]\Gbf[k]\xbf_N[k]}e_\mathrm{b}^*[k],
+\end{align}
+with
+\begin{align}
+	\mu_\mathrm{b}[k] = \begin{cases}
+	         	1 - \frac{\bar{\gamma}}{\Vert e_\mathrm{b}[k]\Vert_\infty}, \!\!\!\!&\mathrm{if\;} \Vert e_\mathrm{b}[k]\Vert_\infty > \bar{\gamma},\\
+			0, & \mathrm{otherwise}.
+	         \end{cases}
+\end{align}
+
+
+% \section{Volterra Semi-blind M-BEACON}
+% \label{app:SB_BEACON}
+% 
+% \begin{align}
+% \begin{split}
+% 	\wbf[k] = &\mathop{\arg\min.}\limits_{\wbf} \left(\sum_{i = 1}^k \lambda^{k-i}[k] \vert d[i] - \wbf^H\xbf[i]\vert^2\right) \\
+% 	&\mathrm{subject\;\;to:\;}  \Vert d[k] - \wbf^H\xbf[k]\vert^2 -\bar{\gamma}^2\Vert_\infty.
+% \end{split}
+% \end{align}

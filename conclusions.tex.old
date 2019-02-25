@@ -1,0 +1,18 @@
+\chapter{Conclusions and Future Works}
+\label{chap:conclusions}
+
+\section{Concluding Remarks}
+This work proposed data-selective techniques to be employed in a large range of nonlinear systems, whose main application is in visible light communication. One of the most popular technique to cope with the nonlinearities inherent to VLC systems is the Volterra series. Nonetheless, due to the large number of parameters to be updated in an adaptive filtering context, its use yields a high computational complexity. Therefore, by using the set-membership framework, this work proposed the use of Volterra filters with data-selective techniques, which select only data that brings innovation to the system, avoiding unnecessary updates, thereby, drastically reducing the computational burden due to Volterra series. In addition, by exploring the structure of such series, this work also proposed a technique which employs the combination of different data-selective-based adaptive filters in order to reduce even more the computational complexity. Furthermore, due to the large number of parameters associated with Volterra series, the amount of data used to train the adaptive filters may also be large. Then, this dissertation proposed the use of data-selective semi-blind techniques, which reduces both computational complexity and amount of training data. 
+
+Due to the lack of a practical tool for the performance assessment of the proposed data-selective techniques in the literature, it was also proposed a computational platform for VLC, which allows the analysis of BER under different modulation schemes or SNR levels.
+
+Results showed that the proposed techniques are able to provide low levels of MSE and BER in both feedforward and DFE schemes, considering a generic nonlinear systems, as well as in a specific VLC system, while drastically reducing the computational burden due to Volterra series. In addition, considering semi-blind methods, a reasonable performance in terms of MSE and BER was achieved, even using a reduced amount of training data, yet reducing the computational complexity.
+
+It is worth mentioning that the implementation of the proposed techniques of this work can be found at~\cite{codesGit_2}.
+
+
+\section{Research Directions}
+
+As future works, the proposed techniques should be evaluated in a real scenario, including an experimental VLC system, so as to analyze the fidelity of the models of the proposed simulator. Furthermore, a deeper analysis regarding the convergence aspects of the algorithms based on different filters should be performed. Moreover, other approaches to reduce the computational complexity of Volterra series, e.g., sparse and tensor analyses, should also be investigated. 
+
+Considering the developed VLC simulator, other features, such as a model for non-line-of-sight channels, multiple LEDs and photodiodes, and other types of such devices should be incorporated to this platform, which would allow for the performance evaluation of MIMO systems. In addition, schemes that consider a nearly constant average optical power and the mitigation of flicker effects should be studied. Furthermore, techniques to address the transmission over low SNR should also be considered as future work.

@@ -1,0 +1,473 @@
+\chapter{Results and Discussions}
+\label{chap:results}
+
+
+This chapter assesses the performance of the proposed data-selective techniques of Chapters~\ref{chap:Volterra_AF} and~\ref{chap:dt_and_sb} considering the equalization of the VLC transceiver, whose main elements were first introduced in Chapter~\ref{chap:compVLC}, and digitally modeled in Chapter~\ref{chap:vlc_sim}. Throughout this chapter, the methodology and figures of merit regarding the simulations are presented, as well as their setup, describing the parameters of the VLC simulator and MSE and BER simulations. At the end of this chapter, an outline concerning the results is presented.
+
+
+
+\section{Performance Evaluation}
+\label{sec:resultsFinal}
+This section evaluates the performance of the proposed data-selective techniques described in Chapters~\ref{chap:Volterra_AF} and~\ref{chap:dt_and_sb}.  are described in Table~\ref{tab:descript_alg}. First, the performance of the supervised filters, i.e., the filters which are continually trained using a pilot sequence, is assessed. After that, the results of semi-blind algorithms are described. It is worth mentioning that the results must be properly analyzed according to the following perspective: there is a trade-off between computational effort, amount of pilot sequence, and performance, which depends on the application. For instance, if an adaptive filter is deployed in an embedded system, the computational complexity may be the main concern, while in a system where the bandwidth is scarce, it is interesting to allocate less data to train an adaptive filter.
+
+\begin{table}[h!]
+\centering
+\caption{Description of the proposed algorithms and sections in which they were presented.}
+\label{tab:descript_alg}
+\begin{tabular}{l|l|}
+\cline{2-2}
+                                    & \multicolumn{1}{c|}{Description}\\ \hline
+\multicolumn{1}{|l|}{VSM-PNLMS}     & Volterra set-membership PNLMS,~\ref{subsec:SM-PNLMS}                             \\ 
+\multicolumn{1}{|l|}{VM-BEACON}     & Volterra modified BEACON,~\ref{subsec:BEACON}                             \\ 
+\multicolumn{1}{|l|}{VSBSM-PNLMS}   & Volterra semi-blind set-membership PNLMS,~\ref{subsec:SBSM-PNLMS}                             \\ 
+\multicolumn{1}{|l|}{VSBM-BEACON}   & Volterra semi-blind modified BEACON,~\ref{subsec:SB-Modified BEACON}                             \\ 
+\multicolumn{1}{|l|}{VDTSM-PNLMS}   & Volterra double-threshold set-membership PNLMS,~\ref{sec:DT}                             \\ 
+\multicolumn{1}{|l|}{VSBDTSM-PNLMS} & Volterra semi-blind double-threshold set-membership PNLMS,~\ref{sec:DT+SB}                        \\ \hline     
+\end{tabular}
+\end{table}
+
+\subsection{Simulation Methodology and Figures of Merit}
+\label{subsec:methodologyFinal}
+The simulation methodology follows the ones presented in Subsection~\ref{subsec:methodology} and~\ref{subsec:methodology2}. In this chapter, the proposed methods are also evaluated under different values of modulation indexes (MIs). As indicated in Chapter~\ref{chap:vlc_sim}, the modulation index controls the signal excursion over the {$I$\=/$V$} curve of the LED, which means that a higher MI yields a higher nonlinearity level on the VLC transceiver. Thus, by varying MI allows for the evaluation of the proposed techniques under distinct nonlinear scenarios. With respect to the figures of merit, they are identical to the ones described in Subsection~\ref{subsec:methodology2}.
+
+\subsection{Simulation Setup}
+The simulation setup of this chapter is organized as follows:
+
+\begin{itemize}
+ \item VLC simulator's setup: The DC bias voltage $V_{\mathrm{DC}}$ in order to ensure the transmitted signals are nonnegative was 3.25 V. This value was also chosen so as to place the operational point around the middle of the linear part of the LED's {$I$\=/$V$} curve. It was adopted a low cost pc-LED with half-power angle of $\Phi_{1/2} = 15^{\circ}$ whose datasheet can be found at~\cite{LEDDatasheet}. The distance between LED and photodiode was 10~cm, which were treated as perfectly aligned, leading to $\phi = \theta = 0^{\circ}$. Regarding the photodiode parameters, the responsivity, area, and FOV were set as $R = 0.5$, $A = 1$~cm, and FOV = 25$^\circ$, respectively. The knee-factor that controls the nonlinearity level in the electrical-to-optical conversion (see~\eqref{eq:Popt}) was $k = 2$, which induces a high degree of nonlinearity in this process.
+ 
+ \item Equalization setup: during the training of the adaptive filters, it was used 1000 independent runs, a signal-to-noise ratio~(SNR) of 30~dB, and $4$-PAM symbols as input signals with a bandwidth of 2~MHz. Regarding proportionate algorithms, $\kappa$ was set to 0.5, with $\kappa_1 = \kappa_2 = \kappa$. Considering the techniques presented in Chapter~\ref{chap:Volterra_AF}, the error threshold $\bar{\gamma}$ was set to 0.28, while for the algorithms described in Chapter~\ref{chap:dt_and_sb}, the error thresholds were chosen as $\bar{\gamma}_1 = \bar{\gamma}$ and with $\bar{\gamma}_2$ varying from $\bar{\gamma}_2= \bar{\gamma}_1$ to $\bar{\gamma}_2 = 4\bar{\gamma}_1$ using an interval of 0.5. In addition, the combination parameter $\sigma$ was chosen as 0.5. With respect to semi-blind algorithms, the threshold employed to indicate the unsupervised period start was set as $\eta \in \{0.1, 0.2, 0.3\}$. The second-order Volterra series was used in the input of the adaptive filters, whereas their memory-sizes were set to $M = 8$, $M_{\mathrm{FF}} = 8$ and $M_{\mathrm{FB}} = 0$, in the cases of feedforward and DFE equalization, respectively. Considering the DFE, as indicated by the results of Chapter~\ref{chap:Volterra_AF}, the Volterra series was applied only to the feedforward filter. In addition, the delay in samples imposed during the training of the adaptive filters was $M + 2$ or ($M_{\mathrm{FF}}$ in the DFE case). For BER simulations, 10000 symbols were transmitted in each of the 1000 Monte Carlo loops.
+\end{itemize}
+
+
+\subsection{Results of VSM-PNLMS and VM-BEACON Algorithms}
+
+Considering different values of MI, Figures~\ref{fig:mseEqST_VLC}(a) and~\ref{fig:mseEqST_VLC}(b) show the MSE and BER results, respectively, in the feedforward equalization scheme. Table~\ref{tab:convspeedST} displays the convergence speed, which was evaluated using a procedure similar to the one presented in Subsection~\ref{subsec:ressys}, but here using the time average MSE from the 4000$^{\mathrm{th}}$ up to the 5000$^{\mathrm{th}}$ iteration, and shows the update rates of the adaptive filters for both VSM-PNLMS and VM-BEACON techniques. Analogously, Figures~\ref{fig:mseEqST_DFE_VLC}(a) and~\ref{fig:mseEqST_DFE_VLC}(b), and Table~\ref{tab:convspeedST_DFE} describe the results for a DFE equalization scenario.
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		\includegraphics[width=0.52\textwidth]{VLC/mseST9.eps} & \hspace*{-0.5cm}\includegraphics[width=0.51\textwidth]{VLC/berEqST3.eps}\\
+		\small{(a)} & \small{(b)}
+	\end{tabular}
+	\caption{MSE (a) and BER (b) in the feedforward case for VSM-PNLMS and VM-BEACON.}
+	\label{fig:mseEqST_VLC}
+\end{figure}
+
+
+\begin{table}[h!]
+\centering
+\caption{Iterations until steady state / Average update rates using feedforward equalization for VSM-PNLMS and VM-BEACON.}
+\label{tab:convspeedST}
+\begin{tabular}{c|c|c|}
+\cline{2-3}
+						& VSM-PNLMS  & VM-BEACON         \\ \hline
+\multicolumn{1}{|c|}{MI = 0.05}       &  717 / 12.44\%     & 717 / 14.15\%            \\ 
+\multicolumn{1}{|c|}{MI = 0.075} 	& 450 / 28.44\%      & 219 / 33.78\%            \\ 
+\multicolumn{1}{|c|}{MI = 0.1} 	& 332 / 44.00\%      & 178 / 50.62\%            \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		\includegraphics[width=0.52\textwidth]{VLC/mseST_DFE_FF9.eps} &\hspace*{-0.5cm} \includegraphics[width=0.51\textwidth]{VLC/berEqST_DFE_FF3.eps}\\
+		\small{(a)} & \small{(b)}
+	\end{tabular}
+	\caption{MSE (a) and BER (b) for $M_{\mathrm{FF}}=8$ in the DFE case for VSM-PNLMS and VM-BEACON.}
+	\label{fig:mseEqST_DFE_VLC}
+\end{figure}
+
+\begin{table}[htb]
+\centering
+\caption{Iterations until steady state / Average update rates using DFE equalization for VSM-PNLMS and VM-BEACON.}
+\label{tab:convspeedST_DFE}
+\begin{tabular}{c|c|c|}
+\cline{2-3}
+						& VSM-PNLMS  & VM-BEACON         \\ \hline
+\multicolumn{1}{|c|}{MI = 0.05}       &  771 / 13.15\%     & 1448 / 12.32\%            \\ 
+\multicolumn{1}{|c|}{MI = 0.075} 	& 512 / 28.74\%      & 438 / 29.04\%            \\ 
+\multicolumn{1}{|c|}{MI = 0.1} 	& 376 / 43.98\%      & 244 / 47.69\%            \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Conclusions of VSM-PNLMS and VM-BEACON Simulations}
+Considering both feedforward and DFE equalization schemes, as the modulation index increases, higher is the steady-state MSE, which is corroborated by Figures~\ref{fig:mseEqST_VLC}(a) and~\ref{fig:mseEqST_DFE_VLC}(a). In the same manner, the resulting BER for any SNR level grows as MI rises, as illustrated by Figures~\ref{fig:mseEqST_VLC}(b) and~\ref{fig:mseEqST_DFE_VLC}(b). Comparing the performance of each technique, the steady-state MSE level of VSM-PNLMS is slightly lower than VM-BEACON's for the three MI levels employed, except for MI = 0.05 in the DFE case. Moreover, the BER levels for these techniques are very similar. For MI = 0.1, which leads to a great level of nonlinearity in the VLC transceiver, both techniques provided a BER of approximately $10^{-4}$. Regarding the convergence speed, both methods present similar results, except for the DFE case for MI = 0.05. With respect to the update rates, VSM-PNLMS's are lower than VM-BEACON's, even with the latter presenting a computational complexity per update quadratic in relation to the filter length. As indicated in Table~\ref{tab:convspeedST}, VSM-PNLMS updated in 44.00\% of the iterations, while VM-BEACON updated in 50.62\% for MI = 0.1. Therefore, the proposed techniques reduced drastically the computational burden of Volterra series, besides presenting great equalization results considering the VLC simulator developed in this work.
+
+
+\subsection{Results of VDTSM-PNLMS Algorithm}
+This subsection presents the equalization results for the Volterra double-threshold SM-PNLMS technique. Figures~\ref{fig:mseEqDT_VLC}(a--c) illustrate the MSE results using different values of $\bar{\gamma}_2$ and modulation indexes in the feedforward equalization branch, while Figure~\ref{fig:BEREqDT_VLC}(a--c) describe the corresponding BERs. Table~\ref{tab:convspeedDT_VLC} displays the convergence speed and updates rates $\nu_1$ and $\nu_2$ for each error threshold $\bar{\gamma}_2$ and MI, while Figure~\ref{fig:TUE_DT_DFE_VLC} illustrates the corresponding NUE. In the DFE case, the results are described in Figures~\ref{fig:mseEqDT_DFE_VLC},~\ref{fig:BEREqDT_DFE_VLC},~\ref{fig:TUE_DT_DFE_VLC} (MSE, BER, NUE, respectively), and Table~\ref{tab:convspeedDT_DFE_VLC}.
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseDT1.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/mseDT2.eps} & \hspace*{-0.5cm}\includegraphics[width=0.33\textwidth]{VLC/mseDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different values of $\bar{\gamma}_2$ and MI in feedforward case for VDTSM-PNLMS.}
+	\label{fig:mseEqDT_VLC}
+\end{figure}
+
+
+\begin{table}[htb]
+\centering
+\caption{Iterations until steady state / Average update rates $\nu_1$ / Average update rates $\nu_2$ using feedforward equalization for VDTSM-PNLMS.}
+\label{tab:convspeedDT_VLC}
+\begin{tabular}{c|c|c|c|}
+\cline{2-4}
+								& MI = 0.05  & MI = 0.075  & MI = 0.1          \\ \hline
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = \bar{\gamma}_1$}       &  1060 / 0 / 13.82 \%     & 459 / 0 / 29.84  \%    & 322 / 0 / 45.55\%     \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 1.5\bar{\gamma}_1$} 	& 1912 / 22.69 / 6.42 \%      & 1460 / 21.76 / 14.41\%   &  587 / 20.46 / 26.69\%   \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 2\bar{\gamma}_1$} 	& 1663 / 43.64 / 3.82\%      & 1945 / 48.26 / 7.85 \%  &   1315 /41.12 / 15.64\%  \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 2.5\bar{\gamma}_1$} 	& 1590 / 54.10 / 2.50 \%      & 2026 / 63.67 / 4.93 \%  &  1708 / 59.40 / 9.21\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 3\bar{\gamma}_1$} 	& 1397 / 59.78 / 1.58 \%      & 1930 / 70.42 / 3.39\%  &  2116 / 68.94 / 6.17\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 3.5\bar{\gamma}_1$} 	& 705 / 62.70 / 0.93 \%      & 1344 / 73.62 / 2.32\%  &  2115 / 74.20 / 4.41\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 4\bar{\gamma}_1$} 	& 260 / 64.25 / 0.54 \%      & 1410 / 75.48 / 1.53\%  &  1897 / 77.45 / 3.15\% \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berEqDT1.eps} &\hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqDT2.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{BER for different values of $\bar{\gamma}_2$ and MI in feedforward case for VDTSM-PNLMS.}
+	\label{fig:BEREqDT_VLC}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/TUEEqDT1.eps} &\hspace*{-0.45cm} \includegraphics[width=0.33\textwidth]{VLC/TUEEqDT2.eps} & \hspace*{-0.35cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{NUE for different values of $\bar{\gamma}_2$ and MI in feedforward case for VDTSM-PNLMS. The red line indicates the NUE in the VSM-PNLMS case.}
+	\label{fig:TUE_DT_VLC}
+\end{figure}
+
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseDT_DFE_FF1.eps} & \hspace*{-0.5cm}\includegraphics[width=0.33\textwidth]{VLC/mseDT_DFE_FF2.eps} &\hspace*{-0.5cm}\includegraphics[width=0.33\textwidth]{VLC/mseDT_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different values of $\bar{\gamma}_2$ and MI in DFE case for VDTSM-PNLMS.}
+	\label{fig:mseEqDT_DFE_VLC}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berEqDT_DFE1.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqDT_DFE2.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/berEqDT_DFE3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{BER for different values of $\bar{\gamma}_2$ and MI in DFE case for VDTSM-PNLMS.}
+	\label{fig:BEREqDT_DFE_VLC}
+\end{figure}
+
+
+
+
+\begin{table}[htb]
+\centering
+\caption{Iterations until steady state / Average update rates $\nu_1$ / Average update rates $\nu_2$ using DFE equalization for VDTSM-PNLMS.}
+\label{tab:convspeedDT_DFE_VLC}
+\begin{tabular}{c|c|c|c|}
+\cline{2-4}
+								& MI = 0.05  & MI = 0.075  & MI = 0.1          \\ \hline
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = \bar{\gamma}_1$}       &  1060 / 0 / 14.13 \%     & 459 / 0 / 29.28  \%    & 322 / 0 / 45.60\%     \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 1.5\bar{\gamma}_1$} 	& 1912 / 22.18 / 6.83 \%      & 1460 / 21.21 / 13.99\%   &  587 / 20.30 / 26.49\%   \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 2\bar{\gamma}_1$} 	& 1663 / 41.53 / 4.09\%      & 1945 / 43.15 / 8.27 \%  &   1315 /37.42 / 15.54\%  \\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 2.5\bar{\gamma}_1$} 	& 1590 / 51.42 / 2.65 \%      & 2026 / 57.86 / 5.45 \%  &  1708 / 51.49 / 10.12\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 3\bar{\gamma}_1$} 	& 1397 / 57.01 / 1.71 \%      & 1930 / 65.16 / 3.74\%  &  2116 / 61.60 / 7.19\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 3.5\bar{\gamma}_1$} 	& 705 / 60.72 / 1.10 \%      & 1344 / 69.21 / 2.65\%  &  2115 / 68.28 / 5.25\%\\ 
+\multicolumn{1}{|c|}{$\bar{\gamma}_2 = 4\bar{\gamma}_1$} 	& 260 / 62.96 / 0.64 \%      & 1410 / 71.67 / 1.79\%  &  1897 / 72.66 / 3.82\% \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.38\textwidth]{VLC/TUEEqDT_DFE_FF1.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/TUEEqDT_DFE_FF2.eps} & \hspace*{-0.40cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqDT_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{NUE for different values of $\bar{\gamma}_2$ and MI in DFE case for VDTSM-PNLMS. The red line indicates the NUE in the VSM-PNLMS case.}
+	\label{fig:TUE_DT_DFE_VLC}
+\end{figure}
+
+
+
+\subsection{Conclusions of VDTSM-PNLMS Simulations}
+
+Considering the two equalization techniques, the error threshold that leads the lowest MSE level for the three employed MIs was $\bar{\gamma}_2 = \bar{\gamma}_1$. As shown in Figures~\ref{fig:BEREqDT_VLC} and~\ref{fig:BEREqDT_DFE_VLC}, a perfect equalization was achieved for all used values of $\bar{\gamma}_2$ and for SNR = 30~dB. Considering MI = 0.1, $\bar{\gamma}_2 = \{2.5, 3\} \times \bar{\gamma}_1$, were the values of error threshold which led to the lowest BER levels in both equalization scenarios, viz.: $5.1\times 10^{-5}$ and $1.1\times 10^{-5}$, in the feedforward case, and $9.3\times 10^{-5}$ and $9.8\times 10^{-5}$ in the DFE case. Regarding the convergence speed and update rates for these error thresholds, one can infer from Figures~\ref{fig:TUE_DT_VLC} and~\ref{fig:TUE_DT_DFE_VLC} that the computational complexity is lower than in the VSM-PNLMS case. In fact, for $\bar{\gamma}_2 = 3\bar{\gamma}_1$, the NUE considering both equalization schemes represent only 40.14\% and 42.57\% of the NUE of VSM-PNLMS, even with a lower BER level, reducing even more the computational burden due to Volterra series. Moreover, except for $\bar{\gamma}_2 = \bar{\gamma}_1$, the resulting computational complexity is lower for the remaining error threshold, with a performance in terms of BER similar to VSM-PNLMS algorithm.
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Results of VSBSM-PNLMS and VSBM-BEACON Algorithms}
+\label{subsec:semi-blind_VLC}
+The performance of the semi-blind techniques VSBSM-PNLMS and VSBM-BEACON is assessed in this subsection. Considering feedforward equalization, the MSE results are displayed in Figure~\ref{fig:mseEqSB_VLC} for the three modulation indexes employed in the simulations. Regarding the performance in terms of BER, Figure~\ref{fig:BEREqSB_VLC} illustrates it for each value of MI. With respect to the \textit{Blind iteration}, i.e., the mean iteration in which the unsupervised period starts during training, and the update rates during both supervised and unsupervised periods, such results are shown in Table~\ref{tab:resultsSB_VLC}. All of these aforementioned results are displayed for the DFE case in Figures~\ref{fig:mseEqSB_DFE_VLC},~\ref{fig:BEREqSB_DFE_VLC} (MSE and BER), and Table~\ref{tab:resultsSB_DFE_VLC}.
+
+\begin{figure}[h!] 
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseSB1.eps} & \hspace*{-0.5cm}\includegraphics[width=0.33\textwidth]{VLC/mseSB2.eps} & \hspace*{-0.5cm}\includegraphics[width=0.33\textwidth]{VLC/mseSB3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different values of MI in feedforward case for VSBSM-PNLMS and VSBM-BEACON.}
+	\label{fig:mseEqSB_VLC}
+\end{figure}
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h!]
+\centering
+\caption{Average number of iterations until unsupervised period and update rates for VSBSM-PNLMS / VSBM-BEACON in the feedforward case.}
+\label{tab:resultsSB_VLC}
+\begin{tabular}{cc|c|c|c|c|}
+\cline{3-6}
+                                                  &              & \begin{tabular}[c]{@{}c@{}}\textit{Blind} \\ \textit{iteration}\end{tabular} & $\nu_{\mathrm{SP}}$ & $\nu_{\mathrm{BP}}$ & \begin{tabular}[c]{@{}c@{}}Overall update\\  rate\end{tabular} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.05}}  & $\eta = 0.1$ & 337 / 323                                                  & 50.87 / 53.76\%     & 10.25 / 12.07\%     & 12.50 / 14.27\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 185 / 207                                                  & 67.18 / 70.71\%      & 11.87 / 13.28\%     & 13.24 / 14.95\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 165 / 178                                                  & 69.60 / 75.94\%     & 12.34 / 19.76\%     & 13.52 / 21.07\%                                                \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.075}} & $\eta = 0.1$ & 429 / 419                                                  & 53.48 / 53.47\%     & 27.83 / 40.45\%     & 29.73 / 41.39\%                                                 \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 217 / 219                                                  & 70.27 / 72.00\%     & 29.34 / 42.40\%     & 30.61 / 43.33\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 170 / 184                                                  & 74.95 / 77.64\%     & 34.09 / 48.04\%     & 34.98 / 48.76\%                                                \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.1}}   & $\eta = 0.1$ & 886 / 1827                                                 & 52.16 / 54.91\%     & 51.88 / 64.74\%     & 51.93 / 61.23\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 256 / 241                                                  & 71.98 / 73.23\%     & 54.37 / 69.95\%      & 55.06 / 70.07\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 185 / 195                                                  & 78.25 / 78.65\%     & 58.18 / 70.43\%     & 58.67 / 70.65\%                                                \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berEqSB1.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqSB2.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqSB3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{BER for different values of MI in feedforward case for VSBSM-PNLMS and VSBM-BEACON.}
+	\label{fig:BEREqSB_VLC}
+\end{figure}
+
+
+
+\begin{figure}[h!] 
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseSB_DFE_FF1.eps} &\hspace*{-0.55cm} \includegraphics[width=0.33\textwidth]{VLC/mseSB_DFE_FF2.eps} &\hspace*{-0.55 cm} \includegraphics[width=0.33\textwidth]{VLC/mseSB_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different values of MI in DFE case for VSBSM-PNLMS and VSBM-BEACON.}
+	\label{fig:mseEqSB_DFE_VLC}
+\end{figure}
+
+\begin{table}[h!]
+\centering
+\caption{Average number of iterations until unsupervised period and update rates for VSBSM-PNLMS / VSBM-BEACON in the DFE case.}
+\label{tab:resultsSB_DFE_VLC}
+\begin{tabular}{cc|c|c|c|c|}
+\cline{3-6}
+                                                  &              & \begin{tabular}[c]{@{}c@{}}\textit{Blind} \\ \textit{iteration}\end{tabular} & $\nu_{\mathrm{SP}}$ & $\nu_{\mathrm{BP}}$ & \begin{tabular}[c]{@{}c@{}}Overall update\\  rate\end{tabular} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.05}}  & $\eta = 0.1$ & 353 / 327                                                  & 50.91 / 53.81\%     & 10.84 / 10.03\%     & 13.16 / 12.33\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 187 / 209                                                  & 67.41 / 70.72\%      & 12.29 / 11.50\%     & 13.64 / 13.21\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 166 / 180                                                  & 70.05 / 76.24\%     & 12.94 / 17.59\%     & 14.11 / 18.95\%                                                \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.075}} & $\eta = 0.1$ & 455 / 420                                                  & 53.38 / 53.72\%     & 27.94 / 28.19\%     & 29.93 / 30.01\%                                                 \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 223 / 222                                                  & 70.75 / 72.14\%     & 29.78 / 31.29\%     & 31.09 / 32.58\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 171 / 187                                                  & 75.74 / 77.53\%     & 34.98 / 39.44\%     & 35.86 / 40.38\%                                                \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{MI = 0.1}}   & $\eta = 0.1$ & 941 / 1397                                                 & 52.47 / 52.45\%     & 51.81 / 65.65\%     & 51.93 / 62.13\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.2$ & 268 / 245                                                   & 72.44 / 73.35\%     & 54.77 / 69.05\%      & 55.49 / 69.20\%                                                \\  
+\multicolumn{1}{|c|}{}                            & $\eta = 0.3$ & 188 / 197                                                  & 78.66 / 78.82\%     & 58.83 / 69.98\%     & 59.32 / 70.22\%                                                \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berEqSB_DFE_FF1.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqSB_DFE_FF2.eps} & \hspace*{-0.45cm}\includegraphics[width=0.33\textwidth]{VLC/berEqSB_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{BER for different values of MI in DFE case for VSBSM-PNLMS and VSBM-BEACON.}
+	\label{fig:BEREqSB_DFE_VLC}
+\end{figure}
+
+
+\subsection{Conclusions of VSBSM-PNLMS and VSBM-BEACON Simulations}
+Despite similar results with respect to MSE, feedforward and DFE equalization schemes presented distinct BER results for MI = 0.05 and MI = 0.075. Regarding feedforward equalization, for instance, for an SNR = 30~dB and MI = 0.05, the BER for both algorithms was zero, except for VSBM-BEACON when using $\eta = 0.3$, while in the DFE case it was in the order of $10^{-4}$. As shown in Figures~\ref{fig:BEREqSB_VLC}(c) and~\ref{fig:BEREqSB_DFE_VLC}(c), none of the techniques presented satisfactory results for $\eta = 0.3$, whose main reason for this was that the output of the adaptive filters playing the role as reference signal was not able to keep with the learning process due to the high level of nonlinearity of the VLC transceiver. Nonetheless, for MI = 0.075, the effect of reaching a low steady-state MSE level, and this level monotonically increases, only occurred in the feedforward case for the VSBM-BEACON, which is illustrated in Figure~\ref{fig:mseEqSB_VLC}(b), but not in the DFE fashion, as shown in Figure~\ref{fig:mseEqSB_DFE_VLC}(b). Considering feedforward equalization, and over again for MI = 0.075, VSBSM-PNLMS yielded comparable BER levels, if compared to VSM-PNLMS', but using only a fraction of reference signal, more specifically, 429 symbols in average, as described in Table~\ref{tab:resultsSB_VLC}, which represents a huge saving of data and yet reducing the computational complexity due to Volterra series.
+
+
+
+%%%%%%%%%%%%%
+
+\subsection{Results of VSBDTSM-PNLMS Algorithm}
+
+The following results explore the impact of the thresholds $\eta$ and $\bar{\gamma}_2$ in both feedforward and DFE equalization cases when using the Volterra semi-blind double-threshold SM-PNLMS algorithm for the three values of modulation index. Figures~\ref{fig:mseSSEqSBDT_VLC}(a--c) and~\ref{fig:mseSSEqSBDT_DFE_VLC}(a--c) show the average MSE from the 4000$^{\mathrm{th}}$ up to the 5000$^{\mathrm{th}}$ iteration for diverse values of $\eta$ and $\bar{\gamma}_2$, and using feedforward and DFE equalizations schemes, respectively. As indicated by these results, $\eta = 0.1$ leads to lower average MSE levels, hence, the forthcoming results consider this value. Based on the previous results and the results for this technique one can verify that, by increasing $\eta$, the resulting increase in MSE and BER is not proportional to the reduction of symbols employed during the training of the adaptive filters.
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseSBDT_color1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/mseSBDT_color2.eps} & \hspace*{-0.4cm}\includegraphics[width=0.373\textwidth]{VLC/mseSBDT_color3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{Steady-state MSE for different values of $\bar{\gamma}_2$ and $\eta = 0.1$ in the feedforward case for VSBDTSM-PNLMS.}
+	\label{fig:mseSSEqSBDT_VLC}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseSBDT_color_DFE_FF1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/mseSBDT_color_DFE_FF2.eps} & \hspace*{-0.4cm}\includegraphics[width=0.373\textwidth]{VLC/mseSBDT_color_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{Steady-state MSE for different values of $\bar{\gamma}_2$ and $\eta = 0.1$ in the DFE case for VSBDTSM-PNLMS.}
+	\label{fig:mseSSEqSBDT_DFE_VLC}
+\end{figure}
+
+
+Considering the feedforward equalizer, the MSE and BER results are displayed in Figures~\ref{fig:mseEqSBDT_VLC} and~\ref{fig:BER_SBDT_VLC}, while the total updated elements is illustrated in Figure~\ref{fig:TUE_SBDT_VLC}. Regarding the \textit{Blind iteration} and update rates of the filters $\wbf_1[k]$ and $\wbf_2[k]$, Table~\ref{tab:resultsSBDT_2} exhibits these results. Unlike in the results described in Subsection~\ref{subsec:semi-blind_VLC}, Table~\ref{tab:resultsSBDT_2} does not show the update rates during the supervised and unsupervised periods, since their purpose is to indicate if the update rate during unsupervised period is much higher than in the supervised period, i.e., if the learning process continues in its natural pace. 
+
+Analogously, the MSE and BER results of VSBDTSM-PNLMS for the DFE case are shown in Figures~\ref{fig:mseEqSBDT_DFE_VLC} and~\ref{fig:BER_SBDT_DFE_VLC}, whereas Table~\ref{tab:resultsSBDT_2_DFE} and Figure~\ref{fig:TUE_SBDT_DFE_VLC} describe the \textit{Blind iteration} and updates rates, and NUE, respectively. 
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/mseSBDT1.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/mseSBDT2.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/mseSBDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different thresholds $\bar{\gamma}_2$ and MIs in the feedforward case for VSBDTSM-PNLMS.}
+	\label{fig:mseEqSBDT_VLC}
+\end{figure}
+
+
+
+\begin{table}[htb]
+\centering
+\caption{Average number of iterations until unsupervised period / Average update rates $\nu_1$ / Average update rates $\nu_2$ using $\eta = 0.1$ for VSBDTSM-PNLMS in the feedforward case.}
+\label{tab:resultsSBDT_2}
+\begin{tabular}{c|c|c|c|}
+\cline{2-4}
+\multicolumn{1}{l|}{}                          & MI = 0.05             & MI = 0.075        & MI = 0.1          \\ \hline
+\multicolumn{1}{|c|}{$\gamma_2 = \gamma_1$}    & 378 / 0 / 13.84\%     & 496 / 0 / 31.96\%     & 1087 / 0 / 54.92\%     \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 1.5\gamma_1$} & 1187 / 22.69 / 6.42\%  & 1244 / 21.80 / 14.73\% & 1776 / 19.54 / 31.64\% \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 2\gamma_1$}   & 2122 / 43.63 / 3.82\% & 3283 / 48.29 / 7.88\%  & 3736 / 41.13 / 15.81\% \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 2.5\gamma_1$} & 2552 / 54.11 / 2.51\% & 1953 / 63.82 / 4.94\%  & -- / 59.36 / 9.26\%  \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 3\gamma_1$}   & 2206 / 59.78 / 1.58\% & 3178 / 70.39 / 3.38\%  & -- / 68.86 / 6.11\%  \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 3.5\gamma_1$} & 3209 / 62.71 / 0.93\% & -- / 73.68 / 2.32\%  & -- / 74.12 / 4.40\%  \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 4\gamma_1$}   & -- / 64.25 / 0.54\% &  -- / 75.65 / 1.53\%  & -- / 77.33 / 3.15\%  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berSBDT1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/berSBDT2.eps} & \hspace*{-0.35cm}\includegraphics[width=0.33\textwidth]{VLC/berSBDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{BER for different thresholds $\bar{\gamma}_2$ and MIs in the feedforward case for VSBDTSM-PNLMS.}
+	\label{fig:BER_SBDT_VLC}
+\end{figure}
+
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/TUEEqSBDT1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqSBDT2.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqSBDT3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{NUE for different thresholds $\bar{\gamma}_2$ and MIs in the feedforward case for VSBDTSM-PNLMS. The red line indicates the NUE in the VSBSM-PNLMS case.}
+	\label{fig:TUE_SBDT_VLC}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.38\textwidth]{VLC/mseEqSBDT_DFE_FF1.eps} \hspace*{-0.5cm}& \includegraphics[width=0.33\textwidth]{VLC/mseEqSBDT_DFE_FF2.eps} &\hspace*{-0.5cm} \includegraphics[width=0.33\textwidth]{VLC/mseEqSBDT_DFE_FF3.eps} \\
+		\small{(a) MI = 0.05.} & \small{(b) MI = 0.075.}  & \small{(c) MI = 0.1.}
+	\end{tabular}
+	\caption{MSE for different thresholds $\bar{\gamma}_2$ and MIs in the DFE case for VSBDTSM-PNLMS.}
+	\label{fig:mseEqSBDT_DFE_VLC}
+\end{figure}
+
+
+
+\begin{table}[htb]
+\centering
+\caption{Average number of iterations until unsupervised period / Average update rates $\nu_1$ / Average update rates $\nu_2$ using $\eta = 0.1$ for VSBDTSM-PNLMS in the DFE case.}
+\label{tab:resultsSBDT_2_DFE}
+\begin{tabular}{c|c|c|c|}
+\cline{2-4}
+\multicolumn{1}{l|}{}                          & MI = 0.05             & MI = 0.075        & MI = 0.1          \\ \hline
+\multicolumn{1}{|c|}{$\gamma_2 = \gamma_1$}    & 407 / 0 / 14.14\%     & 544 / 0 / 29.97\%     & 1228 / 0 / 52.09\%     \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 1.5\gamma_1$} & 1143 / 22.18 / 6.83\%  & 1181 / 21.27 / 14.07\% & 1895 / 19.71 / 29.76\% \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 2\gamma_1$}   & 2251 / 41.53 / 4.09\% & 3568 / 43.40 / 8.22\%  & 3544 / 37.20 / 15.85\% \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 2.5\gamma_1$} & 2444 / 51.43 / 2.65\% & 3157 / 57.74/ 5.44\%  &  4158 / 51.63 / 10.13\%  \\ 
+\multicolumn{1}{|c|}{$\gamma_2 = 3\gamma_1$}   & 3074 / 57.03 / 1.73\% & 1919 / 65.18 / 3.75\%  & -- / 61.57 / 7.18\%  \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 3.5\gamma_1$} & 2284 / 60.74 / 1.10\% & -- / 69.41 / 2.60\%  & -- / 68.41 / 5.25\%  \\  
+\multicolumn{1}{|c|}{$\gamma_2 = 4\gamma_1$}   & 3035 / 62.96 / 0.64\% & -- / 71.84 / 1.80\%  & -- / 72.81 / 3.81\%  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/berSBDT_DFE_FF1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/berSBDT_DFE_FF2.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/berSBDT_DFE_FF3.eps} \\
+		\small{(a)} & \small{(b)} & \small{(c)}
+	\end{tabular}
+	\caption{BER for different thresholds $\bar{\gamma}_2$ and MIs in the DFE case for VSBDTSM-PNLMS.}
+	\label{fig:BER_SBDT_DFE_VLC}
+\end{figure}
+
+
+
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\includegraphics[width=0.378\textwidth]{VLC/TUEEqSBDT_DFE_FF1.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqSBDT_DFE_FF2.eps} & \hspace*{-0.4cm}\includegraphics[width=0.33\textwidth]{VLC/TUEEqSBDT_DFE_FF3.eps} \\
+		\small{(a)} & \small{(b)} & \small{(c)}
+	\end{tabular}
+	\caption{NUE for different thresholds $\bar{\gamma}_2$ and MI in the DFE case for VSBDTSM-PNLMS. The red line indicates the NUE in the VSBSM-PNLMS case}
+	\label{fig:TUE_SBDT_DFE_VLC}
+\end{figure}
+
+
+
+
+\subsection{Conclusions of VSBDTSM-PNLMS Simulations}
+In general, feedforward equalization present better results in terms of BER than using DFE. For instance, if one considers MI = 0.05, in the feedforward case for all values of $\bar{\gamma}_2$ and SNR = 30~dB, no bit errors occurred, as described in Figure~\ref{fig:mseEqSBDT_VLC}(a). Besides, for MI = 0.1, which yields a severe level of nonlinearity, a BER of $9\times 10^{-6}$ was achieved for SNR = 30~dB by using $\bar{\gamma}_2 = 3\bar{\gamma}_1$ (see Figure~\ref{fig:mseEqSBDT_VLC}(c). Nonetheless, the unsupervised period could not be reached due to the high steady-state MSE level, as described in Table~\ref{tab:resultsSBDT_2}. Among the values of $\bar{\gamma}_2$ that could work in a semi-blind scheme, for $\bar{\gamma}_2 = 2\bar{\gamma}_1$ yielded a BER of $7.5\times 10^{-5}$, representing a huge improvement if compared to VSBSM-PNLMS results. Once again using MI = 0.1 and $\bar{\gamma}_2 = 2\bar{\gamma}_1$, one can observe in Figure~\ref{fig:TUE_SBDT_VLC}(c) that the VSBDTSM-PNLMS technique is much more efficient, in the computational complexity sense, than 
+VSBSM-PNLMS, since its NUE represents only 43.64\% of the latter technique, although using an amount of training data three times greater. 
+
+
+\subsection{Final Remarks}
+As indicated by the results of this chapter, it is possible to conclude that the proposed Volterra-based techniques are able to equalize the developed VLC transceiver considering distinct levels of nonlinearity. Due to the encouraging results presented here, these methods proved to be an interesting approach to reduce the computational burden yielded by Volterra series. Considering MI = 0.1, the lowest BER among all tested techniques was $7.5\times 10^{-5}$ obtained by VSBDTSM-PNLMS, with lower computational complexity, if compared with VSM-PNLMS and VSBSM-PNLMS. However, the \textit{Blind iteration} in this case was three times larger than the VSBSM-PNLMS'. As already mentioned, it is hard to state the best algorithm in global terms. For example, a technique may provide the lowest BER at the cost of using more data as reference signal, or higher computational complexity. Nevertheless, all techniques presented in this work represent good approaches to work as equalizers in a VLC system.

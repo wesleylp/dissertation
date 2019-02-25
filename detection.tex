@@ -1,0 +1,683 @@
+\chapter{Object Detection with Deep Learning}
+\label{chap:system}
+%
+In this Chapter, we discuss object detectors and make a brief comparison among them.
+Then, we go deeper into the method used to detect the mosquito breeding sites: the region-based convolutional neural network (RCNN),
+\abbrev{\id{R-CNN}R-CNN}{Region-Based Convolution Neural Network}
+particularly the Faster R-CNN.
+By the end of this chapter we hope the reader to have insights in object detection methods and understand how the region-based detectors work and how they evolved over time.
+
+\section{Introduction}
+Applications such as face recognition~\cite{taigman2014, schroff2015facenet, Passos2018face}, self-driving cars~\cite{Chen2015drive}, smart video surveillance~\cite{Afonso2018vdao}, among others, have been attracting lots of attention of the computer vision (CV) community.
+\abbrev{\id{CV}CV}{Computer Vision}
+These and other applications require systems that are capable of recognizing, classifying and localizing objects in image or videos.
+
+Image classification, object localization, and object detection are fundamental and challenging problems
+in CV.
+%
+In image classification, an algorithm assigns one (or more) label(s) (from a fixed predefined set of categories or classes) to an input image.
+Image classification has a wide variety of practical applications such as face recognition or even cancer diagnostic.
+%
+In object localization, we not only want to know what object is in the image but also where it appears on it.
+An algorithm assigns a class to the ``main'' object (one image may contain multiple objects) as well as indicates the position of the object in the image by, as an example, drawing a bounding box around it.
+%
+At last, object detection is the process of finding multiple instances of objects in images or videos instead of the ``main'' one only.
+One may interpret an object detector as a function $f: I\rightarrow\{k,\, p,\, b\}$ \ie an image $I$ receives labels $k$ from a set of predefined class labels, confidence scores $p$ and bounding boxes $b$.
+The bounding box $b = \{x, y, w, h\}$ corresponds to a detection at a position $(x,y)$, width $w$ and height $h$.
+% $\pbf = \{p_0, \cdots, p_{k}\}$ being the discrete probability distribution for each class $k$ and
+Typically, object detectors use features and learning algorithms to detect object instances.
+
+\subsection{Classical object detection}
+
+Classical object detectors use sliding windows to densely extract patches from the input image.
+These patches are warped to a fixed length (since many classifiers take fixed-size images only) and features are computed using, for example, scale-invariant feature transform
+(SIFT)~\cite{Lowe2004}
+\abbrev{\id{SIFT}SIFT}{Scale-Invariant Feature Transform}
+or
+histogram of oriented gradients (HOG)~\cite{dalal2005}.
+\abbrev{\id{HOG}HOG}{Histogram of Oriented Gradients}
+The classification, using methods like support vector machines (SVMs)~\cite{Boser1992},
+is performed in the feature space.
+% The features are then fed into classifiers like
+% support vector machines (SVMs)~\cite{Boser1992}.
+\abbrev{\id{SVM}SVM}{Support Vector Machines}
+This approach is (i) computationally expensive because features are computed for every image crop (and these crops highly overlap); and
+(ii) inaccurate, since sliding windows may not match the object size due to uncontrolled changes in scale, requiring multiple resolution windows.
+% the sliding windows maybe do not match the object size.
+
+\subsection{Deep learning for object detection}
+% https://towardsdatascience.com/deep-learning-for-object-detection-a-comprehensive-review-73930816d8d9
+% https://towardsdatascience.com/evolution-of-object-detection-and-localization-algorithms-e241021d8bad
+% data augmentation https://medium.com/paperspace/data-augmentation-for-object-detection-rethinking-image-transforms-for-bounding-boxes-fe229905a1c3
+
+State-of-the-art object detectors~\cite{Sermanet2014, Redmon2016, Ren2017fasterpami} are deep-learning-based~\cite{goodfellow2016}.
+They employ a type of deep neural network specially developed for CV applications: convolutional neural networks, also known as ConvNets or CNNs~\cite{LeCun1989}.
+The success of deep learning models is due to: (i) the availability of a large amount of data~\cite{Krizhevsky2012, Russakovsky2015};
+(ii) the increase in the available computing power, brought particularly by the development of powerful graphics processing units (GPUs) (along with GPU-accelerated libraries);
+\abbrev{\id{GPU}GPU}{Graphics Processing Unit}
+(iii) the development of several powerful optimization methods (\eg
+back-propagation;%~\cite{LeCun1989};
+weight initialization;%~\cite{He2015};
+stochastic optimization;%~\cite{Robbins1951};
+regularization; and %~\cite{Ioffe2015}; and
+new activation functions%~\cite{Krizhevsky2012}
+).
+
+%
+The deep-learning-based object detectors may be divided into two groups: single-shot (or one-stage) and region-based (or two-stage) detectors.
+
+\subsubsection{Region-based object detectors}
+% https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e
+% https://medium.com/@jonathan_hui/what-do-we-learn-from-region-based-object-detectors-faster-r-cnn-r-fcn-fpn-7e354377a7c9
+%
+Region-based or two-stage detector, as the name suggests, performs the detection in two steps.
+First, it generates a sparse set of region proposals in the image where the objects are supposed to be.
+The second stage classifies each proposal into one of the foreground classes or background and, in case it outputs an object label, it refines its position.
+The region-based convolutional neural network (R-CNN)~\cite{Girshick2016RCNN}
+\abbrev{\id{R-CNN}R-CNN}{Region-Based Convolution Neural Network}
+steered object detection to a new era:
+by employing ConvNets in the second stage, it achieved significant gains in accuracy.
+R-CNN evolved over the time in terms of speed and accuracy~\cite{Girshick2015, Ren2017fasterpami}.
+In Faster R-CNN~\cite{Ren2017fasterpami} a ConvNet generates the region proposals, thus turning the whole system into a single convolutional network.
+Other works extend this framework~\cite{Dai2016, He2017mask}.
+
+\subsubsection{Single-shot object detectors}
+% https://medium.com/@jonathan_hui/what-do-we-learn-from-single-shot-object-detectors-ssd-yolo-fpn-focal-loss-3888677c5f4d
+%
+The single-shot detectors focus on speed rather than accuracy,
+aiming to predict both class and bounding box simultaneously.
+The single-shot detectors are inspired by the sliding-window paradigm.
+They split the images into a grid of cells so that we have sparse regions. For each cell, it makes bounding boxes guesses of different scales and aspect ratios.
+Different from traditional sliding-window detectors, it further refines the bounding box prediction instead of simply using the window position.
+OverFeat~\cite{Sermanet2014} was one of the first single-shot detectors followed for most recent YOLO~\cite{Redmon2016} and SSD~\cite{Liu2016}.
+
+
+\subsubsection{Object Detectors Comparison}
+% https://medium.com/@jonathan_hui/object-detection-speed-and-accuracy-comparison-faster-r-cnn-r-fcn-ssd-and-yolo-5425656ae359
+%
+Comparing object detectors is not an easy task, since we are not always capable of saying which one is the best model.
+Two aspects must be taken into consideration when choosing a model: accuracy and speed.
+Many attributes may impact the performance, to point some:
+\begin{itemize}
+ \item feature extractors;
+ \item input image resolution;
+ \item hyper-parameters such as batch size, input image resize, learning rate, and weight decay.
+\end{itemize}
+
+In~\cite{Huang2017}, a detailed comparison among single-shot and region based detectors is done.
+Single-shot detectors are faster than region-based detectors
+but they can not beat region-based detectors in accuracy.
+Nevertheless, if we reduce the number of proposals in Faster R-CNN, for example, we are able to match the speed of SSD without harming its accuracy significantly.
+
+Since speed is not the main concern of our application, we choose Faster R-CNN as our object detector as it achieves most accurate results~\cite{Huang2017}.
+
+\section{Region-based Convolutional Network (R-CNN)}
+%
+Before explaining the Faster R-CNN, we shall see its older, rougher around the edges grandfather:
+the region-based convolutional network (R-CNN)~\cite{Girshick2016RCNN}
+\abbrev{\id{R-CNN}R-CNN}{Region-based Convolutional Network}, followed by the middle child, the Fast R-CNN and then finally the Faster R-CNN.
+
+The R-CNN~\cite{Girshick2016RCNN}
+\abbrev{\id{R-CNN}R-CNN}{Region-based Convolutional Network} consists of three parts:
+(i) a region proposal method that generates class-agnostic regions of interest (RoIs).
+\abbrev{\id{RoI}RoI}{Region of Interest}
+These regions form the set of candidates available to detection.
+They are warped into a fixed size and then fed into the next module, individually;
+(ii) a CNN that extract features from each RoI;
+(iii) a set of class-specific fully connected (FC)
+\abbrev{\id{FC}FC}{Fully Connected}
+layers to classify each region and refine the corresponding bounding box.
+Figure~\ref{fig:R-CNN} illustrates the R-CNN flow.
+%
+% \begin{figure}[th!]
+% 	\centering
+% 	\includegraphics[width=.8\linewidth]{rcnn.png}
+% 	\caption{R-CNN. Source:~\cite{Girshick2016RCNN}.
+% 	}
+% 	\label{fig:R-CNN}
+% \end{figure}
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.8\linewidth]{rcnn_new.pdf}
+	\caption{R-CNN.}
+	\label{fig:R-CNN}
+\end{figure}
+
+\subsection{Region proposals}
+%
+Instead of classifying a huge number of regions, as sliding-window detectors do,
+R-CNN uses selective search~\cite{Uijlings2013ss} to generate $2,000$ RoIs from the image~\cite{Girshick2016RCNN}.
+
+The selective search algorithm works by clustering pixels using a similarity measure.
+First, each pixel of the image is considered as an individual group.
+Next, it computes a similarity measure (\eg image texture) and combine closest groups into larger ones.
+It continues merging regions until achieving the number of regions desired.
+Figure~\ref{fig:selective_seach} shows an example of region proposals generated by the selective search algorithm over an image.
+The first row is the combined regions, the blue and green boxes in the second row are the possible RoI and detected objects, respectively.
+%
+\begin{figure}[bh!]
+	\centering
+	\includegraphics[width=.9\linewidth]{selective_search.png}
+	\caption[Selective search example.]{Selective search example.
+	The first row are the combined regions, the blue and green boxes in the second row are the possible RoI and detected objects, respectively.
+	Source:~\cite{Uijlings2013ss}.}
+	\label{fig:selective_seach}
+\end{figure}
+
+\subsection{Feature extraction}
+%
+The features are extracted by forwarding each proposal through a convolutional network.
+Each proposal is warped to fit the ConvNet's input size, regardless of its size or aspect ratio.
+Prior to warping, the region is enlarged a bit to include pixels of image context in the warped region~\cite{Girshick2014rich}.
+
+\subsection{Object classifier and box regression}
+%
+The region proposals that have an Intersection over Union (IoU -- for a more detailed description refer to Section~\ref{sec:eval}) with the ground truth smaller than $0.3$ are defined as negative samples.
+Once we have the features and the training sample label, we train a linear SVM per class.
+After the SVM stage, a class-specific regressor is used to predict a new bounding box for detection~\cite{Girshick2014rich}.
+
+
+\subsection{R-CNN drawbacks}
+%
+Although R-CNN achieved satisfactory results in object detection tasks~\cite{Girshick2016RCNN},
+its authors point some drawbacks in a later work~\cite{Girshick2015}:
+%
+\begin{itemize}
+ \item Training is a multi-stage pipeline:
+ first, perform a fine-tuning on a CNN using the RoIs generated by the region proposal method.
+ Then, for each class, fits an SVM.
+ At last, it learns the bounding box regressors.
+ \item Training is expensive both in space and time:
+ although selective search reduces the number of RoIs to be analyzed, it stills needed a high number of them to achieve good performance ($\sim2,000$ for each image).
+ From each RoI in each image, R-CNN extracts the features that are written to disk.
+ The author reports that this process has taken 2.5 GPU-days (Nvidia K40 GPU overclocked to 875 MHz)~\cite{Girshick2015}, with VGG-16~\cite{Simonyan2015VGG}, for 5k images of a specific image set.
+ %
+ \item Slow object detection: at test-phase, R-CNN extracts features from each RoI for each image test.
+ For each test image, with VGG-16~\cite{Simonyan2015VGG}, detection took about $47s$  on a GPU.
+ This is slow because there are no shared computations during the ConvNet's forward pass.
+ %
+\end{itemize}
+
+% Moreover, the selective search is a deterministic algorithm, which means that there are no learning during this phase.
+% Thus, this may generates bad proposals for both training and test phases.
+
+\section{Fast R-CNN}\label{sec:fast_r-cnn}
+%
+In a later work~\cite{Girshick2015}, Fast R-CNN authors, solved of some R-CNN's~\cite{Girshick2016RCNN} drawbacks in order to build a faster algorithm.
+Differently from the original work, in which we feed the ConvNet with every single region proposal,
+the whole image is fed into a ConvNet to produce a single convolutional feature map.
+Fast R-CNN still uses an external region proposal method (\eg selective search~\cite{Uijlings2013ss}) to generate the proposals.
+Thus, the input of Fast R-CNN is an image and a set of proposals~\cite{Girshick2015}.
+
+The RoIs are the rectangular regions of the feature map bounded by the proposals,
+each defined by a four-tuple $(x, y, w, h)$ specifying its top-left corner $(x, y)$ and its width and height $(w, h)$~\cite{Girshick2015}.
+\symbl{\id{IoU }$(x, y, w, h)$}{Four-tuple that specifies the RoI top-left corner $(x, y)$ and width and height $(w, h)$, in Fast R-CNN.}
+These RoIs along with the feature maps, extracted from the entire image, form the patches used for object detection.
+The patches are warped to a fixed-length feature vector, by the using RoI pooling layer~\cite{Girshick2015} (Section~\ref{sec:roi_pool}), so that they may be fed into a sequence of FC layers.
+The FC layers branch into two sibling output layers:
+%
+%
+\begin{enumerate}
+ \item classification layer: a softmax layer that estimate the class probability of the RoI over $K$ object classes plus a ``background'' class.
+ \item localization (regression) layer: outputs a set of 4 real values for each one of the $K$ object classes.
+ These values encode a refined bounding box position, \ie an offset for the initial proposal.
+\end{enumerate}
+
+By extracting the features over the whole image, instead of repeating the feature extraction for each proposal every time,
+Fast R-CNN reduces the cost time significantly,
+trains $9\times$ faster than R-CNN (with VGG-16),
+and takes $\sim0.3s$ to run detection (not considering object proposal time) {\it vs.} $47s$ of R-CNN~\cite{Girshick2015}.
+Another improvement in Fast R-CNN is that one may train the entire network (ConvNet, and softmax and regression layers) end-to-end with the multi-task loss (classification and localization losses, Section~\ref{sec:fast_r-cnn_loss}), which improves the detection accuracy~\cite{Girshick2015}.
+Figure~\ref{fig:Fast R-CNN} illustrates the Fast R-CNN flow.
+%
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.7\linewidth]{fast_rcnn.png}
+	\caption[Fast R-CNN]{Fast R-CNN. Source:~\cite{Girshick2015}.
+	}
+	\label{fig:Fast R-CNN}
+\end{figure}
+
+
+\subsection{RoI pooling layer}\label{sec:roi_pool}
+%
+Fast R-CNN uses FC layers for classification and bounding box regression tasks~\cite{Girshick2015}.
+These layers require an input of predefined size.
+Since the RoIs generated by region proposal method are variable in size, we warp them into a small spatial fixed extent of $H\times W$ by applying RoI pooling, where $H$ and $W$ are hyper-parameters and independent of the RoIs~\cite{Girshick2015}.
+The RoI pooling layer is a specific case of~\cite{He2014SPP} where there is only one pyramid level~\cite{Girshick2015}.
+
+
+The RoI pooling layer works as follows:
+it first divides a given RoI of size $h\times w$ into an $H\times W$ grid of sub-windows of approximate size $h/H \times w/W$.
+Then, applies pooling (\eg max pooling~\cite{goodfellow2016}) to the values of each sub-window, corresponding to the output grid cell.
+As in standard pooling layers, RoI pooling is applied for every channel in feature map.
+We illustrate this procedure in Figure~\ref{fig:roi_pool}, where we have initially a feature map of size $8\times8$, and a RoI with $h=5$ and $w=7$.
+In this illustration, we apply RoI pooling to obtain a warped feature map of predefined size with $H=2$ and $W=2$.
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.7\linewidth]{roi_pool.pdf}
+	\caption[RoI pooling layer]{RoI pooling layer.
+	Top left: feature maps;
+	top right: RoI (blue) overlap with feature map;
+	bottom left: split RoI into input dimension;
+	bottom right: warped RoI obtained after applying max pooling in each section.
+	}
+	\label{fig:roi_pool}
+\end{figure}
+
+\subsection{Multi-task loss}\label{sec:fast_r-cnn_loss}
+%
+The Fast R-CNN outputs, per RoI, a discrete probability distribution $\hat \pbf = (\hat p_0,~\dots,~\hat p_K)$, over $K+1$ categories ($K$ object categories $+ 1$ for background) and the bounding box regression offset $^{k}\hat\tbf = (^{k}\hat t_{x}, ^{k}\hat t_{y}, ^{k}\hat t_{w}, ^{k}\hat t_{h})$ $\forall\,k \in K$.
+The offset $^{k}\tbf$ is parametrized relative to the region proposals and represents a scale-invariant  translation and log-space height/width shift relative to an object proposal.
+We follow the parametrization given in the set of Equations~\eqref{eq:box_param}.
+We come back to this parametrization scheme later when we talk about RPN and anchor boxes, in Section~\ref{sec:rpn}.
+
+We label each training RoI with a ground truth class $u$ and a bounding box regression target $\vbf$.
+We train both classification ({\it cls}) and regression ({\it reg}) layers using the multi-task loss given by
+%
+\begin{equation}
+ \Lcal (\hat \pbf,u,^u\hat \tbf, \vbf)=
+ \Lcal_{cls} (\hat \pbf, u) +
+ \lambda[u\geq1]\Lcal_{reg} (^u\hat \tbf - \vbf)
+ \label{eq:loss_multi}
+\end{equation}
+%
+where, $\Lcal_{cls} (\hat \pbf, u) = -\log \hat p_u$  is the negative log-likelihood loss for true class $u$ and
+$\Lcal_{reg} (^u\hat \tbf - \vbf)$ is the regression loss between the predicted tuple $^{u}\hat\tbf = (^{u}\hat t_{x}, ^{u}\hat t_{y}, ^{u}\hat t_{w}, ^{u}\hat t_{h})$ and the bounding box regression target $\vbf = (v_{x}, v_{y}, v_{w}, v_{h})$, for class $u$.
+The Iverson bracket indicator function allows the regression loss to be activated only for class objects (background class is labeled as $u=0$).
+It evaluates  to 1 when $u\geq1$ and 0, otherwise.
+This is done since there are no ground truth for the background RoIs.
+Fast R-CNN uses the robust $\ell_1-$loss for bounding box regression,
+%
+\begin{equation}
+ \Lcal_{{reg}} (^u\tbf - \vbf)=
+ \sum_{i \in \{x,y,w,h\}} \textrm{smooth}{\ell_1}(^ut_i - v_i),
+ \label{eq:loss_loc}
+\end{equation}
+%
+where the $\textrm{smooth}\ell_1 (z)$ function is defined as
+%
+\begin{equation}
+ \textrm{smooth}\ell_1 (z) =
+ \begin{cases}
+ 0.5z^2, & \textrm{if } |z|< 1\\
+ |z| - 0.5, & \textrm{otherwise}.
+ \end{cases}
+ \label{eq:smooth_l1}
+\end{equation}
+%
+The  $\textrm{smooth}\ell_1$ is more robust to outliers than the $\ell_2-$loss used in R-CNN~\cite{Girshick2016RCNN}, which requires a careful learning rate tuning in order to prevent exploding gradients in case of unbounded regression targets~\cite{Girshick2015}.
+Actually, one may interpret $\textrm{smooth}\ell_1$ as a combination of $\ell_1-$ and $\ell_2-$loss.
+When the absolute value of the argument is high (in this case $|z|\geq 1$), it behaves like a linear function ($\ell_1-$loss),
+and when the absolute value of the argument is close to zero (value of $|z|< 1$), it behaves like a quadratic function ($\ell_2-$loss), as shown in Figure~\ref{fig:l1_loss}.
+Therefore, it is possible to take advantage of both losses, steady gradients for large values of errors and less oscillation during updates when the error is small.
+All regression targets $v_i~\forall\, i \ \in \{x,y,w,h\}$ are normalized to have zero mean and unit variance.
+The $\lambda$ parameter balances the two loss terms, and is usually set to 1~\cite{Girshick2015}.
+%
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\textwidth]{l2xl1xsmoothl1.pdf}
+    \caption{plot of $\ell_1, \ell_2,$ and smooth$\ell_1$.}
+  \end{subfigure}~
+  %
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\textwidth]{l2xl1xsmoothl1_zoom.pdf}
+    \caption{Close look at the intersection.}
+  \end{subfigure}
+  \caption{Comparison between $\ell_1, \ell_2,$ and smooth$\ell_1$ losses.}
+  \label{fig:l1_loss}
+\end{figure}
+
+\subsection{Training and testing Fast R-CNN}\label{sec:train_fast_rcnn}
+%
+One may train Fast R-CNN using back-propagation and stochastic gradient descent (SGD)~\cite{LeCun1989}.
+\abbrev{\id{SGD}SGD}{Stochastic Gradient Descent}
+Each mini-batch is hierarchically sampled, by first sampling $N$ images and then $S/N$ RoIs from each image, where $S$ is the total number of RoI samples.
+This sampling scheme reduces the computation, since RoIs from the same image share computations during forward and backward passes~\cite{Girshick2015}.
+For training Fast R-CNN, we sample up to 1:3 ratio of positive to negative samples, as the background is more common than the foreground in an image.
+The positive samples are the proposals that have an IoU (for a more detailed description refer to Section~\ref{sec:eval}) overlap of at least 0.5 with a ground truth box.
+These are the foreground examples \ie $u\geq1$.
+The negative samples \ie background samples ($u=0$) are the proposals with a maximum IoU overlap in the range $[0.1, 0.5)$ with all ground truth boxes.
+The FC layers for classification and regression are initialized by drawing the weights from a Gaussian distribution $\Ncal(\mu, \sigma)$ with mean $\mu=0$ and standard deviation $\sigma=0.01$ and $\sigma=0.001$, respectively.
+
+At the test phase, Fast R-CNN takes an image and a set of $S$ pre-computed proposals as input.
+For each testing proposal $s$, Fast R-CNN outputs a posterior discrete probability distribution $\hat \pbf$ of the $K$ classes.
+It also outputs a set of predicted bounding boxes offsets relative to $s$.
+For each detection, we assign a confidence score for each class $k$ by using the estimated probability $\hat p_k$.
+Finally, we apply non-maximum suppression (NMS)
+\abbrev{\id{NMS}NMS}{Non-Maximum Suppression}
+independently for each class in order to eliminate multiple detections for the same instance of class~\cite{Girshick2016RCNN}.
+
+\section{Faster R-CNN}
+%
+Both R-CNN and Fast R-CNN use an external method to generate the proposals~\cite{Girshick2016RCNN, Girshick2015}.
+The region proposal methods generally run on CPU and are time-consuming, affecting the network performance~\cite{Ren2017fasterpami}.
+This stage is, up to now, the bottleneck of the region-based detectors.
+
+Faster R-CNN~\cite{Ren2017fasterpami} presents a new mechanism that eliminates the need for an external region proposal method:
+the region proposal network (RPN),
+\abbrev{\id{RPN}RPN}{Region Proposal Network}
+which is a convolutional network that learns the regions derived from the feature maps.
+
+Faster R-CNN works akin to Fast R-CNN. First, the image is fed into a ConvNet that outputs the convolutional feature maps.
+Based on these maps, the RPN then predicts the proposals, which are warped by the RoI pooling layer and then delivered to the FC layers that classify the RoIs and refine them by predicting an offset for the bounding boxes.
+Hence, Faster R-CNN comprises two modules: RPN, to generate the proposals, and Fast R-CNN detector, as shown in the Figure~\ref{fig:Faster_R-CNN}.
+%
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.7\linewidth]{faster_rcnn.png}
+	\caption[Faster R-CNN]{Faster R-CNN. Source:~\cite{Ren2017fasterpami}.
+	}
+	\label{fig:Faster_R-CNN}
+\end{figure}
+
+
+\subsection{The region proposal network}\label{sec:rpn}
+%
+The RPN works by sliding $n\times n$ convolutional filters over the feature map from the last feature extractor convolutional layer to generate the class-agnostic region proposals.
+The hyper-parameter $n$ (typically, $n=3$) must be chosen by taking the effective receptive field
+(the region of the input image that a neuron -- the filter at a given position -- oversees)
+into consideration~\cite{Ren2017fasterpami}.
+So, each $n\times n$ spatial location is mapped to a lower dimension.
+The resulting features are fed into two parallel FC layers -- a box-regression layer ({\it reg}) and a box-classification layer ({\it cls}).
+These last layers may be implemented with $1\times 1$ convolutional layers~\cite{Ren2017fasterpami}, as shown in Figure~\ref{fig:rpn_fcn}.
+Thus, RPN is a fully convolutional network (FCN)~\cite{Shelhamer2017} so, it is translation invariant up to the network's total stride~\cite{Ren2017fasterpami}.
+%
+\abbrev{\id{FCN}FCN}{Fully Convolutional Network}
+%
+%
+\begin{figure}[bh!]
+	\centering
+	\includegraphics[width=.85\linewidth]{RPN_net_1x1.pdf}
+	\caption{RPN as a fully convolutional network.}
+	\label{fig:rpn_fcn}
+\end{figure}
+
+%
+At each $n\times n$ sliding filters position, RPN predicts $\beta$ region proposals.
+Hence, for each position, the {\it reg} layer outputs $4\beta$ encoded coordinates whereas {\it cls} layer outputs $2\beta$ scores that estimate the probability of object or not object, which we call ``objectness'' (see Figure~\ref{fig:rpn_fcn}).
+In Faster R-CNN~\cite{Ren2017fasterpami}, the {\it cls} layer is implemented as two-class softmax.
+This could be replaced with logistic regression generating only $\beta$ class scores~\cite{Ren2017fasterpami}.
+
+
+\subsubsection{Anchors}
+
+
+As mentioned, at each position of feature map, RPN predicts $\beta$ proposals.
+Figure~\ref{fig:rpn_pred} illustrates $\beta=3$ proposals for a specific location in the feature map.
+The proposals are parameterized relative to prior reference boxes which are called anchors.
+The anchors are centered at each spatial location of the output feature map, and each anchor is associated with a scale and aspect ratio.
+Therefore, for a feature map of size $W\times H$ we end with $WH\beta$ anchors in total.
+The original implementation of Faster R-CNN uses three scales and three aspect ratios, yielding $\beta=9$ anchors at each position~\cite{Ren2017fasterpami}.
+%
+%
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=.6\textwidth]{RoI_anchor.pdf}
+    \caption{$8\times 8$ feature map and $3\times3$ filter.}
+  \end{subfigure}~
+  %
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=.6\textwidth]{RoI_anchor_pred.pdf}
+    \caption{RPN proposals for a specific location.}
+  \end{subfigure}
+  \caption{RPN proposals for a specific location in the output feature map.}
+  \label{fig:rpn_pred}
+\end{figure}
+%
+Faster R-CNN predicts offsets $\delta_x$, $\delta_y$ that are relative to those anchors.
+We illustrate the anchors positions, scales and aspect ratios, and offsets, in Figure~\ref{fig:anchors}.
+We represent the anchors at only 3 different spatial locations (that is for illustration purposes, however anchors exist for every single position in the feature map).
+In Figure~\ref{fig:anchors_b}, we show the anchors at different scales and aspect ratios for a specific spatial position;
+where the 3 different colors are different scales (\eg $32^2, 64^2, 128^2$ pixels) and for each color, we have 3 aspect ratios (\eg 1:1, 1:2, 2:1).
+Lastly, in Figure~\ref{fig:anchors_c}, we illustrate the prediction and anchor offset.
+%
+Figure~\ref{fig:rpn} shows RPN at a single position along with the $\beta$ anchors boxes.
+%
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=.6\linewidth]{anchors_locations.pdf}
+    \caption{Anchors at specific locations.}
+    \label{fig:anchors_a}
+  \end{subfigure}~
+  %
+  \begin{subfigure}[b]{0.49\linewidth}
+    \centering
+    \includegraphics[width=.6\linewidth]{anchors.pdf}
+    \caption{Anchors at different scales and aspect ratios for a specific location.}
+    \label{fig:anchors_b}
+  \end{subfigure}\\
+  %
+  \begin{subfigure}[b]{0.49\linewidth}
+    \centering
+    \includegraphics[width=.6\linewidth]{anchor_delta.pdf}
+    \caption{Prediction offset.}
+    \label{fig:anchors_c}
+  \end{subfigure}
+  \caption{Anchor boxes at specific locations, different scales and aspect ratios for a specific location, and prediction offset.}
+  \label{fig:anchors}
+\end{figure}
+
+%
+
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.6\linewidth]{RPN_anchors.pdf}
+	\caption{Region proposal network (RPN).}
+	\label{fig:rpn}
+\end{figure}
+
+%\red{This approach is translation invariant~\cite{Ren2017fasterpami}.}
+%
+\subsubsection{Loss function}
+%
+The RPN outputs object class-agnostic region proposals.
+It assigns a binary label to each anchor: positive for anchors bounding an object, and negative otherwise.
+We define as positive the anchors that have
+(i) the highest IoU; or
+(ii) an IoU of, at least, $0.7$ with the ground truth annotation.
+We keep the first condition to ensure that we have positive examples in case the first one fails.
+One should notice that a single ground truth box may assign positive labels to multiple anchors~\cite{Ren2017fasterpami}.
+The negative anchors are those with IoU ratio lower than $0.3$ with all ground truth boxes~\cite{Ren2017fasterpami}.
+Anchors outside these conditions do not influence the training phase.
+Given these definitions, we aim to minimize the loss function $\Lcal( \{\hat p_i\}, \{\tbfh_i\} )$, defined in Equation~\eqref{eq:loss_RPN} \wrt the outputs $\{\hat p_i\}$ and ${\{\tbfh_i\}}$ of the {\it cls} and {\it reg} layers, respectively, following the multi-task loss in Fast R-CNN (Section~\ref{sec:fast_r-cnn_loss})~\cite{Ren2017fasterpami},
+%
+\symbl{\id{loss}$\Lcal\{\cdot\}$}{loss function}
+\begin{equation}
+\Lcal( \{\hat p_i\}, \{\tbfh_i\} ) =
+\frac{1}{N_{cls}}\sum_{i} \Lcal_{cls}( \hat p_i, p_i^* ) +
+\lambda\frac{1}{N_{reg}}\sum_{i} p_i^*\Lcal_{reg}( \tbfh_i, \tbf_i^*),
+ \label{eq:loss_RPN}
+\end{equation}
+%
+%
+where $i$ is the index of an anchor in a mini-batch;
+$\hat p_i$ the predicted probability of anchor $i$ being an object;
+$p_i^*$ the ground truth label which is 1 for positive anchors, and 0 for negative anchors;
+$\tbfh_i$ and $\tbf_i^*$ the vectors representing the 4 parameterized coordinates of the predicted bounding box, and the ground-truth box associated with a positive anchor, respectively;
+$\Lcal_{cls}$ the classification log loss over two classes (foreground$\times$background); and
+$\Lcal_{reg}(\tbfh_i,\tbf_i^*) = \textrm{smooth}{\ell_1}(\tbfh_i-\tbf_i^*)$ is the regression loss, being $\textrm{smooth}{\ell_1}(\cdot)$ similar to the robust loss function seen in Section~\ref{sec:fast_r-cnn_loss} (Equation~\eqref{eq:loss_loc}), except for the inclusion of the parameter $\gamma$ that controls where the function change from quadratic to linear.
+Hence, we redefine $\textrm{smooth}\ell_1 (z)$.
+%
+%
+\begin{equation}
+ \textrm{smooth}\ell_1 (z) =
+ \begin{cases}
+ \frac{0.5}{\gamma}z^2, & \textrm{if } |z|< \gamma\\
+ |z| - 0.5\gamma, & \textrm{otherwise}.
+ \end{cases}
+ \label{eq:smooth_l1_gamma}
+\end{equation}
+%
+As $\gamma \rightarrow 0$ the $\textrm{smooth}\ell_1 (z)$ approaches to $\ell_1-$loss.
+The reason for doing this is because unlike in Fast R-CNN, in Faster R-CNN the RPN bounding box regression targets $v_i$  are not normalized by their variance since the statistics of the targets are constantly changing throughout learning.
+By including this $\gamma$ parameter one may better approximate $\textrm{smooth}\ell_1$ to $\ell_1-$loss (robust to outliers) and maintain the $\ell_2-$loss properties for small error values, as shown in Figure~\ref{fig:l1_loss_gamma}.
+Although not reported in Faster R-CNN paper~\cite{Ren2017fasterpami}, the implementation uses $\gamma = \frac{1}{9}$.
+%
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\textwidth]{smooth_l1_gamma.pdf}
+    \caption{plot of $\ell_1, \ell_2,$ and smooth--$\ell_1$ (for two different values of $\gamma$).}
+  \end{subfigure}~
+  %
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\textwidth]{smooth_l1_gamma_zoom.pdf}
+    \caption{Close look at the intersection.}
+  \end{subfigure}
+  \caption[Comparison between $\ell_1, \ell_2,$ and smooth--$\ell_1$.]{Comparison between $\ell_1, \ell_2,$ and smooth--$\ell_1$ (for two different values of $\gamma$) losses.}
+  \label{fig:l1_loss_gamma}
+\end{figure}
+
+
+%
+One may notice that the regression loss $\Lcal_{reg}$ is activated only for positive anchors since $p_i^*=1$ for positive anchors and $p_i^*=0$ otherwise.
+%
+The respective loss terms are normalized by the mini-batch size ${N_{cls}}$ and the number of anchor locations ${N_{reg}}$ and weighted by a balancing term $\lambda$ so that {\it cls} and {\it reg} terms have roughly equal contributions.
+For instance, Faster R-CNN uses ${N_{cls}} = 256$, ${N_{reg}}\sim2,400$, and $\lambda=10$~\cite{Ren2017fasterpami}.
+On the other hand, they experimentally show that this normalization is not crucial and the results are insensitive to a wide range of values for $\lambda$~\cite{Ren2017fasterpami}.
+%
+
+For bounding box regression, Faster R-CNN adopts the four coordinates parameterizations, presented in the set of Equations~\eqref{eq:box_param}~\cite{Ren2017fasterpami},
+%
+\begin{equation}
+  \begin{aligned}
+  \hat t_{X} &= \frac{(\hat x-x_{\alpha})}{w_{\alpha}},\\
+  \hat t_{W} &= \log\bigg(\frac{\hat w}{w_{\alpha}}\bigg),\\
+  t_{X}^* &= \frac{(x^*-x_{\alpha})}{w_{\alpha}},\\
+  t_{W}^* &= \log\bigg(\frac{w^*}{w_{\alpha}}\bigg),
+  \end{aligned}
+\qquad
+   \begin{aligned}
+  \hat t_{Y} &= \frac{(\hat y-y_{\alpha})}{h_{\alpha}},\\
+  \hat t_{H} &= \log\bigg(\frac{\hat h}{h_{\alpha}}\bigg),\\
+  t_{Y}^* &= \frac{(y^*-y_{\alpha})}{h_{\alpha}},\\
+  t_{H}^* &= \log\bigg(\frac{h^*}{h_{\alpha}}\bigg),
+  \end{aligned}
+  \label{eq:box_param}
+\end{equation}
+%
+where $x$ and $y$ denote the box's center coordinates, and $w$ and $h$ its width and height.
+We differ the predicted, anchor, and ground truth boxes' specifications, using variables $\hat x, x_{\alpha},$ and $x^*$ (likewise for $y, w,$ and $h$), respectively.
+One may interpret this as bounding box regression from an anchor box to an adjacent ground truth box~\cite{Ren2017fasterpami}.
+Other RoI-based methods~\cite{Girshick2015} performs bounding box regression on features pooled from arbitrarily sized RoIs and the regression weights are shared by all region sizes.
+However, in this approach, the features used for regression has the same spatial size ($n\times n$) as the feature maps.
+RPN learns a set of $\beta$ bounding box regressors and each one is responsible for a scale and aspect ratio.
+These $\beta$ regressors do not share weights.
+Thus, the design of anchors allows predicting boxes of various sizes, even though the features are of a fixed size/scale~\cite{Ren2017fasterpami}.
+
+\subsubsection{Training the RPN}
+%
+We train the RPN end-to-end with back-propagation and SGD~\cite{LeCun1989}.
+Due to the slow convergence of SGD, one can use the momentum method~\cite{Qian1999} to accelerate the learning process, and weight decay~\cite{goodfellow2016} as a regularization method.
+Following~\cite{Girshick2015}, each mini-batch of size $N_{cls}$ comes from the same image that contains positive and negative anchors.
+One should notice that we may have many more negative than positive samples, as background boxes are more common than foreground in an image.
+This fact may cause a bias towards negative samples.
+Therefore, we randomly sample $N_{cls}$ anchors (usually $N_{cls}=256$~\cite{Ren2017fasterpami}) with a ratio up to 1:1 of positive to negative.
+One should pad the batch with negative samples to fill up the mini-batch.
+As a common practice, all shared convolutional layers are initialized to ImageNet pre-trained weights for classification~\cite{Russakovsky2015, Krizhevsky2012}.
+The FC layers used for classification and regression are randomly initialized by drawing the weights from a normal distribution $\Ncal(\mu, \sigma)$ with mean $\mu=0$ and standard deviation $\sigma=0.01$ and $\sigma=0.001$, respectively~\cite{Ren2017fasterpami}.
+
+% ############ This no long uses 4 step training
+% \subsubsection{Sharing Features for RPN and Fast R-CNN}
+% %
+% So far, we have discussed how to train RPN to generate the proposals without taking the detector that utilizes them into account.
+% In the case of Faster R-CNN, the detector is the Fast R-CNN~\cite{Girshick2015}.
+% The primary objective is to compose a unique network that can be trained end-to-end with shared convolutional layers~\cite{Ren2017fasterpami}.
+% The Faster R-CNN adopts Alternating Training~\cite{Ren2017fasterpami} as a way for training the network with shared features.
+% It consists of first training the RPN, and use the proposals to train the Fast R-CNN.
+% Then, the layers tuned by Fast R-CNN are used to initialize RPN.
+% We iterate over this process.
+% To be more specific, we use a Four-Step Alternating Training for training networks with shared features~\cite{Ren2017fasterpami}.
+% First, we train RPN as discussed before.
+% Next, with the proposals from RPN, we train the detection network by Fast R-CNN which is initialized by the ImageNet pre-trained model.
+% Up to now, the networks do not share convolutional layers.
+% Then, we initialize the weights of the RPN backbone (with exception of its FC regression head) with the values found for the detector network, fixing the shared convolutional layers and fine-tuning the layers exclusive to RPN.
+% At this point, the networks already share convolutional layers.
+% Afterward, we keep the shared convolutional layers and fine-tune the layers unique to Fast R-CNN.
+% The network is now unified and shares the same convolutional layers.
+% According to~\cite{Ren2017fasterpami}, more iterations on this process do not present significant improvements.
+
+\section{Mask R-CNN}
+%
+Mask R-CNN~\cite{He2017mask} is a framework for object instance segmentation.
+It is built on top of Faster R-CNN~\cite{Ren2017fasterpami} by adding a third branch in parallel to the regression and classification layers of Fast R-CNN~\cite{Girshick2015}.
+Recapitulating, the Faster R-CNN extracts the images features by forwarding an image through a ConvNet.
+Next, it predicts the RoIs on the feature space by using RPN.
+Then, we warp the proposals to a fixed dimension by applying RoI pooling.
+Lastly, we feed these features into FC layers to make classification and bounding box regression.
+Mask R-CNN adds a third branch to Faster R-CNN which outputs the object mask~\cite{He2017mask}, as shown in Figure~\ref{fig:mask_r-cnn}.
+The mask of an object is its pixel-wise segmentation in an image.
+Instance segmentation is outside the scope of this work.
+However, we mention it since instance segmentation requires finner spatial layout of an object~\cite{He2017mask}.
+The RoI pooling in Faster R-CNN causes misalignments between the RoI and features.
+Hence, Mask R-CNN proposes RoIAlign that addresses these misalignments.
+%
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=\linewidth]{Mask_R-CNN_flow.pdf}
+	\caption{Mask R-CNN flow.}
+	\label{fig:mask_r-cnn}
+\end{figure}
+
+
+\subsection{RoIAlign}
+%
+RoI pooling warps the features inside a region proposal to a fixed size.
+It quantizes the RoI to the discrete granularity of the feature map.
+Likewise, it performs quantization when dividing the RoI into cells.
+The cell boundaries of the target feature map are forced to realign with the boundary of the feature map so that the cells might not be of the same size (revisit Figure~\ref{fig:roi_pool}).
+These quantizations result in misalignments between the RoI and features which harms object masks predictions~\cite{He2017mask}.
+
+Mask R-CNN substitutes RoI pooling by RoIAlign to avoid these misalignments.
+RoIAlign does not perform quantization but makes every target cell to have the same size, properly aligning the features with the input.
+For instance, it divides a given RoI of size $h\times w$ into an $H\times W$ grid of sub-windows of exactly size $h/H\times w/W$.
+It applies bilinear interpolation to compute the values in feature map at the cells~\cite{He2017mask}, as shown in Figure~\ref{fig:roi_align}.
+Then, it aggregates the results using max or average pool~\cite{goodfellow2016}.
+RoIAlign significantly improves the accuracy on both segmentation and localization tasks if compared to RoI pooling~\cite{He2017mask}, so we use RoIAlign instead of RoI pooling.
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.8\linewidth]{roi_align.pdf}
+	\caption[RoIAlign]{RoIAlign: we represent the feature map with dashed lines and small points. The RoI ($2\times 2$ cells) is represented with solid lines and 9 sampling points in each cell, that are computed by bilinear interpolation from the nearby grid points on the feature map.}
+	\label{fig:roi_align}
+\end{figure}
+
+% \section{More on Deep Learning Based Object Detection}
+%
+% \subsection{Multi-scale Object Detection: Feature Pyramid Network}
+% \begin{itemize}
+%  \item Talk about FPN.
+% \end{itemize}
+%
+%
+% \subsection{The Focal Loss}
+% \begin{itemize}
+%  \item Talk about Focal Loss (RetinaNet).
+% \end{itemize}
+
+
+\section{Conclusions}
+%
+In this chapter we detailed the method used for detection of potential mosquitoes breeding grounds: the Faster R-CNN.
+We have chosen this algorithm since it gives good accuracy results if compared to other object detectors.
+We also discuss how it evolved over the years pointing out the main contributions.
+For example, how RoIAlign outperforms RoIPooling.
+
+

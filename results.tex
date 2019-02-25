@@ -1,0 +1,907 @@
+\chapter{Results and Discussions}
+\label{chap:results}
+%
+In this Chapter, we discuss the experimental procedures adopted.
+First, we go through how we assess the performance of object detection.
+After that, we discuss the implementation details, including network architectures, as well as training and inference hyper-parameters set.
+Finally, we examine the obtained results both numerically and visually.
+
+
+\section{Evaluation}
+\label{sec:eval}
+% https://medium.com/@timothycarlen/understanding-the-map-evaluation-metric-for-object-detection-a07fe6962cf3
+% https://medium.com/@jonathan_hui/map-mean-average-precision-for-object-detection-45c121a31173
+% https://github.com/rafaelpadilla/Object-Detection-Metrics
+
+Assessing the performance of object detectors may seem easy at first sight.
+However, it is a complex task since the models must be evaluated for both image classification (whether an object is on image)  and localization (where the object appears on the image, \ie bounding box regression).
+
+Moreover, typical datasets have many classes with significantly nonuniform prior distribution over classes.
+Thus, a simple accuracy-based metric is not appropriate as it will introduce biases.
+
+Another aspect to be taken into consideration is the risk of misclassification.
+Missing this information a priori leads to the necessity of introducing a ``confidence score'' or ``model score'' associated with each bounding box prediction.
+This allows to evaluate the model at different levels of confidence, \ie
+to regulate the trade-off between different types of classification error.
+
+With these needs in mind, the mean Average Precision~(mAP)
+\abbrev{\id{mAP}mAP}{mean Average Precision}~\cite{Everingham10}
+metric was introduced and it is widely used to evaluate models in object detection and segmentation online challenges.
+Before talking about the mAP, it is reasonable to understand the precision and recall concepts of a classifier and then
+discuss about  Average Precision~(AP)~\cite{Everingham10}.
+%
+\abbrev{\id{AP}AP}{Average Precision}
+%
+Before all of that, we need to consider the Intersection over Union (IoU) \abbrev{\id{IoU}IoU}{Intersection over Union} concept applied in object localization evaluation.
+
+
+\subsection{Object localization evaluation}
+%
+As aforementioned, we need to evaluate our model regarding object localization.
+In other words, we need to know how closely the object boundary output overlaps the ground truth.
+To measure that, we use the IoU,
+\abbrev{\id{IoU}IoU}{Intersection over Union}
+which may be used to evaluate any algorithm that outputs bounding boxes.
+
+The IoU is based on the Jaccard index~\cite{jaccard1912distribution}, also referred to as the Jaccard similarity coefficient, which is a standard for evaluating the similarity between finite sample sets.
+One may compute the IoU as follows: given a predicted bounding box $B_{p}$ associated to a ground truth bounding box $B_{gt}$, the IoU is the ratio of the overlap to the union of the boxes areas,
+% ; as shown in Equation~\eqref{eq:IoU},
+%
+\begin{equation}
+ IoU = \frac{\textrm{area}~(B_p \cap B_{gt})}{\textrm{area}~(B_p \cup B_{gt})}
+ \label{eq:IoU}.
+\end{equation}
+\symbl{\id{IoU }$IoU$}{Intersection over Union}
+\symbl{\id{intersection }$\cap$}{Intersection sets operator}
+\symbl{\id{IoU }$\cup$}{Union sets operator}
+%
+Figure~\ref{fig:IoU} illustrates the IoU of a ground truth box (in green) and a prediction box (in red).
+The area (in blue) is given by the number of pixels inside the bounding boxes.
+%
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=.6\linewidth]{IoU.pdf}
+	\caption{Intersection over Union (IoU).}
+	\label{fig:IoU}
+\end{figure}
+
+Detections output by the model are considered as true positive (TP) \abbrev{\id{TP}TP}{True Positive}
+if the IoU between a proposal and the ground truth of the object is equal to or greater than a certain threshold and as false positive (FP) \abbrev{\id{FP}FP}{False Positive}
+otherwise. Typically, this threshold is set to $50\%$; however, evaluations with thresholds up to 95\% are found in the literature.
+A false negative (FN) \abbrev{\id{FN}FN}{False Negative} is a not detected ground truth object.
+In the object detection context, a true negative (TN) \abbrev{\id{TN}TN}{True Negative} does not make sense since it would be all image regions that were
+correctly considered as background, which would amount to a infinite number of possible bounding boxes.
+Although we only consider bounding boxes, IoU is also applicable to pixel-wise segmentation~\cite{He2017mask}.
+
+\subsection{Precision \& recall}
+%
+The precision $P$ measures the ratio of true positive to the total of {\bf predicted detections},
+%
+\symbl{\id{TP }$TP$}{True Positive}
+\symbl{\id{FP }$FP$}{False Positive}
+\symbl{\id{P }$P$}{Precision}
+\begin{equation}
+P = \frac{TP}{TP + FP} = \frac{TP}{\textrm{all detections}},
+\label{eq:precision}
+\end{equation}
+%
+% Equation~\eqref{eq:precision},
+\ie how accurate the predictions are.
+The closer to $1.0$ the precision score is, the more probable the detector output is correct.
+
+
+The recall $R$, also referred to as sensitivity, measures the ratio of true positive detections to the total of {\bf objects in the dataset},
+%
+\symbl{\id{R }$R$}{Recall}
+\symbl{\id{FN }$FN$}{False Negative}
+\begin{equation}
+R = \frac{TP}{TP + FN} = \frac{TP}{\textrm{all ground truths}},
+\label{eq:recall}
+\end{equation}
+% Equation~\eqref{eq:recall}
+\ie how well it retrieves the objects in the dataset.
+The closer to $1.0$ the recall score is, the more probable it is that the objects in the dataset are detected.
+
+%
+
+It is worth mentioning that there is an inverse relationship between these metrics as they inversely depend on the IoU threshold previously set.
+
+\subsection{(Mean) Average Precision for object detection}
+%
+The procedure to compute the AP follows.
+For a given class, we rank all predictions by the model score, from highest to lowest.
+Then, we compute what the precision and recall would be for that output to be a considered as positive by the model.
+This is equivalent to varying the model score threshold that determines what is counted as a model-predicted positive detection of the class.
+Then, for calculating the AP score, we take the precision average across all recall values, as follows:
+% Equation~\eqref{eq:AP},
+\symbl{\id{r }$AP$}{Average Precision}
+\symbl{\id{card }$\card(\cdot)$}{Cardinality of a set}
+\symbl{\id{sum }$\sum$}{Summation operator}
+\symbl{\id{stepR }$R_s$}{Recall step size}
+\symbl{\id{setR }$\Rcal$}{Set of recall values}
+%
+\begin{equation}
+AP = \frac{1}{\card(\Rcal)} \sum_{R\,\in\,\Rcal}P_{\rm interp}(R),
+\label{eq:AP}
+\end{equation}
+%
+where, $\Rcal$ is the set of recalls from $0$ to $1$ with step size $R_s$;
+$\card(\Rcal)$ is cardinality of the set $\Rcal$, and;
+$P_{\rm interp}$ is defined as
+%
+%
+\symbl{\id{p_interp }$P_{interp}(R)$}{Interpolated precision at recall $R$}
+\symbl{\id{r }$AP$}{Average Precision}
+\symbl{\id{prtilde }${P(\tilde{R})}$}{Measured precision at recall ${\tilde{R}}$.}
+%
+\begin{equation}
+P_{\rm interp}(R) = \max_{\tilde{R} \geq R}\,{P(\tilde{R})},
+\label{eq:p_interp}
+\end{equation}
+%
+%
+where ${P(\tilde{R})}$ is the measured precision at recall ${\tilde{R}}$.
+We execute this interpolation in order to smooth the oscillations caused by small variations in the precision computations.
+%
+%
+One may view the AP as the area under the curve (AUC) of the precision-recall graph.
+We approximate this computation by interpolating the precision at each recall level by $R$ taking the maximum precision measured for a method for which the corresponding recall exceeds $R$, as shown in Equation~\eqref{eq:p_interp}.
+
+
+In~\cite{Everingham10}, the authors vary the recall from 0 to 1, with step size $R_s=0.1$, so that $\card(\Rcal)=11$.
+In this work, following~\cite{He2017mask}, we employ step size $R_s=0.01$,  so that $\card(\Rcal)=101$.
+By lowering $R_s$, we aim to better approximate the AUC \abbrev{\id{AUC}AUC}{Area under Curve}
+of the precision-recall graph.
+
+One may notice that to obtain a high score, a method must have high precision at all recall levels -- this penalizes methods which retrieve only a subset of examples with high precision (\eg side view of cars)~\cite{Everingham10}.
+Also, remember that the IoU has a direct impact on AP since it determines if a detection is a TP or FP.
+
+% It all sounds complicated but gets more comfortable as we illustrated this procedure with an example, as follows.
+This computation is exemplified next.
+% Let us say we have $5$ instances of a given class in our dataset.
+Consider a dataset with $5$ instances of a given class.
+We first rank all the model's predictions for that class according to the predicted confidence level (from the highest to the lowest), irrespective of correctness.
+Table~\ref{tab:ex_rank_detections} shows an example of hypothetical predictions for those 5 instances ranked by their confidence level.
+%
+\begin{table}[th]
+\centering
+\begin{tabular}{ccccc}
+\toprule
+Rank &  Confidence &  Correct? &  Precision &  Recall \\
+\midrule
+1 &    0.99 &      True &   1.00 &     0.2 \\
+2 &    0.95 &      True &   1.00 &     0.4 \\
+3 &    0.82 &     False &   0.67 &     0.4 \\
+4 &    0.81 &     False &   0.50 &     0.4 \\
+5 &    0.79 &      True &   0.60 &     0.6 \\
+6 &    0.78 &     False &   0.50 &     0.6 \\
+7 &    0.74 &      True &   0.57 &     0.8 \\
+8 &    0.73 &     False &   0.50 &     0.8 \\
+9 &    0.63 &     False &   0.44 &     0.8 \\
+10 &   0.62 &      True &   0.50 &     1.0 \\
+\bottomrule
+\end{tabular}
+\caption{Example of ranked hypothetical detections.}
+\label{tab:ex_rank_detections}
+\end{table}
+%
+The column ``Correct?'' shows if the detection match the ground truth for an IoU equal or higher than a threshold of, say 50\%~\cite{Everingham10}.
+%
+Let us consider the row with rank \#3.
+The precision for that row is the proportion of TP, $P=2/3=0.67$;
+and the recall is the ratio of TP to total of examples, $R = 2/5 = 0.4$.
+We can notice that the recall still increases as we include more predictions (lower the confidence model threshold), but the precision goes up and down.
+The Figure~\ref{fig:prec-rec_curve} shows the precision-recall curve, obtained by computing $P$ and $R$ for all rows.
+%
+\begin{figure}[th]
+	\centering
+	\includegraphics[width=.63\linewidth]{precision.pdf}
+	\caption{Precision-recall curve.}
+	\label{fig:prec-rec_curve}
+\end{figure}
+
+
+Again, one may view AP as the AUC of the precision-recall curve.
+Remember that we approximate the computation by first smoothing the precision oscillations according to Equation~\eqref{eq:p_interp}, which is better understandable in Figure~\ref{fig:prec-rec_curve_interp_ex},
+where we give an example of computing $P_{interp}(0.7)$.
+%
+%
+\begin{figure}[th!]
+	\centering
+	\includegraphics[width=.73\linewidth]{precision_interp_r.pdf}
+	\caption[Example of computing $P_{interp}$]{Example of computing $P_{interp}$. In this case, $P_{interp}(0.7) = 0.57$.}
+	\label{fig:prec-rec_curve_interp_ex}
+\end{figure}
+%
+The Figure~\ref{fig:prec-rec_curve_interp} presents the curve of $P_{interp}$ computed across all recall values.
+%
+%
+\begin{figure}[bh!]
+	\centering
+	\includegraphics[width=.63\linewidth]{precision_interp.pdf}
+	\caption{Precision-recall curve with $P_{interp}$.}
+	\label{fig:prec-rec_curve_interp}
+\end{figure}
+%
+Finally, we may compute the AP of our example, using Equation~\eqref{eq:AP}. Since we varied the recall from $0$ to $1$ with $R_s=0.1$, $\card(\Rcal)=11$.
+\begin{equation*}
+\begin{split}
+AP &= \frac{1}{11}\bigg(P_{interp}(0.0)+P_{interp}(0.1)+...+P_{interp}(1.0)\bigg) =\\
+   &= \frac{1}{11}\bigg(1.00 + 1.00 + 1.00 + 1.00 + 1.00 + 0.60 + 0.60 + 0.57 + 0.57 + 0.50 + 0.50 \bigg) =\\
+   &= 0.7582.
+\end{split}
+\end{equation*}
+
+So far, we have defined the AP and seen the impact of the IoU threshold in its computation.
+We may now calculate the mAP by computing the AP for all the $M$ classes in the dataset and taking the average over them and/or IoU thresholds, as follows:
+%
+\begin{equation}
+mAP = \frac{1}{M}\sum_{m\,\in\,M}AP_m,
+\label{eq:mAP}
+\end{equation}
+%
+where $AP_m$ is the Average Precision computed at each class and/or IoU threshold $m$.
+%
+Depending on the competition this procedure of computing the mAP may differ.
+In the next Section we discuss two famous online object detections competitions.
+
+\subsection{Online challenges}
+%
+The PASCAL Visual Object Classes (VOC) is a dataset for object detection~\cite{Everingham10}.
+\abbrev{\id{VOC}VOC}{PASCAL Visual Object Classes dataset}
+In this challenge, a prediction is considered a TP if $IoU \geq 0.5$.
+In the case of multiple detections of the same object, it counts the first one as a positive and others as negatives.
+So, it is the responsibility of the competitor to deal with multiple detections for the same object.
+The mAP in PASCAL VOC is calculated by computing the AP as discussed previously, considering $IoU \geq0.5$, and averaging over all 20 object categories in the dataset.
+%
+
+%http://cocodataset.org/#detection-eval
+Latest works~\cite{He2017mask}, including this one, tend to report results for the Microsoft Common Objects in Context (MSCOCO) dataset~\cite{MSCOCO2014} only.
+\abbrev{\id{MSCOCO}MSCOCO}{Microsoft Common Objects in Context dataset}
+There are 12 metrics to assess the performance of an object detector on MSCOCO.
+Nevertheless, we only focus on the 6 metrics based on AP.
+The primary challenge metric for this competition averages AP for IoU from $0.5$ to $0.95$ with a step size of $0.05$ (AP at $[0.5:0.05:0.95]$).
+By averaging over the higher IoU thresholds instead of only considering one more tolerant threshold, say $IoU \geq 0.5$, tends to reward detectors with better localization.
+Other two MSCOCO challenge metrics consider only a single IoU threshold, one $IoU \geq 0.5$ (just like in PASCAL VOC) and another one $IoU \geq 0.75$.
+For the MSCOCO challenge, the AP is averaged over all 80 object categories to compute mAP.
+
+In MSCOCO dataset $41\%$ of objects are considered small (area $< 32^2$ pixels), $34\%$  medium ($32^2 < $ area $< 96^2$), and $24\%$  large object (area $> 96^2$)~\cite{MSCOCO2014}.
+The object size affects the model accuracy substantially~\cite{Everingham10}.
+In~\cite{Everingham10, He2017mask}, it is possible to observe the performance of the methods increasing as object size increases.
+The MSCOCO challenge presents three metrics which considers objects size: mAP$_{\textrm{S}}$, mAP$_{\textrm{M}}$, mAP$_{\textrm{L}}$, in order to evaluate the detections for small, medium and large objects areas.
+For those metrics, detections of objects with an area outside of determined threshold are unconsidered.
+The area is computed as the number of pixels of the ground truth bounding box.
+
+%
+% \red{
+% Yet, MSCOCO computes the average recall (AR) which is the maximum recall given a fixed number of detections per image, averaged over categories and IoUs~\cite{Hosang2016}.
+% AR is related to the metric of the same name used in proposal evaluation but is computed on a per-category basis.
+% They also compute the AR for small, medium and large objects.
+% Although we mention these last 6 metrics, we do not use them to evaluate our models.
+% }
+
+From now on, unless otherwise noted, the (m)AP is averaged over the multiple IoU values $[0.50: 0.05: 0.95]$, for simplicity.
+We summarize the MSCOCO metrics based on AP in Table~\ref{tab:metrics}.
+%
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\multicolumn{1}{c}{{\bf Metric}} & \multicolumn{1}{c}{{\bf Description}} \\ \midrule
+mAP        & mAP at $IoU$ at $0.5:0.05:0.95$\\
+mAP$_{50}$ & mAP at $IoU \geq 0.50$\\
+mAP$_{75}$ & mAP at $IoU \geq 0.75$\\
+\midrule
+mAP$_{\textrm{S}}$           & mAP for small objects (area $ < 32^2$)\\
+mAP$_{\textrm{M}}$           & mAP for medium objects ($32^2 <$ area $< 96^2$)\\
+mAP$_{\textrm{L}}$           & mAP for large objects (area $ > 96^2$)\\
+% \midrule
+% AR$^{\textrm{max}=1}$        & AR given 1 detection per image\\
+% AR$^{\textrm{max}=10}$       & AR given 10 detections per image\\
+% AR$^{\textrm{max}=100}$      & AR given 100 detections per image\\
+% \midrule
+% AR$_{\textrm{S}}$           & AR for small objects (area $ < 32^2$)\\
+% AR$_{\textrm{M}}$           & AR for medium objects ($32^2 <$ area $< 96^2$)\\
+% AR$_{\textrm{L}}$           & AR for large objects (area $ > 96^2$)\\
+\bottomrule
+\end{tabular}
+\caption{Summary of MSCOCO metrics based on AP.}
+\label{tab:metrics}
+\end{table}
+
+%
+\section{Implementation details}
+%
+Next, we discuss about the implementation details including network architectures and hyper-parameters used on training and test phases.
+We use the mask R-CNN benchmark implementation available under MIT-license~\cite{massa2018mrcnn}.
+It is worth mentioning that we do not tune any hyper-parameter since we do not have a validation set.
+All of them were chosen based on~\cite{He2017mask}, and taking into account the characteristics of the dataset used in our experiments.
+
+The experiments were performed in a machine equipped with 4 GTX 1080 GPUs, 64GB DDR4 2133MHz of RAM, Intel\textsuperscript{TM} Core i7 6850-K 3.6 GHz processor, and Ubuntu 16.04 as the operational system.
+
+
+\subsection{Dataset}
+%
+% Unfortunately, we do not use our MBG dataset here, since it is still under labeling process.
+Since the MBG dataset described in Section~\ref{sec:new_data} is still being labeled, we use the publicly available CEFET dataset\footnote{from: \url{https://drive.google.com/open?id=1tDOVdb_vALUnD_cY3lQf0ggoiM1F63Jl}.}.
+% only the videos recorded at $5m$ are public available.
+Again, the train-test split of this dataset is included in the annotation files.
+% We noticed that they cut the videos in parts, which they call ``Tomada''.
+In the CEFET dataset, each video is cut into several parts.
+Two parts of the same video, for example, appear one in the training set and the other in the test set.
+As we are using an imaging approach instead of video, this split may facilitate the task of our detector since in two ``Tomadas'' of the same video we have the same background and objects placed at the same place.
+%
+Therefore, in this work, we adopted a train-test split based on the videos \ie all the parts of a video are either in train or test set.
+Having split the videos, we extract images every 30 frames.
+In total, there are 419 images, containing 374 tires,  for training and 144 images, containing 449 tires,  for test.
+% how many annoted objects?
+
+
+%Train: 777, 800, 807 (419 imgs)
+%Test: 804, 806, 810 (144 imgs)
+%every 30 frames
+
+%
+\subsection{Network architectures}
+We instantiate Faster R-CNN with different networks architectures.
+We define the Faster R-CNN as composed of two parts:
+(i) the network backbone: the convolutional network architecture (\eg VGG~\cite{Simonyan2015VGG}, ResNet~\cite{He2016deep}) responsible for the feature extraction task over images; and
+(ii) the network head: responsible for image classification and bounding box regression tasks~\cite{He2017mask}.
+
+We use the network depth (number of stacked layers) nomenclature to denote the backbone architecture.
+We perform experiments by using ResNet~\cite{He2016deep}
+% \red{and ResNeXt~\cite{RESNEXT}}
+with depth of 50 and 101.
+Following the original implementation of Faster R-CNN with ResNets,
+we extract features from the final convolutional layer of 4th stage, which we call C4.
+This is widely used in the literature~\cite{He2016deep, Huang2017,Shrivastava2016skip}.
+We denote this backbone by \mbox{R-$<50, 101>$-C4}.
+%
+The network head follows the architectures presented in Faster R-CNN~\cite{Ren2017fasterpami}.
+% \red{
+% %Specifically, we extend the Faster R-CNN box heads from the ResNet [19] and FPN [27] papers. Details are shown in Figure 4.
+% The head on the ResNet-C4 backbone includes the 5th stage of ResNet (namely, the 9-layer ‘res5’~\cite{He2016deep}), which is compute-intensive.
+% % For FPN, the backbone already includes res5 and thus allows for a more efficient head that uses fewer filters.
+% }
+
+\subsection{Training and inference}
+%
+% We follow the hyperparameters as in~\cite{He2017mask}.
+During training the positive samples are the RoIs that has an $IoU \geq 0.5$ with the ground truth and all other RoIs are considered as negative samples, as in~\cite{Girshick2015}.
+% The mask target is the intersection between an RoI and its associated ground truth mask.
+We adopt image-centric training~\cite{Girshick2015}.
+We resize the images, so that the shorter edge is not greater than 800  pixels resolution, while keeping the aspect ratio~\cite{He2017mask}.
+%and larger ... and 1,333 ... respectively
+Our mini-batch has $4$ images (we train on 2 GPUs, 2 images per GPU).
+From each image, we sample $N=64$ RoIs with 1:3 ratio of positive to negatives~\cite{Girshick2015, Ren2017fasterpami}.
+% For the C4 backbone $N$ is $64$~\cite{Girshick2015, Ren2017fasterpami}.
+% and 512 for FPN (as in~\cite{Lin2017pyramid}).
+We train our models for $18$k iterations, with learning rate of $0.005$ which is decreased by $10$ at the $12$k and $16$k iterations.
+We use weight decay of 0.0001 and momentum of 0.9.
+%With ResNeXt~\cite{Xie2017ResneXt}, we train with 1 image per GPU and the same number of iterations, with a starting learning rate of 0.01.
+
+% To train RPN, we consider as positive the anchors with $IoU\geq 0.7$ and negative with $IoU\leq 0.3$~\cite{Ren2017fasterpami}.
+We use RPN anchors at 5 scales (32, 64, 128, 256, and 512) and 3 aspect ratios (1:2, 1:1, and 2:1) with respect to the resized images input~\cite{Lin2017pyramid}.
+We set number of proposals of RPN ouput to $600$.
+These boxes highly overlap.
+In order to reduce the redundancy caused by these overlaps,
+we use an IoU threshold for NMS at $0.7$ and keep only the top-$50$ ranked proposals, based on $cls$ score (see Section~\ref{sec:rpn}), for Fast R-CNN train~\cite{Ren2017fasterpami}.
+% \red{
+% % The RPN anchors span 5 scales and 3 aspect ratios, following~\cite{Lin2017pyramid}.
+% For convenient ablation, RPN is trained separately and does not share features with Mask R-CNN, unless specified.
+% For every entry in this paper, RPN and Mask R-CNN have the same backbones and so they are shareable.
+% }
+
+% \subsection{Inference}
+We perform batch inference using 2 GPUs and 4 images per batch.
+% and 1000 for FPN~\cite{Lin2017pyramid}.
+We set the number of proposals as 300, run predictions on those, and suppress ambiguous detections by applying NMS~\cite{Girshick2015DPM} at IoU=$0.5$.
+
+\section{Results}
+%
+In this Section, we analyze our results both quantitatively and qualitatively.
+For the first one, we plot the precision-recall curve for results obtained from the test set.
+Also, we summarize these curves into single numbers as discussed in Section~\ref{sec:eval}.
+Moreover, we make a visual analysis of our results by looking at the detection outputs from our models.
+
+
+\subsection{Quantitative results}
+%
+It took about $2h$ to train the models with R-50-C4 backbone while the models with R-101-C4 took about $3.5h$.
+For inference, the models with R-50-C4 backbone took about $90ms$ per image against $140mss$ for R-101-C4.
+%
+
+The Table~\ref{tab:results_CEFET} shows the result for the CEFET dataset.
+We report the mAP (averaged over multiple IoUs), mAP$_{50}$, mAP$_{75}$, mAP$_{\textrm{S}}$, mAP$_{\textrm{M}}$, mAP$_{\textrm{L}}$ metrics, summarized in Table~\ref{tab:metrics}.
+We can notice an improvement of almost 5 points in mAP by only adopting a random horizontal flip, with probability of 50\%, as data augmentation strategy in R-50-C4 backbone.
+Except mentioned otherwise, we keep this data augmentation method for the other experiments.
+%~
+\begin{table}[b!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}c|l|c|ccc|cc@{}}
+\toprule
+                       &                        & backbone & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_\textrm{M}$ & mAP$_\textrm{L}$ \\
+                       \hline
+\multirow{3}{*}{train} & Faster R-CNN (no aug.) & R-50-C4 &  89.86 & 90.19 & 90.19 & 86.15 & 92.16 \\
+                       & Faster R-CNN           & R-50-C4 & 89.11 & 89.84 & 89.84 &  87.32 & 90.34  \\
+                       & Faster R-CNN           & R-101-C4 & 88.95 & 89.48 & 89.48 &  87.52 & 91.02 \\
+\hline
+\multirow{3}{*}{test}  & Faster R-CNN (no aug.) & R-50-C4  & 43.81 & 62.25 & 53.64 &  34.46 & 59.56  \\
+                       & Faster R-CNN           & R-50-C4  & 47.38 & 64.16 & 57.70 &  38.42 & 61.85\\
+                       & Faster R-CNN           & R-101-C4 & 49.31 & 66.68 & 62.61 &  39.46 & 65.21 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Main results for CEFET dataset.}
+\label{tab:results_CEFET}
+\end{table}
+
+We also observe that Faster R-CNN with R-101-C4 backbone obtained the best result.
+This is due to deeper networks being better feature extractors.
+% However, for these networks we may be caution with overfitting since the deeper the network more parameters it has.
+% That was not the case here, since the train results are compared to the other architecture.
+While deeper networks are more prone to overfitting due to the larger number of parameters, we did not observe any overfitting in our training.
+
+We also evaluate the impact of object size in the results.
+As expected, we notice better results for large objects than for medium objects.
+Since we have no objects with area $< 32^2$ in the CEFET dataset, mAP$_{\textrm{S}}$ does not apply.
+
+%
+%
+
+
+
+
+Moreover, we plot the precision-recall curve for the trained model with R-101-C4 backbone %(Figures~\ref{fig:pr_R50C4_noaug},~\ref{fig:pr_R50C4}, and~\ref{fig:pr_R101C4}) at IoU from $0.5$ to $0.95$
+(Figure~\ref{fig:pr_R101C4}) at IoU varying from $0.5$ to $0.95$ with $0.05$ step.
+As expected, the higher the IoU threshold is, the worse the results are.
+That happens because as we increase the IoU threshold we only accept more accurate detections as TP,
+as a consequence, the precision and recall drops drastically.
+We can observe that we still can achieve satisfactory results at IoU up to $0.75$ from which we achieve precision higher than $0.9$ for all models.
+Unfortunately, all models do not achieve high precisions for high recalls.
+By analyzing the Equation~\eqref{eq:recall} it may be due to high rate of FN in our results.
+
+
+We show Figures~\ref{fig:prec-rec_curve_50} and~\ref{fig:prec-rec_curve_75}, for better analyzing the models at single IoU thresholds.
+As can be notice, R-101-C4 keeps higher precisions for higher recalls if compared to models with R-50-C4 backbone.
+% %
+% \begin{figure*}[htb!]
+% 	\centering
+% 	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG_zoom_1.pdf}~
+% 	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG_zoom_2.pdf}\\
+% 	\vspace{2mm}
+% 	\includegraphics[width=\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG.pdf}
+% % 	\includegraphics[width=.5\linewidth]{base4.png}
+% 	\caption{Precision-recall curve for R-50-C4 (no aug.) at various IoUs.}
+% 	\label{fig:pr_R50C4_noaug}
+% \end{figure*}
+% %
+% \begin{figure*}[htb!]
+% 	\centering
+% 	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle_zoom_1.pdf}~
+% 	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle_zoom_2.pdf}\\
+% 	\vspace{2mm}
+% 	\includegraphics[width=\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_50_C4_1x_cocostyle.pdf}
+% % 	\includegraphics[width=.5\linewidth]{base4.png}
+% 	\caption{Precision-recall curve for R-50-C4 at various IoUs.}
+% 	\label{fig:pr_R50C4}
+% \end{figure*}
+%
+\begin{figure*}[htb!]
+	\centering
+	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_101_C4_1x_cocostyle_zoom_1.pdf}~
+	\includegraphics[width=.5\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_101_C4_1x_cocostyle_zoom_2.pdf}\\
+	\vspace{2mm}
+	\includegraphics[width=\linewidth, trim={0 0 0 0},clip]{pr_curve_e2e_faster_rcnn_R_101_C4_1x_cocostyle.pdf}
+% 	\includegraphics[width=.5\linewidth]{base4.png}
+	\caption{Precision-recall curve for R-101-C4 at various IoUs.}
+	\label{fig:pr_R101C4}
+\end{figure*}
+%
+%
+\begin{figure}[htb!]
+	\centering
+	\includegraphics[width=.85\linewidth]{pr_curve_comp_50.pdf}
+	\caption{Precision-recall curve at IoU = 0.50.}
+	\label{fig:prec-rec_curve_50}
+\end{figure}
+%
+\begin{figure}[htb!]
+	\centering
+	\includegraphics[width=.85\linewidth]{pr_curve_comp_75.pdf}
+	\caption{Precision-recall curve at IoU = 0.75.}
+	\label{fig:prec-rec_curve_75}
+\end{figure}
+
+
+%
+% FIRST ROUND!
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}c|l|c|ccc|ccc@{}}
+% \toprule
+%                        &                        & backbone & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_\textrm{S}$ & mAP$_\textrm{M}$ & mAP$_\textrm{L}$ \\
+%                        \hline
+% \multirow{3}{*}{train} & Faster R-CNN (no aug.) & R-50-C4  & 89.30 & 89.95 & 89.95 & -- & 88.78 & 90.88 \\
+%                        & Faster R-CNN           & R-50-C4 & 89.17 & 90.42 & 90.42 & -- & 88.14 & 90.88 \\
+%                        & Faster R-CNN           & R-101-C4 & 89.21 & 89.95 & 89.95 & -- & 85.74 & 91.66 \\
+% \hline
+% \multirow{3}{*}{test}  & Faster R-CNN (no aug.) & R-50-C4  & 42.71 & 61.37 & 52.33 & -- & 33.75 & 57.75 \\
+%                        & Faster R-CNN           & R-50-C4  & 47.49 & 63.04 & 56.60 & -- & 37.68 & 63.52 \\
+%                        & Faster R-CNN           & R-101-C4 & 47.22 & 61.88 & 56.52 & -- & 36.92 & 64.21 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{Main results for CEFET dataset.}
+% \label{tab:res}
+% \end{table}
+
+
+
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}l|c|ccc|ccc@{}}
+% \toprule
+%                             & backbone      & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_{\textrm{S}}$ & mAP$_{\textrm{M}}$ & mAP$_{\textrm{L}}$ \\ \hline
+% Faster R-CNN (no aug.)      & R-50-C4 & 42.71 & 61.37 & 52.33 & -- & 33.75 & 57.75 \\
+% Faster R-CNN                & R-50-C4 & 47.49 & 63.04 & 56.60 & -- & 37.68 & 63.52 \\
+% Faster R-CNN                & R-101-C4 & 47.22 & 61.88 & 56.52 & -- & 36.92 & 64.21 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{Results for CEFET dataset.}
+% \label{tab:results_CEFET}
+% \end{table}
+% %
+% %
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}l|c|ccc|ccc@{}}
+% \toprule
+%                             & backbone      & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_{\textrm{S}}$ & mAP$_{\textrm{M}}$ & mAP$_{\textrm{L}}$ \\ \hline
+% Faster R-CNN (no aug.) & R-50-C4 & 89.30 & 89.95 & 89.95 & -- & 88.78 & 90.88 \\
+% Faster R-CNN                & R-50-C4 & 89.17 & 90.42 & 90.42 & -- & 88.14 & 90.88 \\
+% Faster R-CNN                & R-101-C4 & 89.21 & 89.95 & 89.95 & -- & 85.74 & 91.66 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{Results for CEFET TRAIN dataset.}
+% \label{tab:results_CEFET}
+% \end{table}
+%
+%
+
+
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}c|l|c|ccc|ccc@{}}
+% \toprule
+%                        &                        & backbone & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_\textrm{S}$ & mAP$_\textrm{M}$ & mAP$_\textrm{L}$ \\
+%                        \hline
+% \multirow{3}{*}{train} & Faster R-CNN (no aug.) & R-50-C4  & 89.55 & 89.96 & 89.96 & -- & 88.37 & 91.18 \\
+%                        & Faster R-CNN           & R-50-C4 & 89.36 & 90.43 & 90.17 & -- & 87.29 & 91.24  \\
+%                        & Faster R-CNN           & R-101-C4 & 89.45 & 90.19 & 90.19 & -- & 86.90 & 91.57 \\
+% \hline
+% \multirow{3}{*}{test}  & Faster R-CNN (no aug.) & R-50-C4  & 46.31  &62.10  &58.18 & -- & 35.06 & 64.76  \\
+%                        & Faster R-CNN           & R-50-C4  & 46.60  & 61.47  & 58.26  & -- & 36.43 & 63.63 \\
+%                        & Faster R-CNN           & R-101-C4 & 49.62 & 65.04 &  61.15 & -- & 38.52 & 67.95 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{table}
+
+
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}l|c|ccc|ccc@{}}
+% \toprule
+%                             & backbone      & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_{\textrm{S}}$ & mAP$_{\textrm{M}}$ & mAP$_{\textrm{L}}$ \\ \hline
+% Faster R-CNN (no aug.)      & R-50-C4 & 46.31  &62.10  &58.18 & -- & 35.06 & 64.76  \\
+% Faster R-CNN                & R-50-C4 & 46.60  & 61.47  & 58.26  & -- & 36.43 & 63.63 \\
+% Faster R-CNN                & R-101-C4 & 49.62 & 65.04 &  61.15 & -- & 38.52 & 67.95 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{NEW Results for CEFET dataset.}
+% \label{tab:results_CEFET}
+% \end{table}
+% %
+% %
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}l|c|ccc|ccc@{}}
+% \toprule
+%                             & backbone      & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_{\textrm{S}}$ & mAP$_{\textrm{M}}$ & mAP$_{\textrm{L}}$ \\ \hline
+% Faster R-CNN (no aug.)      & R-50-C4  & 89.55 & 89.96 & 89.96 & -- & 88.37 & 91.18 \\
+% Faster R-CNN                & R-50-C4  & 89.36 & 90.43 & 90.17 & -- & 87.29 & 91.24  \\
+% Faster R-CNN                & R-101-C4 & 89.45 & 90.19 & 90.19 & -- & 86.90 & 91.57 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{NEW Results for CEFET TRAIN dataset.}
+% \label{tab:results_CEFET}
+% \end{table}
+
+% %
+% \begin{table}[h]
+% \centering
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}c|l|c|ccc|ccc@{}}
+% \toprule
+%                        &                        & backbone & mAP   & mAP$_{50}$ & mAP$_{75}$ & mAP$_\textrm{S}$ & mAP$_\textrm{M}$ & mAP$_\textrm{L}$ \\
+%                        \hline
+% \multirow{3}{*}{train} & Faster R-CNN (no aug.) & R-50-C4  & 90.78 & 95.67 &  95.59 & -- & 90.72 & 91.75 \\
+%                        & Faster R-CNN           & R-50-C4 & 86.95 & 94.53 & 93.65 & -- & 85.58 & 87.98  \\
+%                        & Faster R-CNN           & R-101-C4 & 85.23 & 93.31 & 93.31 & -- & 86.85 & 85.52 \\
+% \hline
+% \multirow{3}{*}{test}  & Faster R-CNN (no aug.) & R-50-C4  & 45.92 & 65.76 & 58.05 & -- & 35.24 & 63.11  \\
+%                        & Faster R-CNN           & R-50-C4  & 51.31 & 69.69 & 64.34 & -- & 41.98 & 67.50 \\
+%                        & Faster R-CNN           & R-101-C4 & 55.77 & 75.89 & 70.04 & -- & 46.63 & 70.93 \\
+% \bottomrule
+% \end{tabular}
+% }
+% \caption{Results for CEFET TRAIN dataset.}
+% \label{tab:results_CEFET}
+% \end{table}
+
+
+
+\newpage
+\subsection{Visual analysis}\label{sec:res_vis}
+%
+In this Section, we discuss some visual results by analyzing the detections in the images.
+We try to associate the visualization with the numerical results obtained in the previous Section.
+To do so, we plot the ground truth bounding boxes in blue and overlay the models detection in red, along with the label and confidence scores.
+
+As mentioned, the recall is low for all models, which may due to high rate of FN in our results.
+By looking at an example in Figure~\ref{fig:hard}, one may notice that there are many hard-to-detect tires in the dataset, even for humans.
+In this image none of the models were capable to detect any tire.
+%
+% hard: no one model detected anything
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_30.pdf}
+	\caption{Hard example.}
+	\label{fig:hard}
+\end{figure}
+
+
+% improvement
+%
+Another interesting fact can be observed in Figure~\ref{fig:improv_1} where the same tire (the most right one) was not detected by the R-50-C4 model without data augmentation; detected with a low confidence score ($0.28$) by the model with R-50-C4, using data augmentation; and detected with a high confidence score ($1.00$) by the model with R-101-C4, also using data augmentation.
+All models found the most left tire with the same confidence score and none of them found the tire at the top.
+Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, where both models with R-50-C4 were not capable of finding the tire, while the model with R-101-C4 detected it with a high confidence score ($0.97$).
+%
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_1.pdf}
+    \caption{R-50-C4 (no aug.).}
+    \label{fig:improv_50N}
+  \end{subfigure}\\
+  %
+  \begin{subfigure}[t]{0.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_1.pdf}
+    \caption{R-50-C4.}
+    \label{fig:improv_50}
+  \end{subfigure}
+  %
+  \begin{subfigure}[t]{0.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_1.pdf}
+    \caption{R-101-C4.}
+    \label{fig:improv_101}
+  \end{subfigure}
+  \caption{Detection improvement over the models.}
+  \label{fig:improv_1}
+\end{figure}
+%
+%
+% only R-101 detected
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_12.pdf}
+    \caption{R-50-C4 (no aug.).}
+    \label{fig:improv_50N}
+  \end{subfigure}\\
+  %
+  \begin{subfigure}[t]{0.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_12.pdf}
+    \caption{R-50-C4.}
+    \label{fig:improv_50}
+  \end{subfigure}
+  %
+  \begin{subfigure}[t]{0.9\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_12.pdf}
+    \caption{R-101-C4.}
+    \label{fig:improv_101}
+  \end{subfigure}
+  \caption{Another detection improvement over the models.}
+  \label{fig:improv_2}
+\end{figure}
+%
+
+% % 75
+% \begin{figure}[th!]
+%   \centering
+%   \begin{subfigure}[t]{.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_75.pdf}
+%     \caption{R-50-C4 (no aug.).}
+%     \label{fig:improv_50N}
+%   \end{subfigure}\\
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_75.pdf}
+%     \caption{R-50-C4.}
+%     \label{fig:improv_50}
+%   \end{subfigure}
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_75.pdf}
+%     \caption{R-101-C4.}
+%     \label{fig:improv_101}
+%   \end{subfigure}
+%   \caption{75}
+%   \label{fig:improv}
+% \end{figure}
+%
+%
+In Figure~\ref{fig:FP_cases}, we observe some case of false positives.
+For the same image, only the model with R-50-C4 backbone and data augmentation output the correct detections.
+The other two models output one FP each. The R-50-C4 (no aug.) wrongly output a tire with low confidence score ($0.05$) between two true tires; while the R-101-C4 predicted the yellow garbage bin as a tire with high confidence score ($1.00$).
+%
+% 78
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[t]{.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_78.pdf}
+    \caption{R-50-C4 (no aug.).}
+    \label{fig:FP_cases_50N}
+  \end{subfigure}\\
+  %
+  \begin{subfigure}[t]{0.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_78.pdf}
+    \caption{R-50-C4.}
+    \label{fig:FP_cases_50}
+  \end{subfigure}
+  %
+  \begin{subfigure}[t]{0.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_78.pdf}
+    \caption{R-101-C4.}
+    \label{fig:FP_cases_101}
+  \end{subfigure}
+  \caption{Some false positives cases.}
+  \label{fig:FP_cases}
+\end{figure}
+%
+%
+% % 80
+% \begin{figure}[th!]
+%   \centering
+%   \begin{subfigure}[t]{.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_80.pdf}
+%     \caption{R50NO.}
+%     \label{fig:improv_50N}
+%   \end{subfigure}\\
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_80.pdf}
+%     \caption{R50}
+%     \label{fig:improv_50}
+%   \end{subfigure}
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_80.pdf}
+%     \caption{R101}
+%     \label{fig:improv_101}
+%   \end{subfigure}
+%   \caption{80}
+%   \label{fig:improv}
+% \end{figure}
+%
+
+In Figure~\ref{fig:occlusion}, all models could find almost all tires except for the one with high level of occlusion (the very middle one, under all tires).
+That tire is hard to be found even for humans.
+Besides, the dataset does not have many occlusions examples, which makes detection of such cases even harder.
+%
+% 127
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_127.pdf}
+    \caption{R-50-C4 (no aug.).}
+    \label{fig:occlusion_50N}
+  \end{subfigure}\\
+  %
+  \begin{subfigure}[t]{0.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_127.pdf}
+    \caption{R-50-C4.}
+    \label{fig:occlusion_50}
+  \end{subfigure}
+  %
+  \begin{subfigure}[t]{0.85\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_127.pdf}
+    \caption{R-101-C4.}
+    \label{fig:occlusion_101}
+  \end{subfigure}
+  \caption{High occlusion example.}
+  \label{fig:occlusion}
+\end{figure}
+
+In Figure~\ref{fig:wrong_fp} all models detect, with a high confidence score ($1.00$), a tire that have not been annotated in the dataset.
+Although is has been correctly detect, it was counted as a FP.
+
+% 133
+\begin{figure}[th!]
+  \centering
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_133.pdf}
+%     \caption{R-50-C4 (no aug.).}
+%     \label{fig:wrong_fp_50N}
+  \end{subfigure}%\\
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_133.pdf}
+%     \caption{R-50-C4.}
+%     \label{fig:wrong_fp_50}
+%   \end{subfigure}
+%   %
+%   \begin{subfigure}[t]{0.85\linewidth}
+%     \centering
+%     \includegraphics[width=\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_133.pdf}
+%     \caption{R-101-C4.}
+%     \label{fig:wrong_fp_101}
+%   \end{subfigure}
+  \caption{Wrong false positive.}
+  \label{fig:wrong_fp}
+\end{figure}
+
+
+\section{Conclusions}
+%
+In this Chapter we apply deep-learning based models to detect potential mosquito breeding sites, particularly tires.
+We have seen that deeper models achieved better results.
+Some further adjustments in the model can improve even more them.
+Nevertheless, the obtained results have shown promising and that resulting models trained with CEFET dataset may be useful in detecting potential mosquitoes breeding sites.
+
+
+
+
+
+
+
+
+
+

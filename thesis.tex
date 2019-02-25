@@ -1,0 +1,77 @@
+\documentclass[msc, numbers]{coppe}
+
+
+\input{defs}
+
+\graphicspath{{/home/wesley/Dropbox/Mestrado/dissertation/text/v0/images/}}
+% \graphicspath{{./images}}
+
+
+\makelosymbols
+
+\makeindex
+
+\makeloabbreviations
+
+\begin{document}
+
+  \title{Deteção Automática de Criadouros de {\it Aedes aegypti} Usando Técnicas de Visão Computacional}
+  \foreigntitle{Automatic {\it Aedes aegypti} Breeding Grounds Detection Using Computer Vision Techniques}
+  \author{Wesley Lobato} {Passos}
+  \advisor{Prof.}{Eduardo Antônio Barros da}{ Silva}{Ph.D.}
+  \advisor{Prof.}{Gabriel Matos}{Araujo}{D.Sc.}
+  % \advisor{Prof.}{Nome do Terceiro Orientador}{Sobrenome}{D.Sc.}
+
+  \examiner{Prof.}{Eduardo Antônio Barros da Silva}{Ph.D.}
+  \examiner{Prof.}{Gabriel Matos Araujo}{D.Sc.}
+  \examiner{Prof.}{Sergio Lima Netto}{Ph.D.}
+  \examiner{Eng.}{Leonardo de Oliveira Nunes}{D.Sc.}
+  % \examiner{Prof.}{Nome do Quinto Examinador Sobrenome}{Ph.D.}
+  \department{PEE}
+  \date{02}{2019}
+
+  \keyword{Aedes aegypti}
+  \keyword{Aerial images}
+  \keyword{image processing}
+  \keyword{computer vision}
+  \keyword{machine learning}
+
+  \maketitle
+
+  \frontmatter
+  % \input{dedic}
+  % \input{thanks}
+  \input{resumo}
+  \input{abstract}
+  \tableofcontents
+  \listoffigures
+  \listoftables
+  % \printlosymbols
+  % \printloabbreviations
+
+  \mainmatter
+
+  \input{intro}
+
+  \input{mosquito}
+
+  \input{database}
+
+  % \input{CNN}
+
+  \input{detection}
+
+  \input{results}
+
+  \input{conclusions}
+
+  \appendix
+  % \input{appenA}
+  % \input{appenB}
+
+  \backmatter
+  \bibliographystyle{coppe-unsrt}
+  \bibliography{thesis}
+
+
+\end{document}

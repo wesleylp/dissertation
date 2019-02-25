@@ -1,0 +1,40 @@
+\chapter{Introduction}
+\label{chap:intro}
+
+The \emph{Aedes aegypti} is the main vector of several diseases, such as dengue, zika, chikungunya and, more recently in Brazil, urban yellow fever. 
+Zika virus disease can be quite dangerous for pregnant women because of its correlation with the microcephaly, a congenital fetus brain malformation.
+Dengue is the one that causes the most deaths, with about 390 million infections per year in the world~\cite{bhatt2013global}.
+Yellow fever also has a high rate of lethality and chikungunya can incapacitate those infected for long periods.
+
+By considering the high rates of lethality and eradication difficulty, arboviruses transmitted by \emph{Aedes aegypti} are one of the leading global health problems.
+Wherefore, the World Health Organization (WHO) launched, in 2012, a comprehensive strategy for dengue control and prevention~\cite{world2012global}, whose one of the goals is to reduce disease cases by 25\% by 2020. 
+Unfortunately, combat tools are still limited: the dengue vaccine remains in the improvement phase, and the fumes against mosquitoes are ineffective~\cite{newton1992model}. 
+Thus, the current best form of combat is through the control and elimination of possible mosquito foci proliferation, which acts directly in the prevention of all these diseases. 
+Given that the \emph{Aedes aegypti} reproduces in clean and stagnant water, the main mosquito foci are open water bowls, gutters, tires, bottles, plant pots, and any container that can collect water. 
+
+
+As a result, monitoring and controlling the mosquito without proper technical support is expensive, time-consuming and therefore inefficient. 
+For that reason, allying the knowledge of an expert with a tool that accelerates and towards a more precise work is extremely important in the current scenario. 
+Thus, using images and videos captured by an unmanned aerial vehicle (UAV), better known as a drone, with several sensors and camera is a reasonable approach.
+The objective is to identify objects with high potential of being a mosquito breeding site.
+This technology has already been used by organizations to inspect difficult-to-reach sites in order to locate such breeding spots.
+In this process, the acquired videos are examined by a specialist, which makes the procedure time-consuming and tiring, what may lead to failures.
+
+In this sense, a possible solution to increase efficiency is to apply machine learning techniques to automate the analysis process, helping the specialist in the decision-making action~\cite{casfinal2018}. 
+After this fast analysis, potential breeding sites can be treated or removed by a team of agents, as usual. 
+It is known, through a local study~\cite{tun2009reducing}, that identifying the place of highest infestation, and only treating it is almost as effective as treating all the existing ones, drastically reducing the potential for epidemic development. 
+In the case of Nova Iguaçu, a city located in the state of Rio de Janeiro, the reservoirs listed with high potential were, according to~\cite{Lagrotta2006}: water tanks, glass and plastic bottles, buckets, tires, and external drains. 
+The goal then becomes to automatically recognize as many of these objects as possible in a video or image to provide an intelligent decision support tool for agents, thereby increasing the effective area of action.
+
+
+\section{Dissertation organization}
+%
+In Chapter~\ref{chap:mosquito}, we do a review on the {\it Aedes aegypti}, including biologic aspects, transmitted diseases and sequelae, and preferred ground sites.
+Also, we point out some statistics related to the theme and government plans to combat the transmitter.
+In Chapter~\ref{chap:database}, we make a literature review of related themes, in order to see how several techniques of machine learning can be used to address the problem.
+We also present a new dataset containing the main objects considered as potential foci of the \Aedes in several scenarios.
+In Chapter~\ref{chap:system}, since we are interested in detecting objects, we describe the state-of-the-art algorithm employed in order to accomplish this task.
+We discuss from classical object detections up to recent deep-learning-based models, particularly the one employed in this work.
+The evaluation method, implementation details, and results for the method used are discussed in Chapter~\ref{chap:results}; and we finally conclude at Chapter~\ref{chap:conclusions}.
+
+

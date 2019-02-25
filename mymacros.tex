@@ -1,0 +1,236 @@
+\usepackage[utf8]{inputenc}
+\usepackage[brazil,english]{babel}
+\usepackage[T1]{fontenc}
+%\usepackage{layout}
+% \setlength{\textwidth}{15.0 cm}
+% \setlength{\textheight}{25.0 cm}
+
+% \usepackage{pagina}	% pagina-padrao
+% \usepackage{indentfirst}		% for indent
+\usepackage{graphicx}
+% \usepackage{caption}
+% \usepackage{subcaption}
+\usepackage{epstopdf}
+\usepackage{multirow}
+% \usepackage{subfig}
+%\usepackage{hyperref}
+% \usepackage{pstricks,pst-node,pst-tree}
+% \usepackage{alltt}
+%\usepackage{makeidx}
+%\makeindex
+\usepackage{enumerate}			% for configuration of enumerate environment
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage[shortcuts]{extdash}
+
+% \usepackage[portuguese,ruled]{algorithm2e}
+%
+% \usepackage{icomma}
+% % \@ifundefined{showcaptionsetup}{}{%
+% % \PassOptionsToPackage{caption=false}{subfig}}
+% % \usepackage{subfig}
+% % \usepackage[caption=false]{subfig}
+%
+% \usepackage{balance}
+%
+% \usepackage{fancyhdr} % Required for custom headers
+% \usepackage{lastpage} % Required to determine the last page for the footer
+% \usepackage{listings}
+% \usepackage[usenames,dvipsnames]{color}
+% \usepackage{extramarks} % Required for headers and footers
+% \usepackage{enumitem}
+
+
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{soul}
+
+
+\usepackage[ruled]{algorithm2e}
+\usepackage{makeidx}
+
+
+
+% Funções Trigonométricas
+\renewcommand{\cos}{\textrm{cos}}
+\renewcommand{\cosh}{\textrm{cosh}}
+\newcommand{\sen}{\textrm{sen}}
+\newcommand{\senh}{\textrm{senh}}
+\newcommand{\tg}{\textrm{tg}}
+\newcommand{\tgh}{\textrm{tgh}}
+\newcommand{\ctg}{\textrm{ctg}}
+\newcommand{\ctgh}{\textrm{ctgh}}
+% Roman
+\newcommand{\mrm}{\mathrm{m}}
+\newcommand{\Lrm}{\mathrm{L}}
+\newcommand{\irm}{\mathrm{i}}
+\newcommand{\rrm}{\mathrm{r}}
+\newcommand{\trm}{\mathrm{t}}
+\newcommand{\jrm}{\mathrm{j}}
+\newcommand{\erm}{\mathrm{e}}
+\newcommand{\drm}{\mathrm{d}}
+% Vectors
+\newcommand{\abf}{\mathbf{a}}
+\newcommand{\bbf}{\mathbf{b}}
+\newcommand{\cbf}{\mathbf{c}}
+\newcommand{\dbf}{\mathbf{d}}
+\newcommand{\ebf}{\mathbf{e}}
+\newcommand{\fbf}{\mathbf{f}}
+\newcommand{\gbf}{\mathbf{g}}
+\newcommand{\hbf}{\mathbf{h}}
+\newcommand{\ibf}{\mathbf{i}}
+\newcommand{\jbf}{\mathbf{j}}
+\newcommand{\kbf}{\mathbf{k}}
+\newcommand{\lbf}{\mathbf{l}}
+\newcommand{\mbf}{\mathbf{m}}
+\newcommand{\nbf}{\mathbf{n}}
+\newcommand{\obf}{\mathbf{o}}
+\newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\rbf}{\mathbf{r}}
+\newcommand{\sbf}{\mathbf{s}}
+\newcommand{\tbf}{\mathbf{t}}
+\newcommand{\ubf}{\mathbf{u}}
+\newcommand{\vbf}{\mathbf{v}}
+\newcommand{\wbf}{\mathbf{w}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\ybf}{\mathbf{y}}
+\newcommand{\zbf}{\mathbf{z}}
+% Matrices
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Bbf}{\mathbf{B}}
+\newcommand{\Cbf}{\mathbf{C}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Ebf}{\mathbf{E}}
+\newcommand{\Fbf}{\mathbf{F}}
+\newcommand{\Gbf}{\mathbf{G}}
+\newcommand{\Hbf}{\mathbf{H}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Jbf}{\mathbf{J}}
+\newcommand{\Kbf}{\mathbf{K}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Mbf}{\mathbf{M}}
+\newcommand{\Nbf}{\mathbf{N}}
+\newcommand{\Obf}{\mathbf{O}}
+\newcommand{\Pbf}{\mathbf{P}}
+\newcommand{\Qbf}{\mathbf{Q}}
+\newcommand{\Rbf}{\mathbf{R}}
+\newcommand{\Sbf}{\mathbf{S}}
+\newcommand{\Tbf}{\mathbf{T}}
+\newcommand{\Ubf}{\mathbf{U}}
+\newcommand{\Vbf}{\mathbf{V}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+% Hat Vectors (estimated vectors)
+\newcommand{\abfh}{\mathbf{\hat a}}
+\newcommand{\bbfh}{\mathbf{\hat b}}
+\newcommand{\cbfh}{\mathbf{\hat c}}
+\newcommand{\dbfh}{\mathbf{\hat d}}
+\newcommand{\ebfh}{\mathbf{\hat e}}
+\newcommand{\fbfh}{\mathbf{\hat f}}
+\newcommand{\gbfh}{\mathbf{\hat g}}
+\newcommand{\hbfh}{\mathbf{\hat h}}
+\newcommand{\ibfh}{\mathbf{\hat i}}
+\newcommand{\jbfh}{\mathbf{\hat j}}
+\newcommand{\kbfh}{\mathbf{\hat k}}
+\newcommand{\lbfh}{\mathbf{\hat l}}
+\newcommand{\mbfh}{\mathbf{\hat m}}
+\newcommand{\nbfh}{\mathbf{\hat n}}
+\newcommand{\obfh}{\mathbf{\hat o}}
+\newcommand{\pbfh}{\mathbf{\hat p}}
+\newcommand{\qbfh}{\mathbf{\hat q}}
+\newcommand{\rbfh}{\mathbf{\hat r}}
+\newcommand{\sbfh}{\mathbf{\hat s}}
+\newcommand{\tbfh}{\mathbf{\hat t}}
+\newcommand{\ubfh}{\mathbf{\hat u}}
+\newcommand{\vbfh}{\mathbf{\hat v}}
+\newcommand{\wbfh}{\mathbf{\hat w}}
+\newcommand{\xbfh}{\mathbf{\hat x}}
+\newcommand{\ybfh}{\mathbf{\hat y}}
+\newcommand{\zbfh}{\mathbf{\hat z}}
+% Hat Matrices
+\newcommand{\Abfh}{\mathbf{\hat A}}
+\newcommand{\Bbfh}{\mathbf{\hat B}}
+\newcommand{\Cbfh}{\mathbf{\hat C}}
+\newcommand{\Dbfh}{\mathbf{\hat D}}
+\newcommand{\Ebfh}{\mathbf{\hat E}}
+\newcommand{\Fbfh}{\mathbf{\hat F}}
+\newcommand{\Gbfh}{\mathbf{\hat G}}
+\newcommand{\Hbfh}{\mathbf{\hat H}}
+\newcommand{\Ibfh}{\mathbf{\hat I}}
+\newcommand{\Jbfh}{\mathbf{\hat J}}
+\newcommand{\Kbfh}{\mathbf{\hat K}}
+\newcommand{\Lbfh}{\mathbf{\hat L}}
+\newcommand{\Mbfh}{\mathbf{\hat M}}
+\newcommand{\Nbfh}{\mathbf{\hat N}}
+\newcommand{\Obfh}{\mathbf{\hat O}}
+\newcommand{\Pbfh}{\mathbf{\hat P}}
+\newcommand{\Qbfh}{\mathbf{\hat Q}}
+\newcommand{\Rbfh}{\mathbf{\hat R}}
+\newcommand{\Sbfh}{\mathbf{\hat S}}
+\newcommand{\Tbfh}{\mathbf{\hat T}}
+\newcommand{\Ubfh}{\mathbf{\hat U}}
+\newcommand{\Vbfh}{\mathbf{\hat V}}
+\newcommand{\Wbfh}{\mathbf{\hat W}}
+\newcommand{\Xbfh}{\mathbf{\hat X}}
+\newcommand{\Ybfh}{\mathbf{\hat Y}}
+\newcommand{\Zbfh}{\mathbf{\hat Z}}
+% Greek symbols
+\newcommand{\Phibf}{\boldsymbol{\Phi}}
+\newcommand{\Lambdabf}{\boldsymbol{\Lambda}}
+
+\newcommand{\alphabf}{\boldsymbol{\alpha}}
+\newcommand{\betabf}{\boldsymbol{\beta}}
+\newcommand{\gammabf}{\boldsymbol{\gamma}}
+\newcommand{\deltabf}{\boldsymbol{\delta}}
+\newcommand{\epsilonbf}{\boldsymbol{\epsilon}}
+\newcommand{\varepsilonbf}{\boldsymbol{\varepsilon}}
+\newcommand{\zetabf}{\boldsymbol{\zeta}}
+\newcommand{\etabf}{\boldsymbol{\eta}}
+\newcommand{\thetabf}{\boldsymbol{\theta}}
+\newcommand{\varthetabf}{\boldsymbol{\vartheta}}
+\newcommand{\iotabf}{\boldsymbol{\iota}}
+\newcommand{\kappabf}{\boldsymbol{\kappa}}
+\newcommand{\lambdabf}{\boldsymbol{\lambda}}
+\newcommand{\mubf}{\boldsymbol{\mu}}
+\newcommand{\nubf}{\boldsymbol{\nu}}
+\newcommand{\xibf}{\boldsymbol{\xi}}
+\newcommand{\oobf}{\boldsymbol{\o}}
+\newcommand{\pibf}{\boldsymbol{\pi}}
+\newcommand{\varpibf}{\boldsymbol{\varpi}}
+\newcommand{\taubf}{\boldsymbol{\tau}}
+\newcommand{\upsilonbf}{\boldsymbol{\upsilon}}
+\newcommand{\phibf}{\boldsymbol{\phi}}
+\newcommand{\varphibf}{\boldsymbol{\varphi}}
+\newcommand{\chibf}{\boldsymbol{\chi}}
+\newcommand{\psibf}{\boldsymbol{\psi}}
+
+\newcommand{\varPsibf}{\boldsymbol{\varPsi}}
+\newcommand{\omegabf}{\boldsymbol{\omega}}
+\newcommand{\varomegabf}{\boldsymbol{\varOmega}}
+\newcommand{\vardeltabf}{\boldsymbol{\varDelta}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\diag}{{\rm diag}}
+\newcommand{\Diag}{{\rm Diag}}
+\renewcommand{\vec}{{\rm vec}}
+
+
+\newcommand{\expo}{{\rm e}}
+\newcommand{\jc}{{\rm j}}
+
+\newcommand{\tr}[1]{{\rm tr}\left[#1\right]}
+
+\newcommand{\gl}{\overset{H_{1}}{\underset{H_{0}}{\gtreqless}}}
+
+
+
+\newcommand{\expv}[1]{\mathrm{E}\left[#1 \right]}
+%\newcommand{\deltam}{\delta_{\mathrm{M}}}
