@@ -1,0 +1,540 @@
+\ProvidesPackage{myMacros}[2017/09/27 v2.0 My own macros]
+% v1.0 - Commands for vectors, matrices and some mathmatic functions
+%
+% v2.0 - Added expectation, probability and diagonal functions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%colors
+\newcommand\blue[1]{{\color{blue}#1}}
+\newcommand\red[1]{{\color{red}#1}}
+\newcommand\yellow[1]{{\color{yellow}#1}}
+\newcommand\green[1]{{\color{green}#1}}
+
+\newcommand{\degree}{\ensuremath{ ^\circ }}
+
+\newcommand{\vect}  [1]{\ensuremath{ \textrm{vec}  \left( #1 \right) }}
+\newcommand{\Diag}  [1]{\ensuremath{ \textrm{Diag} \left( #1 \right) }}
+\newcommand{\diag}  [1]{\ensuremath{ \textrm{diag} \left( #1 \right) }}
+\newcommand{\rank}  [1]{\ensuremath{ \textrm{rank} \left( #1 \right) }}
+\newcommand{\spark} [1]{\ensuremath{ \textrm{spark}\left( #1 \right) }}
+\newcommand{\trace} [1]{\ensuremath{ \mathsf{Tr}   \left( #1 \right) }}
+\newcommand{\card}  [1]{\ensuremath{ \textrm{card} \left( #1 \right) }}
+\newcommand{\supp}  [1]{\ensuremath{ \textrm{supp} \left( #1 \right) }}
+\newcommand{\expval}[1]{\ensuremath{ \mathsf{E}    \left[ #1 \right] }} 
+\newcommand{\prob}  [1]{\ensuremath{ \mathsf{Pr}   \left[ #1 \right] }}
+
+\newcommand{\norm}  [2]{\ensuremath{ \left \lVert #1 \right \rVert_{#2} }}
+\newcommand{\hypo}  [2]{\ensuremath{ \overset{ #2 }{\underset{ #1 }{\gtreqless}} }}
+
+\newcommand{\zerobf}{\mathbf{0}}
+\newcommand{\onebf}{\mathbf{1}}
+
+\DeclareMathOperator*{\minimize}{\textrm{minimize}}
+\DeclareMathOperator*{\maximize}{\textrm{maximize}}
+
+\DeclareMathOperator*{\argmin}{\textrm{argmin}}
+\DeclareMathOperator*{\argmax}{\textrm{argmax}}
+
+\newcounter{optimization}%[chapter]
+\newenvironment{optimization}{\refstepcounter{optimization}\equation}{\tag{P-\thechapter.\theoptimization}\endequation}
+
+% \theoremstyle{definition}
+% \newtheorem{definition}{Definition}%[chapter]
+% 
+% \theoremstyle{definition}
+% \newtheorem{example}{Example}%[chapter]
+% 
+% \theoremstyle{remark}
+% \newtheorem{remark}{Remark}%[chapter]
+
+% Most Common Sets
+
+\newcommand{\Rset}{\mathbb{R}}   % set of real numbers
+\newcommand{\Cset}{\mathbb{C}}   % set of complex numbers
+\newcommand{\Nset}{\mathbb{N}}   % set of natural numbers
+\newcommand{\Zset}{\mathbb{Z}}   % set of integer numbers
+\newcommand{\Qset}{\mathbb{Q}}   % set of rational numbers
+\newcommand{\Dset}{\mathbb{D}}   % set of diagonal matrices
+
+% Funções Trigonométricas
+\renewcommand{\cos}{\textrm{cos}}
+\renewcommand{\cosh}{\textrm{cosh}}
+\newcommand{\sen}{\textrm{sen}}
+\newcommand{\senh}{\textrm{senh}}
+\newcommand{\tg}{\textrm{tg}}
+\newcommand{\tgh}{\textrm{tgh}}
+\newcommand{\ctg}{\textrm{ctg}}
+\newcommand{\ctgh}{\textrm{ctgh}}
+
+% Roman
+\newcommand{\arm}{\mathrm{a}}
+\newcommand{\brm}{\mathrm{b}}
+\newcommand{\crm}{\mathrm{c}}
+\newcommand{\drm}{\mathrm{d}}
+\newcommand{\erm}{\mathrm{e}}
+\newcommand{\frm}{\mathrm{f}}
+\newcommand{\grm}{\mathrm{g}}
+\newcommand{\hrm}{\mathrm{h}}
+\newcommand{\irm}{\mathrm{i}}
+\newcommand{\jrm}{\mathrm{j}}
+\newcommand{\krm}{\mathrm{k}}
+\newcommand{\lrm}{\mathrm{l}}
+\newcommand{\mrm}{\mathrm{m}}
+\newcommand{\nrm}{\mathrm{n}}
+\newcommand{\orm}{\mathrm{o}}
+\newcommand{\prm}{\mathrm{p}}
+\newcommand{\qrm}{\mathrm{q}}
+\newcommand{\rrm}{\mathrm{r}}
+\newcommand{\srm}{\mathrm{s}}
+\newcommand{\trm}{\mathrm{t}}
+\newcommand{\urm}{\mathrm{u}}
+\newcommand{\vrm}{\mathrm{v}}
+\newcommand{\wrm}{\mathrm{w}}
+\newcommand{\xrm}{\mathrm{x}}
+\newcommand{\yrm}{\mathrm{y}}
+\newcommand{\zrm}{\mathrm{z}}
+\newcommand{\Arm}{\mathrm{A}}
+\newcommand{\Brm}{\mathrm{B}}
+\newcommand{\Crm}{\mathrm{C}}
+\newcommand{\Drm}{\mathrm{D}}
+\newcommand{\Erm}{\mathrm{E}}
+\newcommand{\Frm}{\mathrm{F}}
+\newcommand{\Grm}{\mathrm{G}}
+\newcommand{\Hrm}{\mathrm{H}}
+\newcommand{\Irm}{\mathrm{I}}
+\newcommand{\Jrm}{\mathrm{J}}
+\newcommand{\Krm}{\mathrm{K}}
+\newcommand{\Lrm}{\mathrm{L}}
+\newcommand{\Mrm}{\mathrm{M}}
+\newcommand{\Nrm}{\mathrm{N}}
+\newcommand{\Orm}{\mathrm{O}}
+\newcommand{\Prm}{\mathrm{P}}
+\newcommand{\Qrm}{\mathrm{Q}}
+\newcommand{\Rrm}{\mathrm{R}}
+\newcommand{\Srm}{\mathrm{S}}
+\newcommand{\Trm}{\mathrm{T}}
+\newcommand{\Urm}{\mathrm{U}}
+\newcommand{\Vrm}{\mathrm{V}}
+\newcommand{\Wrm}{\mathrm{W}}
+\newcommand{\Xrm}{\mathrm{X}}
+\newcommand{\Yrm}{\mathrm{Y}}
+\newcommand{\Zrm}{\mathrm{Z}}
+
+% Calligraphic
+\newcommand{\acal}{\mathcal{a}}
+\newcommand{\bcal}{\mathcal{b}}
+\newcommand{\ccal}{\mathcal{c}}
+\newcommand{\dcal}{\mathcal{d}}
+\newcommand{\ecal}{\mathcal{e}}
+\newcommand{\fcal}{\mathcal{f}}
+\newcommand{\gcal}{\mathcal{g}}
+\newcommand{\hcal}{\mathcal{h}}
+\newcommand{\ical}{\mathcal{i}}
+\newcommand{\jcal}{\mathcal{j}}
+\newcommand{\kcal}{\mathcal{k}}
+\newcommand{\lcal}{\mathcal{l}}
+\newcommand{\mcal}{\mathcal{m}}
+\newcommand{\ncal}{\mathcal{n}}
+\newcommand{\ocal}{\mathcal{o}}
+\newcommand{\pcal}{\mathcal{p}}
+\newcommand{\qcal}{\mathcal{q}}
+\newcommand{\rcal}{\mathcal{r}}
+\newcommand{\scal}{\mathcal{s}}
+\newcommand{\tcal}{\mathcal{t}}
+\newcommand{\ucal}{\mathcal{u}}
+\newcommand{\vcal}{\mathcal{v}}
+\newcommand{\wcal}{\mathcal{w}}
+\newcommand{\xcal}{\mathcal{x}}
+\newcommand{\ycal}{\mathcal{y}}
+\newcommand{\zcal}{\mathcal{z}}
+\newcommand{\Acal}{\mathcal{A}}
+\newcommand{\Bcal}{\mathcal{B}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\Gcal}{\mathcal{G}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ical}{\mathcal{I}}
+\newcommand{\Jcal}{\mathcal{J}}
+\newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ocal}{\mathcal{O}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Qcal}{\mathcal{Q}}
+\newcommand{\Rcal}{\mathcal{R}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Ucal}{\mathcal{U}}
+\newcommand{\Vcal}{\mathcal{V}}
+\newcommand{\Wcal}{\mathcal{W}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Ycal}{\mathcal{Y}}
+\newcommand{\Zcal}{\mathcal{Z}}
+
+% Operators
+\newcommand{\asf}{\mathsf{a}}
+\newcommand{\bsf}{\mathsf{b}}
+\newcommand{\csf}{\mathsf{c}}
+\newcommand{\dsf}{\mathsf{d}}
+\newcommand{\esf}{\mathsf{e}}
+\newcommand{\fsf}{\mathsf{f}}
+\newcommand{\gsf}{\mathsf{g}}
+\newcommand{\hsf}{\mathsf{h}}
+\newcommand{\isf}{\mathsf{i}}
+\newcommand{\jsf}{\mathsf{j}}
+\newcommand{\ksf}{\mathsf{k}}
+\newcommand{\lsf}{\mathsf{l}}
+\newcommand{\msf}{\mathsf{m}}
+\newcommand{\nsf}{\mathsf{n}}
+\newcommand{\osf}{\mathsf{o}}
+\newcommand{\psf}{\mathsf{p}}
+\newcommand{\qsf}{\mathsf{q}}
+\newcommand{\rsf}{\mathsf{r}}
+\newcommand{\ssf}{\mathsf{s}}
+\newcommand{\tsf}{\mathsf{t}}
+\newcommand{\usf}{\mathsf{u}}
+\newcommand{\vsf}{\mathsf{v}}
+\newcommand{\wsf}{\mathsf{w}}
+\newcommand{\xsf}{\mathsf{x}}
+\newcommand{\ysf}{\mathsf{y}}
+\newcommand{\zsf}{\mathsf{z}}
+\newcommand{\Asf}{\mathsf{A}}
+\newcommand{\Bsf}{\mathsf{B}}
+\newcommand{\Csf}{\mathsf{C}}
+\newcommand{\Dsf}{\mathsf{D}}
+\newcommand{\Esf}{\mathsf{E}}
+\newcommand{\Fsf}{\mathsf{F}}
+\newcommand{\Gsf}{\mathsf{G}}
+\newcommand{\Hsf}{\mathsf{H}}
+\newcommand{\Isf}{\mathsf{I}}
+\newcommand{\Jsf}{\mathsf{J}}
+\newcommand{\Ksf}{\mathsf{K}}
+\newcommand{\Lsf}{\mathsf{L}}
+\newcommand{\Msf}{\mathsf{M}}
+\newcommand{\Nsf}{\mathsf{N}}
+\newcommand{\Osf}{\mathsf{O}}
+\newcommand{\Psf}{\mathsf{P}}
+\newcommand{\Qsf}{\mathsf{Q}}
+\newcommand{\Rsf}{\mathsf{R}}
+\newcommand{\Ssf}{\mathsf{S}}
+\newcommand{\Tsf}{\mathsf{T}}
+\newcommand{\Usf}{\mathsf{U}}
+\newcommand{\Vsf}{\mathsf{V}}
+\newcommand{\Wsf}{\mathsf{W}}
+\newcommand{\Xsf}{\mathsf{X}}
+\newcommand{\Ysf}{\mathsf{Y}}
+\newcommand{\Zsf}{\mathsf{Z}}
+
+% Vectors
+\newcommand{\abf}{\mathbf{a}}
+\newcommand{\bbf}{\mathbf{b}}
+\newcommand{\cbf}{\mathbf{c}}
+\newcommand{\dbf}{\mathbf{d}}
+\newcommand{\ebf}{\mathbf{e}}
+\newcommand{\fbf}{\mathbf{f}}
+\newcommand{\gbf}{\mathbf{g}}
+\newcommand{\hbf}{\mathbf{h}}
+\newcommand{\ibf}{\mathbf{i}}
+\newcommand{\jbf}{\mathbf{j}}
+\newcommand{\kbf}{\mathbf{k}}
+\newcommand{\lbf}{\mathbf{l}}
+\newcommand{\mbf}{\mathbf{m}}
+\newcommand{\nbf}{\mathbf{n}}
+\newcommand{\obf}{\mathbf{o}}
+\newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\rbf}{\mathbf{r}}
+\newcommand{\sbf}{\mathbf{s}}
+\newcommand{\tbf}{\mathbf{t}}
+\newcommand{\ubf}{\mathbf{u}}
+\newcommand{\vbf}{\mathbf{v}}
+\newcommand{\wbf}{\mathbf{w}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\ybf}{\mathbf{y}}
+\newcommand{\zbf}{\mathbf{z}}
+
+% Random Vectors
+\newcommand{\abs}{\boldsymbol{a}}
+\newcommand{\bbs}{\boldsymbol{b}}
+\newcommand{\cbs}{\boldsymbol{c}}
+\newcommand{\dbs}{\boldsymbol{d}}
+\newcommand{\ebs}{\boldsymbol{e}}
+\newcommand{\fbs}{\boldsymbol{f}}
+\newcommand{\gbs}{\boldsymbol{g}}
+\newcommand{\hbs}{\boldsymbol{h}}
+\newcommand{\ibs}{\boldsymbol{i}}
+\newcommand{\jbs}{\boldsymbol{j}}
+\newcommand{\kbs}{\boldsymbol{k}}
+\newcommand{\lbs}{\boldsymbol{l}}
+\newcommand{\mbs}{\boldsymbol{m}}
+\newcommand{\nbs}{\boldsymbol{n}}
+\newcommand{\obs}{\boldsymbol{o}}
+\newcommand{\pbs}{\boldsymbol{p}}
+\newcommand{\qbs}{\boldsymbol{q}}
+\newcommand{\rbs}{\boldsymbol{r}}
+\newcommand{\sbs}{\boldsymbol{s}}
+\newcommand{\tbs}{\boldsymbol{t}}
+\newcommand{\ubs}{\boldsymbol{u}}
+\newcommand{\vbs}{\boldsymbol{v}}
+\newcommand{\wbs}{\boldsymbol{w}}
+\newcommand{\xbs}{\boldsymbol{x}}
+\newcommand{\ybs}{\boldsymbol{y}}
+\newcommand{\zbs}{\boldsymbol{z}}
+
+% Matrices
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Bbf}{\mathbf{B}}
+\newcommand{\Cbf}{\mathbf{C}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Ebf}{\mathbf{E}}
+\newcommand{\Fbf}{\mathbf{F}}
+\newcommand{\Gbf}{\mathbf{G}}
+\newcommand{\Hbf}{\mathbf{H}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Jbf}{\mathbf{J}}
+\newcommand{\Kbf}{\mathbf{K}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Mbf}{\mathbf{M}}
+\newcommand{\Nbf}{\mathbf{N}}
+\newcommand{\Obf}{\mathbf{O}}
+\newcommand{\Pbf}{\mathbf{P}}
+\newcommand{\Qbf}{\mathbf{Q}}
+\newcommand{\Rbf}{\mathbf{R}}
+\newcommand{\Sbf}{\mathbf{S}}
+\newcommand{\Tbf}{\mathbf{T}}
+\newcommand{\Ubf}{\mathbf{U}}
+\newcommand{\Vbf}{\mathbf{V}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+
+% Random Matrices
+\newcommand{\Abs}{\boldsymbol{A}}
+\newcommand{\Bbs}{\boldsymbol{B}}
+\newcommand{\Cbs}{\boldsymbol{C}}
+\newcommand{\Dbs}{\boldsymbol{D}}
+\newcommand{\Ebs}{\boldsymbol{E}}
+\newcommand{\Fbs}{\boldsymbol{F}}
+\newcommand{\Gbs}{\boldsymbol{G}}
+\newcommand{\Hbs}{\boldsymbol{H}}
+\newcommand{\Ibs}{\boldsymbol{I}}
+\newcommand{\Jbs}{\boldsymbol{J}}
+\newcommand{\Kbs}{\boldsymbol{K}}
+\newcommand{\Lbs}{\boldsymbol{L}}
+\newcommand{\Mbs}{\boldsymbol{M}}
+\newcommand{\Nbs}{\boldsymbol{N}}
+\newcommand{\Obs}{\boldsymbol{O}}
+\newcommand{\Pbs}{\boldsymbol{P}}
+\newcommand{\Qbs}{\boldsymbol{Q}}
+\newcommand{\Rbs}{\boldsymbol{R}}
+\newcommand{\Sbs}{\boldsymbol{S}}
+\newcommand{\Tbs}{\boldsymbol{T}}
+\newcommand{\Ubs}{\boldsymbol{U}}
+\newcommand{\Vbs}{\boldsymbol{V}}
+\newcommand{\Wbs}{\boldsymbol{W}}
+\newcommand{\Xbs}{\boldsymbol{X}}
+\newcommand{\Ybs}{\boldsymbol{Y}}
+\newcommand{\Zbs}{\boldsymbol{Z}}
+
+% Hat Vectors (estimated vectors)
+\newcommand{\abfh}{\mathbf{\hat a}}
+\newcommand{\bbfh}{\mathbf{\hat b}}
+\newcommand{\cbfh}{\mathbf{\hat c}}
+\newcommand{\dbfh}{\mathbf{\hat d}}
+\newcommand{\ebfh}{\mathbf{\hat e}}
+\newcommand{\fbfh}{\mathbf{\hat f}}
+\newcommand{\gbfh}{\mathbf{\hat g}}
+\newcommand{\hbfh}{\mathbf{\hat h}}
+\newcommand{\ibfh}{\mathbf{\hat i}}
+\newcommand{\jbfh}{\mathbf{\hat j}}
+\newcommand{\kbfh}{\mathbf{\hat k}}
+\newcommand{\lbfh}{\mathbf{\hat l}}
+\newcommand{\mbfh}{\mathbf{\hat m}}
+\newcommand{\nbfh}{\mathbf{\hat n}}
+\newcommand{\obfh}{\mathbf{\hat o}}
+\newcommand{\pbfh}{\mathbf{\hat p}}
+\newcommand{\qbfh}{\mathbf{\hat q}}
+\newcommand{\rbfh}{\mathbf{\hat r}}
+\newcommand{\sbfh}{\mathbf{\hat s}}
+\newcommand{\tbfh}{\mathbf{\hat t}}
+\newcommand{\ubfh}{\mathbf{\hat u}}
+\newcommand{\vbfh}{\mathbf{\hat v}}
+\newcommand{\wbfh}{\mathbf{\hat w}}
+\newcommand{\xbfh}{\mathbf{\hat x}}
+\newcommand{\ybfh}{\mathbf{\hat y}}
+\newcommand{\zbfh}{\mathbf{\hat z}}
+
+% Hat Matrices
+\newcommand{\Abfh}{\mathbf{\hat A}}
+\newcommand{\Bbfh}{\mathbf{\hat B}}
+\newcommand{\Cbfh}{\mathbf{\hat C}}
+\newcommand{\Dbfh}{\mathbf{\hat D}}
+\newcommand{\Ebfh}{\mathbf{\hat E}}
+\newcommand{\Fbfh}{\mathbf{\hat F}}
+\newcommand{\Gbfh}{\mathbf{\hat G}}
+\newcommand{\Hbfh}{\mathbf{\hat H}}
+\newcommand{\Ibfh}{\mathbf{\hat I}}
+\newcommand{\Jbfh}{\mathbf{\hat J}}
+\newcommand{\Kbfh}{\mathbf{\hat K}}
+\newcommand{\Lbfh}{\mathbf{\hat L}}
+\newcommand{\Mbfh}{\mathbf{\hat M}}
+\newcommand{\Nbfh}{\mathbf{\hat N}}
+\newcommand{\Obfh}{\mathbf{\hat O}}
+\newcommand{\Pbfh}{\mathbf{\hat P}}
+\newcommand{\Qbfh}{\mathbf{\hat Q}}
+\newcommand{\Rbfh}{\mathbf{\hat R}}
+\newcommand{\Sbfh}{\mathbf{\hat S}}
+\newcommand{\Tbfh}{\mathbf{\hat T}}
+\newcommand{\Ubfh}{\mathbf{\hat U}}
+\newcommand{\Vbfh}{\mathbf{\hat V}}
+\newcommand{\Wbfh}{\mathbf{\hat W}}
+\newcommand{\Xbfh}{\mathbf{\hat X}}
+\newcommand{\Ybfh}{\mathbf{\hat Y}}
+\newcommand{\Zbfh}{\mathbf{\hat Z}}
+
+\newcommand{\aring}{\mathring{a}}
+\newcommand{\bring}{\mathring{b}}
+\newcommand{\cring}{\mathring{c}}
+\newcommand{\dring}{\mathring{d}}
+\newcommand{\ering}{\mathring{e}}
+\newcommand{\fring}{\mathring{f}}
+\newcommand{\gring}{\mathring{g}}
+\newcommand{\hring}{\mathring{h}}
+\newcommand{\iring}{\mathring{i}}
+\newcommand{\jring}{\mathring{j}}
+\newcommand{\kring}{\mathring{k}}
+\newcommand{\lring}{\mathring{l}}
+\newcommand{\mring}{\mathring{m}}
+\newcommand{\nring}{\mathring{n}}
+\newcommand{\oring}{\mathring{o}}
+\newcommand{\pring}{\mathring{p}}
+\newcommand{\qring}{\mathring{q}}
+\newcommand{\rring}{\mathring{r}}
+\newcommand{\sring}{\mathring{s}}
+\newcommand{\tring}{\mathring{t}}
+\newcommand{\uring}{\mathring{u}}
+\newcommand{\vring}{\mathring{v}}
+\newcommand{\wring}{\mathring{w}}
+\newcommand{\xring}{\mathring{x}}
+\newcommand{\yring}{\mathring{y}}
+\newcommand{\zring}{\mathring{z}}
+
+\newcommand{\Aring}{\mathring{A}}
+\newcommand{\Bring}{\mathring{B}}
+\newcommand{\Cring}{\mathring{C}}
+\newcommand{\Dring}{\mathring{D}}
+\newcommand{\Ering}{\mathring{E}}
+\newcommand{\Fring}{\mathring{F}}
+\newcommand{\Gring}{\mathring{G}}
+\newcommand{\Hring}{\mathring{H}}
+\newcommand{\Iring}{\mathring{I}}
+\newcommand{\Jring}{\mathring{J}}
+\newcommand{\Kring}{\mathring{K}}
+\newcommand{\Lring}{\mathring{L}}
+\newcommand{\Mring}{\mathring{M}}
+\newcommand{\Nring}{\mathring{N}}
+\newcommand{\Oring}{\mathring{O}}
+\newcommand{\Pring}{\mathring{P}}
+\newcommand{\Qring}{\mathring{Q}}
+\newcommand{\Rring}{\mathring{R}}
+\newcommand{\Sring}{\mathring{S}}
+\newcommand{\Tring}{\mathring{T}}
+\newcommand{\Uring}{\mathring{U}}
+\newcommand{\Vring}{\mathring{V}}
+\newcommand{\Wring}{\mathring{W}}
+\newcommand{\Xring}{\mathring{X}}
+\newcommand{\Yring}{\mathring{Y}}
+\newcommand{\Zring}{\mathring{Z}}
+
+\newcommand{\aringbf}{\mathbf{\mathring{a}}}
+\newcommand{\bringbf}{\mathbf{\mathring{b}}}
+\newcommand{\cringbf}{\mathbf{\mathring{c}}}
+\newcommand{\dringbf}{\mathbf{\mathring{d}}}
+\newcommand{\eringbf}{\mathbf{\mathring{e}}}
+\newcommand{\fringbf}{\mathbf{\mathring{f}}}
+\newcommand{\gringbf}{\mathbf{\mathring{g}}}
+\newcommand{\hringbf}{\mathbf{\mathring{h}}}
+\newcommand{\iringbf}{\mathbf{\mathring{i}}}
+\newcommand{\jringbf}{\mathbf{\mathring{j}}}
+\newcommand{\kringbf}{\mathbf{\mathring{k}}}
+\newcommand{\lringbf}{\mathbf{\mathring{l}}}
+\newcommand{\mringbf}{\mathbf{\mathring{m}}}
+\newcommand{\nringbf}{\mathbf{\mathring{n}}}
+\newcommand{\oringbf}{\mathbf{\mathring{o}}}
+\newcommand{\pringbf}{\mathbf{\mathring{p}}}
+\newcommand{\qringbf}{\mathbf{\mathring{q}}}
+\newcommand{\rringbf}{\mathbf{\mathring{r}}}
+\newcommand{\sringbf}{\mathbf{\mathring{s}}}
+\newcommand{\tringbf}{\mathbf{\mathring{t}}}
+\newcommand{\uringbf}{\mathbf{\mathring{u}}}
+\newcommand{\vringbf}{\mathbf{\mathring{v}}}
+\newcommand{\wringbf}{\mathbf{\mathring{w}}}
+\newcommand{\xringbf}{\mathbf{\mathring{x}}}
+\newcommand{\yringbf}{\mathbf{\mathring{y}}}
+\newcommand{\zringbf}{\mathbf{\mathring{z}}}
+
+\newcommand{\Aringbf}{\mathbf{\mathring{A}}}
+\newcommand{\Bringbf}{\mathbf{\mathring{B}}}
+\newcommand{\Cringbf}{\mathbf{\mathring{C}}}
+\newcommand{\Dringbf}{\mathbf{\mathring{D}}}
+\newcommand{\Eringbf}{\mathbf{\mathring{E}}}
+\newcommand{\Fringbf}{\mathbf{\mathring{F}}}
+\newcommand{\Gringbf}{\mathbf{\mathring{G}}}
+\newcommand{\Hringbf}{\mathbf{\mathring{H}}}
+\newcommand{\Iringbf}{\mathbf{\mathring{I}}}
+\newcommand{\Jringbf}{\mathbf{\mathring{J}}}
+\newcommand{\Kringbf}{\mathbf{\mathring{K}}}
+\newcommand{\Lringbf}{\mathbf{\mathring{L}}}
+\newcommand{\Mringbf}{\mathbf{\mathring{M}}}
+\newcommand{\Nringbf}{\mathbf{\mathring{N}}}
+\newcommand{\Oringbf}{\mathbf{\mathring{O}}}
+\newcommand{\Pringbf}{\mathbf{\mathring{P}}}
+\newcommand{\Qringbf}{\mathbf{\mathring{Q}}}
+\newcommand{\Rringbf}{\mathbf{\mathring{R}}}
+\newcommand{\Sringbf}{\mathbf{\mathring{S}}}
+\newcommand{\Tringbf}{\mathbf{\mathring{T}}}
+\newcommand{\Uringbf}{\mathbf{\mathring{U}}}
+\newcommand{\Vringbf}{\mathbf{\mathring{V}}}
+\newcommand{\Wringbf}{\mathbf{\mathring{W}}}
+\newcommand{\Xringbf}{\mathbf{\mathring{X}}}
+\newcommand{\Yringbf}{\mathbf{\mathring{Y}}}
+\newcommand{\Zringbf}{\mathbf{\mathring{Z}}}
+
+% Greek bold symbols
+\newcommand{\Phibf}{\boldsymbol{\Phi}}
+\newcommand{\Lambdabf}{\boldsymbol{\Lambda}}
+\newcommand{\Deltabf}{\boldsymbol{\Delta}}
+\newcommand{\alphabf}{\boldsymbol{\alpha}}
+\newcommand{\betabf}{\boldsymbol{\beta}}
+\newcommand{\gammabf}{\boldsymbol{\gamma}}
+\newcommand{\deltabf}{\boldsymbol{\delta}}
+\newcommand{\epsilonbf}{\boldsymbol{\epsilon}}
+\newcommand{\varepsilonbf}{\boldsymbol{\varepsilon}}
+\newcommand{\zetabf}{\boldsymbol{\zeta}}
+\newcommand{\etabf}{\boldsymbol{\eta}}
+\newcommand{\thetabf}{\boldsymbol{\theta}}
+\newcommand{\varthetabf}{\boldsymbol{\vartheta}}
+\newcommand{\iotabf}{\boldsymbol{\iota}}
+\newcommand{\kappabf}{\boldsymbol{\kappa}}
+\newcommand{\lambdabf}{\boldsymbol{\lambda}}
+\newcommand{\mubf}{\boldsymbol{\mu}}
+\newcommand{\nubf}{\boldsymbol{\nu}}
+\newcommand{\xibf}{\boldsymbol{\xi}}
+\newcommand{\oobf}{\boldsymbol{\o}}
+\newcommand{\pibf}{\boldsymbol{\pi}}
+\newcommand{\varpibf}{\boldsymbol{\varpi}}
+\newcommand{\taubf}{\boldsymbol{\tau}}
+\newcommand{\upsilonbf}{\boldsymbol{\upsilon}}
+\newcommand{\phibf}{\boldsymbol{\phi}}
+\newcommand{\varPhibf}{\boldsymbol{\varPhi}}
+\newcommand{\chibf}{\boldsymbol{\chi}}
+\newcommand{\psibf}{\boldsymbol{\psi}}
+\newcommand{\varPsibf}{\boldsymbol{\varPsi}}
+\newcommand{\omegabf}{\boldsymbol{\omega}}
+\newcommand{\Pibf}{\boldsymbol{\Pi}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

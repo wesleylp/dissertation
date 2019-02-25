@@ -1,0 +1,421 @@
+%******************************************************
+% Header
+%******************************************************
+
+%Document type
+\documentclass{beamer}
+
+%Theme
+%\usetheme{Madrid}
+
+%Packages
+\usepackage{etex}
+\usepackage{mypresentation}							%SMT presentation style
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% \usepackage[utf8]{inputenc}							%Language/input coding
+% \usepackage[brazil, english]{babel}					%Brazilian Portuguese Language Package
+% \usepackage[T1]{fontenc}							%Hyphenation
+% \usepackage{graphicx}								%Graphic package
+% %\usepackage{subfig}									%Subfloats
+% \usepackage{color}									%Color package
+% \usepackage{lmodern}								%Solve font problems
+\usepackage{amssymb}								%Math symbols
+\usepackage{amsthm}									%Theorem
+% \usepackage{multimedia}								%Multimedia package
+% \usepackage{array}									%For tabular
+%\usepackage{pgfplotstable}								%For extracting tables from csv
+\usepackage{tikz}										%Tikz graphic library
+\usetikzlibrary{patterns, calc}							%Tikz patterns and computations
+
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{myMacros}
+\usepackage{hyperref}
+
+\graphicspath{{/home/wesley/Dropbox/Mestrado/dissertation/text/v0/images/}}
+
+%******************************************************
+% Math operators
+%******************************************************
+% \DeclareMathOperator{\tr}{tr}								%Trace
+% \DeclareMathOperator{\diag}{diag}							%Diag
+% \DeclareMathOperator*{\argmax}{arg\,max}					%Argmax
+% \DeclareMathOperator*{\argmin}{arg\,min}					%Argmin
+% \DeclareMathOperator{\sgn}{sgn}								%Signal function
+% \newcommand{\Trm}{\mathrm{T}}								%Transpose
+% \newcommand{\drm}{\mathrm{d}}								%Differential
+% \newcommand{\erm}{\mathrm{e}}								%Exponential
+% \newcommand{\jrm}{\mathrm{j}}								%Complex number
+
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+
+%******************************************************
+% Title page
+%******************************************************
+
+%Title and subtitle
+\title[Wesley L. Passos]{{\huge {Automatic {\it Aedes aegypti} Breeding Grounds Detection Using Computer Vision Techniques} }
+	}
+
+%Author
+\author[]{
+	Wesley Lobato Passos\\
+	\vspace{5mm}
+	\footnotesize{Eduardo A. B. da Silva \&
+	Gabriel M. Araujo}
+}
+
+
+
+%Institute
+\institute[SMT/COPPE/UFRJ]
+{
+	Signals, Multimedia, and Telecommunications Laboratory \newline
+	COPPE/UFRJ
+}
+
+\date{February 27, 2019}
+%******************************************************
+% Section open
+%******************************************************
+
+\AtBeginSection[]
+{
+	\begin{frame}
+		\frametitle{Sumário}
+		%\tableofcontents[currentsection, hideallsubsections]
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+%******************************************************
+% Main Body
+%******************************************************
+
+%Document Beginning
+\begin{document}
+
+  %% Front page logos.
+  \MyLogos{0.60cm}
+
+  %Title frame
+  \begin{frame}
+    \titlepage
+  \end{frame}
+
+  %% Smaller logos for the other slides.
+  \MyLogos{0.30cm}
+
+  %Table of Contents
+  \begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[hideallsubsections]
+  \end{frame}
+
+
+
+	%%============================================================================
+	%% SECTION - Introduction
+	%%============================================================================
+	\section{Introduction}
+
+		\begin{frame}\frametitle{Motivation}
+
+			\begin{itemize}
+				\item The arboviruses ({\bf dengue}, {\bf chikungunya}, {\bf zika}, and {\bf yellow fever})
+				are one of the leading global health problem;
+				\item the {\it Aedes aegypti} is the main {\bf vector} of such diseases;
+				\item the best form of combat is {\bf eliminating} possible mosquito {\bf foci} proliferation;
+				\item it can be {\bf expensive} and {\bf time-consuming} (therefore, {\bf inefficient});
+				\item to use {\bf aerial images} and {\bf videos} captured by an {\bf UAV};
+				\item {\bf automatic detection} of regions and objects with {potential mosquito breeding sites} in order to assist health agents;
+				\item to apply {\bf computer vision} and {\bf machine learning} techniques.
+		\end{itemize}
+
+	\end{frame}
+
+
+	%%==============================================================================
+	%% SECTION - The Aedes aegypti
+	%%==============================================================================
+	\section{The Aedes aegypti}
+
+
+%%==============================================================================
+%% SECTION - Vision Meets Unmanned Vehicles
+%%==============================================================================
+\section{Vision Meets Unmanned Vehicles}
+
+	\subsection{Objects of interest}
+
+		\begin{frame}\frametitle{Objects}
+			\begin{figure}[htb]
+				\centering
+				\includegraphics[width=.1\linewidth]{garrafa1.png}
+				\includegraphics[width=.2\linewidth]{garrafa2.png}
+				\includegraphics[width=.1\linewidth]{pneu1.png}
+				\includegraphics[width=.1\linewidth]{pneu3.png}\\
+				\includegraphics[width=.1\linewidth]{pneu5.png}
+				\includegraphics[width=.1\linewidth]{water1.png}
+				\includegraphics[width=.1\linewidth]{water2.png}
+				\includegraphics[width=.1\linewidth]{water3.png}
+			% \includegraphics[width=.26\linewidth]{base4.png}
+				\label{fig:objetos1}
+			\end{figure}
+
+			\begin{table}[]
+				\resizebox{\textwidth}{!}{%
+				\begin{tabular}{@{}cc@{}}
+					\toprule
+					\textbf{Code} & \textbf{Description}                                                       \\ \midrule
+					A1            & Water tank connected to the grid (high tanks)                              \\
+					A2            & Deposits at ground level (barrel, tub, drum, tank, well)                   \\
+					B             & Mobile containers (vases/jars, plates, drippings, drinking fountains, etc) \\
+					C             & Fixed deposits (tanks, gutters, slabs, etc.)                               \\
+					D1            & Tires and other rolling materials                                          \\
+					D2            & Garbage (plastic containers, bottles, cans, scraps)                        \\
+					E             & Natural deposits (bromeliads, bark, tree holes)                            \\ \bottomrule
+					\end{tabular}
+					}
+			\end{table}
+		\end{frame}
+
+
+	\subsection{Scenarios}
+
+		\begin{frame}\frametitle{Scenarios}
+			\begin{figure}[htb!]
+				\centering
+				\includegraphics[width=.35\linewidth]{base1.png}
+				\includegraphics[width=.36\linewidth]{base2.png}\\
+				\includegraphics[width=.35\linewidth]{base3.png}
+			% \includegraphics[width=.26\linewidth]{../figures/base4.png}
+				\label{fig:scenarios1}
+			\end{figure}
+
+		\end{frame}
+
+
+\subsection{Camera Calibration: Zhang's Method}
+
+% -----------------------------------------------------------------------------
+% \frame{
+%   \frametitle{Projection}
+%   %
+%   Considera-se que uma câmera mapeia um ponto $\Mbf' = [X,Y,Z,1]^\Trm$ do espaço no ponto $\mbf' = [u,v,1]^\Trm$ da imagem através de uma transformação projetiva da forma:
+%   %
+%   \begin{equation}
+%   \label{eq:projection}
+%   s\mbf' = \Asf[\Rsf~|~\tbf]\Mbf',
+%   \end{equation}
+%   %
+%   onde $s$ é um fator de escala arbitrário, $\Rsf$ e $\tbf$ são, respectivamente, a matriz de rotação e o vetor de translação (parâmetros extrínsecos),que relacionam o sistema de coordenadas do mundo real com o sistema de coordenadas da câmera.
+%   %
+%   %
+% }
+
+% -----------------------------------------------------------------------------
+\frame{
+%TODO: make my own image.
+  \frametitle{Pinhole Camera Model}
+  %
+  \begin{figure}[htb!]
+    \center
+    \includegraphics[width=.7\textwidth]{pinhole_camera_model.png}
+    \label{fig:keypts_1} %\\[-0.2cm]
+    \caption{Pinhole camera model. (source: OpenCV).}
+%     \url{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}
+    \vspace{-3.5mm}
+%     \href{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}{[ref.: OpenCV documentation.]}
+    \label{fig:undistort}
+  \end{figure}
+  %
+  %
+}
+
+% -----------------------------------------------------------------------------
+% \frame{
+%   \frametitle{Parâmetros Intrínsecos}
+%     $\Asf$ é a matriz de calibração da câmera (parâmetros intrínsecos), definida por:
+%     \begin{equation}
+%       \Asf =
+%       \begin{bmatrix}
+% 	\alpha & \gamma & u_0\\
+% 	0 & \beta  & v_0\\
+% 	0 &     0  & 1\\
+%       \end{bmatrix},
+%     \end{equation}
+%     com $[u_0,v_0]^\Trm$ denotando as coordenadas do ponto principal,
+%     $\alpha$ e $\beta$ os fatores de escala nos eixos $u$ e $v$ da imagem, respectivamente,
+%     e $\gamma$ é a obliquidade (grau de cisalhamento) dos dois eixos da imagem.
+% }
+
+% -----------------------------------------------------------------------------
+% \frame{
+%   \frametitle{Compensação de Distorção Radial}
+%    Câmeras convencionais geralmente possuem significantes distorções de lentes, especialmente distorção radial.
+%
+%    Sejam $(u,v)$ as coordenadas ideais (livre de distorção) do pixel na imagem e $(\breve{u},\breve{v})$ as coordenadas correspondentes reais de imagem observada.
+%
+%     Os pontos ideais são as projeções dos pontos do padrão de calibração de acordo com o modelo dado pela Eq.~\eqref{eq:projection}.
+%
+%    Analogamente, $(x,y)$ e $(\breve{x},\breve{y})$ são as coordenadas normalizadas nas imagens ideal (livre de distorção) e real (distorcida), respectivamente.
+%
+%    A distorção radial pode ser modelada como:
+%    \begin{align}
+%     \breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
+%     \breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
+%    \end{align}
+% onde $k_1$ e $k_2$ são os coeficientes de distorção radial e $r^2 = (x^2 + y^2)$.
+%
+%
+% }
+
+% -----------------------------------------------------------------------------
+% \frame{
+%   \frametitle{Compensação de Distorção Radial}
+%     %
+%     O centro da distorção radial está localizado no ponto principal.
+%
+%     De $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ e $\breve{v} = \beta \breve{y} + v_0$, assumindo $\gamma = 0$,
+%     pode-se escrever que
+%     %
+%     \begin{align}
+%       \label{eq:u_dist}
+%       \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
+%       \label{eq:v_dist}
+%       \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
+%     \end{align}
+%
+%
+% }
+
+% -----------------------------------------------------------------------------
+% \frame{
+%    \frametitle{Método de Zhang}
+%     %
+%     O método de Zhang consiste em fazer, primeiramente, uma estimativa grosseira dos parâmetros intrínsecos e extrínsecos da câmera para depois refiná-la através da estimativa da máxima verossimilhança.
+%
+%     Dadas $n$ imagens do padrão de calibração e considerando $m$ pontos neste padrão,
+%     assumindo que as imagens dos pontos estão corrompidas por um ruído independente e identicamente distribuído, a estimativa de máxima verossimilhança pode ser obtida minimizando o funcional
+%     %
+%     \begin{equation}
+%       \sum_{i=1}^{n}\sum_{j=1}^{m} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
+%       \label{eq:functional},
+%     \end{equation}
+%     %
+%     onde $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ é a projeção do ponto $\Xbf_j$, de acordo com a Eq.~\eqref{eq:projection},
+%     seguido da distorção modelada de acordo com as Eqs.~\eqref{eq:u_dist} e~\eqref{eq:v_dist}.
+%
+%     Minimizar o funcional em~\eqref{eq:functional} é um problema de otimização não-linear que pode ser resolvido através do algoritmo de Levenberg-Marquardt.
+%
+% }
+
+% -----------------------------------------------------------------------------
+\frame{
+  \frametitle{Comparison: distorted frame $\times$ undistorted}
+
+   %
+    \begin{equation}
+      \sum_{i=1}^{n}\sum_{j=1}^{m} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
+      \label{eq:functional},
+    \end{equation}
+    %
+
+  \begin{figure}[htb!]
+    \center
+    \subfloat[]{\includegraphics[width=0.5\textwidth]{frame_420_pts.png}
+      \label{fig:keypts_1}} %\\[-0.2cm]
+      %(a)
+      \subfloat[]{\includegraphics[width=0.5\textwidth]{frame_420_undistorted.png}%
+      \label{fig:undistort_1}} %\\[-0.2cm]
+      %(b)
+%     \caption{Exemplo de correção de distorção radial pelo algoritmo de Zhang:
+%     (a) imagem original distorcida com identificação das quinas detectadas no padrão de calibração;
+%     (b) imagem retificada.}
+    \label{fig:undistort}
+  \end{figure}
+
+}
+
+\subsection{Annotation}
+
+\begin{frame}\frametitle{Annotation}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=.98\columnwidth]{zframer_marking.png}
+	\label{fig:zframer1}
+\end{figure}
+\end{frame}
+
+%%==============================================================================
+%% SECTION - Object Detection with Deep Learning
+%%==============================================================================
+	\section{Object Detection with Deep Learning}
+
+		\subsection{Deep Learning}
+
+			\begin{frame}\frametitle{Convolutional Neural Networks}
+				\begin{figure}[htb]
+					\centering
+					\includegraphics[width=.4\columnwidth]{conv_eng.pdf}
+					\includegraphics[width=6.5cm]{drone-persp2.png}
+					\label{fig:zframer1}
+				\end{figure}
+			\end{frame}
+
+%%==============================================================================
+%% SECTION - Results and Discussions
+%%==============================================================================
+	\section{Results and Discussions}
+
+		\subsection{Evaluation}
+
+			\begin{frame}\frametitle{Intersection over Union (IoU)}
+				\begin{itemize}
+					\item Evaluate the model regarding object localization;
+					\item Detections are considered as TP if the IoU $\geq$ threshold and as FP otherwise. hsabhs
+				\end{itemize}
+				%
+				\begin{figure}[htb]
+					\centering
+					\includegraphics[width=.6\linewidth]{IoU.pdf}
+					\label{fig:IoU}
+				\end{figure}
+
+			\end{frame}
+
+%%==============================================================================
+%% SECTION - Conclusion and Future Works
+%%==============================================================================
+	\section{Conclusion and Future Works}
+
+		\begin{frame}
+			\frametitle{Conclusion}
+			\begin{itemize}
+				\item To deliver a decision support system
+				\item To indicate your geographic positions
+				\item To facilitate scan abandoned or blocked areas
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}
+			\frametitle{THANK YOU!}
+			\centering
+			Wesley Lobato Passos\\
+			wesley.lpassos@gmail.com
+		\end{frame}
+
+
+
+\end{document}

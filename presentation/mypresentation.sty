@@ -1,0 +1,919 @@
+%%******************************************************************************
+%%
+%% mypresentation.sty
+%%
+%%******************************************************************************
+%%
+%% Title......: Presentation style.
+%%
+%% Author.....: Petrobras-SPOAGA Team
+%%
+%% Started....: Tue Nov 12 2013
+%% Modified...: Tue Nov 12 2013
+%%
+%% Emails.....: jose.oliveira@smt.ufrj.br
+%%              jleitex@gmail.com
+%%
+%% Address....: Universidade Federal do Rio de Janeiro
+%%              Caixa Postal 68.504, CEP: 21.945-970
+%%              Rio de Janeiro, RJ - Brasil.
+%%
+%%******************************************************************************
+
+
+%%******************************************************************************
+%% PACKAGES
+%%******************************************************************************
+
+\usepackage[T1]{fontenc}							%Hyphenation
+\usepackage[utf8]{inputenc}							%Language/input coding
+\usepackage[english]{babel}					%Brazilian Portuguese Language Package
+
+\usepackage{beamerthemesplit}
+\usepackage{beamerfoils}
+
+\usepackage{lmodern}								%Solve font problems
+\usepackage{eurosym}
+\usepackage{rotating}
+\usepackage{enumerate}
+
+\usepackage{amsmath}
+\usepackage{amssymb}								%Math symbols
+\usepackage{amsthm}									%Theorem
+\usepackage{array}									%For tabular
+\usepackage{color}									%Color package
+\usepackage{colortbl}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{graphicx}								%Graphic package
+
+\usepackage{fancybox}
+\usepackage{textcomp}
+
+\usepackage{listings}
+
+\usepackage{hyperref}
+\usepackage{multimedia}								%Multimedia package
+
+\usepackage{tikz}										%Tikz graphic library
+\usetikzlibrary{matrix,arrows,positioning,shapes}
+
+%%******************************************************************************
+%% BEAMER THEME
+%%******************************************************************************
+
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+
+
+%%******************************************************************************
+%% COLORS
+%%******************************************************************************
+
+%% ---------------------------------------------------------------------------
+%% Bright colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{brightred}     {rgb}{1.00, 0.95, 0.95}
+\definecolor{brightgreen}   {rgb}{0.95, 1.00, 0.95}
+\definecolor{brightblue}    {rgb}{0.95, 0.95, 1.00}
+
+\definecolor{brightyellow}  {rgb}{1.00, 1.00, 0.95}
+\definecolor{brightmagenta} {rgb}{1.00, 0.95, 1.00}
+\definecolor{brightcyan}    {rgb}{0.95, 1.00, 1.00}
+
+\definecolor{brightorange}  {rgb}{1.00, 0.95, 0.85}
+
+%% ---------------------------------------------------------------------------
+%% Pale colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{palered}     {rgb}{1.00, 0.85, 0.85}
+\definecolor{palegreen}   {rgb}{0.85, 1.00, 0.85}
+\definecolor{paleblue}    {rgb}{0.85, 0.85, 1.00}
+
+\definecolor{paleyellow}  {rgb}{1.00, 1.00, 0.85}
+\definecolor{palemagenta} {rgb}{1.00, 0.85, 1.00}
+\definecolor{palecyan}    {rgb}{0.85, 1.00, 1.00}
+
+\definecolor{paleorange}  {rgb}{1.00, 0.85, 0.65}
+
+%% ---------------------------------------------------------------------------
+%% Light colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{lightred}     {rgb}{0.95, 0.00, 0.00}
+\definecolor{lightgreen}   {rgb}{0.00, 0.95, 0.00}
+\definecolor{lightblue}    {rgb}{0.00, 0.00, 0.95}
+
+\definecolor{lightyellow}  {rgb}{0.95, 0.95, 0.00}
+\definecolor{lightmagenta} {rgb}{0.95, 0.00, 0.95}
+\definecolor{lightcyan}    {rgb}{0.00, 0.95, 0.95}
+
+\definecolor{lightgray}    {rgb}{0.95, 0.95, 0.95}
+
+\definecolor{lightorange}  {rgb}{0.95, 0.63, 0.00}
+
+%% ---------------------------------------------------------------------------
+%% Middle colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{midred}     {rgb}{0.85, 0.00, 0.00}
+\definecolor{midgreen}   {rgb}{0.00, 0.85, 0.00}
+\definecolor{midblue}    {rgb}{0.00, 0.00, 0.85}
+
+\definecolor{midyellow}  {rgb}{0.85, 0.85, 0.00}
+\definecolor{midmagenta} {rgb}{0.85, 0.00, 0.85}
+\definecolor{midcyan}    {rgb}{0.00, 0.85, 0.85}
+
+\definecolor{midgray}    {rgb}{0.85, 0.85, 0.85}
+
+\definecolor{midorange}  {rgb}{0.85, 0.57, 0.00}
+
+%% ---------------------------------------------------------------------------
+%% Normal colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{red}     {rgb}{0.75, 0.00, 0.00}
+\definecolor{green}   {rgb}{0.00, 0.75, 0.00}
+\definecolor{blue}    {rgb}{0.00, 0.00, 0.75}
+
+\definecolor{yellow}  {rgb}{0.75, 0.75, 0.00}
+\definecolor{magenta} {rgb}{0.75, 0.00, 0.75}
+\definecolor{cyan}    {rgb}{0.00, 0.75, 0.75}
+
+\definecolor{gray}    {rgb}{0.75, 0.75, 0.75}
+
+\definecolor{orange}  {rgb}{0.75, 0.50, 0.00}
+
+%% ---------------------------------------------------------------------------
+%% Shadow colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{shadred}     {rgb}{0.65, 0.00, 0.00}
+\definecolor{shadgreen}   {rgb}{0.00, 0.65, 0.00}
+\definecolor{shadblue}    {rgb}{0.00, 0.00, 0.65}
+
+\definecolor{shadyellow}  {rgb}{0.65, 0.65, 0.00}
+\definecolor{shadmagenta} {rgb}{0.65, 0.00, 0.65}
+\definecolor{shadcyan}    {rgb}{0.00, 0.65, 0.65}
+
+\definecolor{shadgray}    {rgb}{0.65, 0.65, 0.65}
+
+\definecolor{shadorange}  {rgb}{0.65, 0.43, 0.00}
+
+%% ---------------------------------------------------------------------------
+%% Darker colors
+%% ---------------------------------------------------------------------------
+
+\definecolor{darkred}     {rgb}{0.50, 0.00, 0.00}
+\definecolor{darkgreen}   {rgb}{0.00, 0.50, 0.00}
+\definecolor{darkblue}    {rgb}{0.00, 0.00, 0.50}
+
+\definecolor{darkyellow}  {rgb}{0.50, 0.50, 0.00}
+\definecolor{darkmagenta} {rgb}{0.50, 0.00, 0.50}
+\definecolor{darkcyan}    {rgb}{0.00, 0.50, 0.50}
+
+\definecolor{darkgray}    {rgb}{0.50, 0.50, 0.50}
+
+\definecolor{darkorange}  {rgb}{0.50, 0.33, 0.00}
+
+
+%%******************************************************************************
+%% NEW COMMANDS
+%%******************************************************************************
+
+%% ---------------------------------------------------------------------------
+%% Colored text
+%% ---------------------------------------------------------------------------
+
+\newcommand{\textwhite}[1]{\textcolor{white}{#1}}
+\newcommand{\textgray}[1]{\textcolor{gray}{#1}}
+\newcommand{\textblack}[1]{\textcolor{black}{#1}}
+
+\newcommand{\textred}[1]{\textcolor{red}{#1}}
+\newcommand{\textblue}[1]{\textcolor{blue}{#1}}
+\newcommand{\textgreen}[1]{\textcolor{green}{#1}}
+
+%% Text highlight.
+\newcommand{\texthfg}[1]{\textcolor{structure.fg}{#1}}
+\newcommand{\texthbg}[1]{\fcolorbox{frametitle.bg}{frametitle.bg}{#1}}
+
+%% ---------------------------------------------------------------------------
+%% Monospace text
+%% ---------------------------------------------------------------------------
+
+\newcommand{\monotxt}[1]{\texthfg{\textbf{\texttt{#1}}}}
+
+%% ---------------------------------------------------------------------------
+%% Centralize (Do not remove the empty line)
+%% ---------------------------------------------------------------------------
+
+\newcommand{\centralize}[1]{%
+  \vspace{0.1cm}%
+  {\centering #1
+
+  }\vspace{0.1cm}%
+}
+
+%% ---------------------------------------------------------------------------
+%% Commands to display commands
+%% ---------------------------------------------------------------------------
+
+\newcommand{\cmd}[1]{\textblack{\textbf{\textbackslash #1}}}
+\newcommand{\car}[1]{\textblack{\{}\textred{#1}\textblack{\}}}
+
+%% ---------------------------------------------------------------------------
+%% Trademark, registered, and copyright
+%% ---------------------------------------------------------------------------
+
+\newcommand{\tm}{\ensuremath{^{\textnormal{\texttrademark}}}}
+\newcommand{\reg}{\ensuremath{^{\textnormal{\textregistered}}}}
+
+\newcommand{\copyr}{\ensuremath{^{\textnormal{\textcopyright}}}}
+
+%% ---------------------------------------------------------------------------
+%% Angle
+%% ---------------------------------------------------------------------------
+
+\newcommand{\dgr}{\ensuremath{\textnormal{\textdegree}}}
+\newcommand{\grd}{\ensuremath{\textnormal{gr}}}
+\newcommand{\rad}{\ensuremath{\textnormal{rd}}}
+
+%% ---------------------------------------------------------------------------
+%% Price
+%% ---------------------------------------------------------------------------
+
+\newcommand{\price}[2]{#1\$~#2}
+
+\newcommand{\auprice}[1]{\price{AU}{#1}}
+\newcommand{\brprice}[1]{\price{R}{#1}}
+\newcommand{\caprice}[1]{\price{CAD}{#1}}
+\newcommand{\usprice}[1]{\price{US}{#1}}
+\newcommand{\euprice}[1]{#1\,\officialeuro}
+
+%% ---------------------------------------------------------------------------
+%% Temperature
+%% ---------------------------------------------------------------------------
+
+\newcommand{\ucelsius}{\textdegree{C}}
+\newcommand{\ufahrenheit}{\textdegree{F}}
+\newcommand{\urankine}{\textdegree{R}}
+
+\newcommand{\celsius}[1]{#1\ucelsius}
+\newcommand{\fahrenheit}[1]{#1\ufahrenheit}
+\newcommand{\rankine}[1]{#1\urankine}
+
+\newcommand{\kelvin}[1]{#1~K}
+
+%% ---------------------------------------------------------------------------
+%% Standard gravity
+%% ---------------------------------------------------------------------------
+
+\newcommand{\gzero}{\ensuremath{\textnormal{g}_{0}}}
+\newcommand{\gzeroval}{9.80665~\ensuremath{\textnormal{m/s}^{2}}}
+
+%% ---------------------------------------------------------------------------
+%% Tables
+%% ---------------------------------------------------------------------------
+
+\newlength{\mytabrule}
+\newlength{\myboxrule}
+
+\setlength\mytabrule{0.5pt}
+\setlength\myboxrule{1.0pt}
+
+\setlength{\tabcolsep}{3.0pt}
+\renewcommand{\arraystretch}{1.0}
+
+\setlength\arrayrulewidth{\mytabrule}
+
+%% Horizontal and vertical line separators.
+\newcolumntype{|}{!{\color{white}\vline}}
+\newcommand{\addline}{\arrayrulecolor{white}\hline\arrayrulecolor{white}}
+
+%% Row colors.
+\newcommand{\rowhdr}{\rowcolor{darkblue}}
+\newcommand{\rowodd}{\rowcolor{brightblue}}
+\newcommand{\roweve}{\rowcolor{paleblue}}
+\newcommand{\rowsel}{\rowcolor{palegreen}}
+
+\newcommand{\rowsod}{\rowcolor{midgray}}
+\newcommand{\rowsev}{\rowcolor{gray}}
+
+%% Row end.
+\newcommand{\rowend}{\tabularnewline\addline}
+\newcommand{\rowendnoline}{\tabularnewline}
+
+%% Cell text (header).
+\newcommand{\cellhfg}[1]{\textcolor{white}{#1}}
+\newcommand{\cellhbg}[1]{\cellcolor{darkblue}#1}
+
+\newcommand{\cellsod}[1]{\cellcolor{midgray}#1}
+\newcommand{\cellsev}[1]{\cellcolor{gray}#1}
+
+\newcommand{\cellcap}[1]{\cellhfg{\textbf{#1}}}
+\newcommand{\cellhdr}[1]{\cellhbg{\cellcap{#1}}}
+
+\newcommand{\cellcor}[1]{\cellcolor{black}{\cellcap{#1}}}
+
+%% Cell text (odd, even, and selection).
+\newcommand{\cellodd}[1]{\cellcolor{brightblue}#1}
+\newcommand{\celleve}[1]{\cellcolor{paleblue}#1}
+\newcommand{\cellsel}[1]{\cellcolor{palegreen}#1}
+
+%% Empty cell.
+\newcommand{\nocell}{\cellcolor{white}}
+
+%% Cell picture.
+\newcommand{\cellpicw}[2]{\includegraphics[width=#1\columnwidth]{#2}}
+\newcommand{\cellpich}[2]{\includegraphics[height=#1\columnheight]{#2}}
+\newcommand{\cellpics}[2]{\includegraphics[scale=#1]{#2}}
+
+\newcommand{\cellpic}[2]{%
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - figure path
+  %
+  \cellpicw{#1}{#2}%
+}
+
+\newcommand{\photo}[3]{%
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - team folder under team dir figs/team
+  % #3 - team member (eg. paul)
+  %
+  \setlength{\fboxrule}{\myboxrule}%
+  \fcolorbox{shadgray}{lightgray}{\cellpic{#1}{logos/team/#2/#3.pdf}}%
+}
+
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+
+\newcolumntype{C}{>{\centering}X}
+\newcolumntype{R}{>{\raggedleft}X}
+\newcolumntype{L}{>{\raggedright}X}
+
+\newcolumntype{N}[1]{>{\centering}m{#1}}
+\newcolumntype{G}[1]{>{\raggedleft}m{#1}}
+\newcolumntype{F}[1]{>{\raggedright}m{#1}}
+
+%% Multicolumn rows.
+\newcommand{\mcrowhdr}[3]{\multicolumn{#1}{#2}{\cellhdr{#3}}}
+\newcommand{\mcrowodd}[3]{\multicolumn{#1}{#2}{\cellodd{#3}}}
+\newcommand{\mcroweve}[3]{\multicolumn{#1}{#2}{\celleve{#3}}}
+\newcommand{\mcrowsel}[3]{\multicolumn{#1}{#2}{\cellsel{#3}}}
+
+\newcommand{\addcaption}[1]{\texthfg{#1}}
+
+%% Tabular (no caption).
+\newcommand{\addtabular}[3]{
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - columns and alignment
+  %
+  % #3 - table content
+  %
+  \begin{center}
+  %
+  \begin{scriptsize}
+  \begin{tabularx}{#1\columnwidth}{#2}
+    #3%
+  \end{tabularx}
+  \end{scriptsize}
+  %
+  \end{center}
+}
+
+%% Table container.
+\newcommand{\addtable}[4]{
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - columns and alignment
+  %
+  % #3 - table caption
+  % #4 - table content
+  %
+  \begin{center}
+  %
+  \addcaption{#3}
+  \vspace{0.10cm}
+
+  \begin{scriptsize}
+  \begin{tabularx}{#1\columnwidth}{#2}
+    #4%
+  \end{tabularx}
+  \end{scriptsize}
+  %
+  \end{center}
+}
+
+%% ---------------------------------------------------------------------------
+%% Figures
+%% ---------------------------------------------------------------------------
+
+\newcommand{\rowendfig}{\rowendnoline}
+
+%% One figure per row.
+\newcommand{\rowonefig}[2]{\cellpic{#1}{#2}}
+
+%% One figure per row inside a color box.
+\newcommand{\rowonefigbox}[4]{\fcolorbox{#2}{#3}{\cellpic{#1}{#4}}}
+
+%% Two figures per row.
+\newcommand{\rowtwofig}[3]{\cellpic{#1}{#2} & \cellpic{#1}{#3}}
+
+%% Two figures per row inside color boxes.
+\newcommand{\rowtwofigbox}[5]{%
+  \fcolorbox{#2}{#3}{\cellpic{#1}{#4}} &
+  \fcolorbox{#2}{#3}{\cellpic{#1}{#5}}%
+}
+
+%% Picture container (no caption).
+\newcommand{\addpicture}[3]{
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - columns and alignment
+  %
+  % #3 - figure content
+  %
+  \begin{center}
+  %
+  \begin{scriptsize}
+  \begin{tabularx}{#1\columnwidth}{#2}
+    #3%
+  \end{tabularx}
+  \end{scriptsize}
+  %
+  \end{center}
+}
+
+%% Figure container.
+\newcommand{\addfigure}[4]{
+  %
+  % #1 - width in fraction of columnwidth
+  % #2 - columns and alignment
+  %
+  % #3 - figure caption
+  % #4 - figure content
+  %
+  \begin{center}
+  %
+  \begin{scriptsize}
+  \begin{tabularx}{#1\columnwidth}{#2}
+    #4%
+  \end{tabularx}
+  \end{scriptsize}
+
+  \vspace{-0.10cm}
+  \addcaption{#3}
+  %
+  \end{center}
+}
+
+%% ---------------------------------------------------------------------------
+%% Notes
+%% ---------------------------------------------------------------------------
+
+\newcommand{\addnote}[3]{%
+  %
+  % #1 - width
+  % #2 - note name (Ex: NOTE)
+  %
+  % #3 - note text
+  %
+  \addtabular{#1}{X}{\rowcolor{frametitle.bg} \tiny \textbf{#2}: #3}%
+}
+
+%% ---------------------------------------------------------------------------
+%% Team information
+%% ---------------------------------------------------------------------------
+
+\newcommand{\addteaminfo}[3]{
+  %
+  % #1 - team group
+  % #2 - member name
+  %
+  % #3 - member information (in tabular format one column)
+  %
+  \begin{center}
+    \begin{minipage}[t]{0.250\columnwidth}
+      \vspace{0cm}
+      \photo{0.650}{#1}{#2}
+    \end{minipage}
+    %
+    \begin{minipage}[t]{0.550\columnwidth}
+      \vspace{0cm}
+      \begin{footnotesize}
+      \begin{tabularx}{0.980\columnwidth}{L}
+        #3%
+      \end{tabularx}
+      \end{footnotesize}
+    \end{minipage}
+  \end{center}
+}
+
+%% ---------------------------------------------------------------------------
+%% Listings
+%% ---------------------------------------------------------------------------
+%%
+%% backgroundcolor   : choose the background color; you must add
+%%                     \usepackage{color} or \usepackage{xcolor}
+%% basicstyle        : the size of the fonts that are used for the code
+%%
+%% breakatwhitespace : sets if automatic breaks should only happen at whitespace
+%% breaklines        : sets automatic line breaking
+%%
+%% captionpos        : sets the caption-position to bottom
+%%
+%% commentstyle      : comment style
+%% keywordstyle      : keyword style
+%% identifierstyle   : identifier style
+%% stringstyle       : string literal style
+%%
+%% morekeywords      : if you want to add more keywords to the set
+%% deletekeywords    : if you want to delete keywords from the given language
+%%
+%% escapeinside      : if you want to add LaTeX within your code
+%% extendedchar      : lets you use non-ASCII characters; for 8-bits encodings
+%%                     only, does not work with UTF-8
+%%
+%% frame=single      : adds a frame around the code
+%% rulecolor         : if not set, the frame-color may be changed on
+%%                     line-breaks within not-black text (e.g. comments)
+%%
+%% language          : the language of the code
+%%
+%% numbers           : where to put the line-numbers; possible values are
+%%                     (none, left, right)
+%% numbersep         : how far the line-numbers are from the code
+%% numberstyle       : the style that is used for the line-numbers
+%% stepnumber        : the step between two line-numbers. If it's 1, each line
+%%                     will be numbered
+%%
+%% showspaces        : show spaces everywhere adding particular underscores;
+%%                     it overrides 'showstringspaces'
+%% showstringspaces  : underline spaces within strings only
+%% showtabs          : show tabs within strings adding particular underscores
+%%
+%% tabsize           : sets default tabsize to 2 spaces
+%% title/caption     : shows the filename of files included with
+%%                     \lstinputlisting; also try caption instead of title
+%%
+%% ---------------------------------------------------------------------------
+
+\lstset{
+  backgroundcolor=\color{lightgray},
+  basicstyle=\tiny\ttfamily,
+  %
+  breakatwhitespace=false,
+  breaklines=true,
+  %
+  captionpos=t,
+  %
+  commentstyle=\bfseries\color{darkblue},
+  keywordstyle=\bfseries\color{black},
+  stringstyle=\color{blue},
+  identifierstyle=\color{black},
+  %
+  morekeywords={*,...},
+  deletekeywords={},
+  %
+  escapeinside={@(}{)@},
+  %
+  frame=single,
+  rulecolor=\color{gray},
+  %
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\bfseries\color{red},
+  stepnumber=1,
+  %
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  %
+  tabsize=2
+}
+
+%% List container.
+\newcommand{\addcode}[3]{
+  %
+  % #1 - language (eg. C, C++, TeX, Python, etc)
+  % #2 - file containing the code (eg. main.cpp)
+  %
+  % #3 - caption text (eg. Listing of main.cpp)
+  %
+  \vspace{-0.70cm}
+  \begin{center}
+    \begin{minipage}[t]{0.925\textwidth}
+      %
+      \lstset{language=#1, title=\texthfg{#3}}%
+      \lstinputlisting{#2}%
+      %
+    \end{minipage}
+  \end{center}
+  \vspace{-0.25cm}
+}
+
+%% List container (range selection).
+\newcommand{\addcoderange}[5]{
+  %
+  % #1 - language (eg. C, C++, TeX, Python, etc)
+  % #2 - file containing the code (eg. main.cpp)
+  %
+  % #3 - First line of the range
+  % #4 - Last line of the range
+  %
+  % #5 - caption text (eg. Listing of main.cpp)
+  %
+  \vspace{-0.70cm}
+  \begin{center}
+    \begin{minipage}[t]{0.925\textwidth}
+      %
+      \lstset{language=#1, title=\texthfg{#5}}%
+      \lstinputlisting[firstline=#3, lastline=#4]{#2}%
+      %
+    \end{minipage}
+  \end{center}
+  \vspace{-0.25cm}
+}
+
+%% -----------------------------------------------------------------------------
+%% Part title
+%% -----------------------------------------------------------------------------
+
+\newcommand{\parttitle}[1]{%
+  \begin{center}
+    \texthfg{\Huge #1}
+  \end{center}%
+}
+
+\newcommand{\subparttitle}[1]{%
+  \begin{center}
+    \huge #1
+  \end{center}%
+}
+
+
+%% -----------------------------------------------------------------------------
+%% Blocks
+%% -----------------------------------------------------------------------------
+
+\newcommand{\makeblock}[6]{%
+  %
+  % #1 - caption background color
+  % #2 - caption foreground color
+  %
+  % #3 - caption text
+  %
+  % #4 - contents background color
+  % #5 - contents foreground color
+  %
+  % #6 - contents text
+  %
+  \begin{center}
+  \begin{tabularx}{0.95\columnwidth}{X}
+    \rowcolor{#1} \textcolor{#2}{#3} \tabularnewline
+    \rowcolor{#4} \textcolor{#5}{#6}
+  \end{tabularx}
+  \end{center}%
+}
+
+%% Block normal.
+\newcommand{\myblock}[2]{%
+  %
+  % #1 - caption text
+  % #2 - contents text
+  %
+  \makeblock{blue}{white}{\textbf{#1}}
+            {lightgray}{black}{#2}%
+}
+
+%% Block alert.
+\newcommand{\myalert}[2]{%
+  %
+  % #1 - caption text
+  % #2 - contents text
+  %
+  \makeblock{red}{white}{\textbf{#1}}
+            {lightgray}{black}{#2}%
+}
+
+%% -----------------------------------------------------------------------------
+%% Logos
+%% -----------------------------------------------------------------------------
+\graphicspath{{/home/wesley/Dropbox/Mestrado/dissertation/text/v0/images/}}
+
+\newcommand{\addlogo}[2]{\includegraphics[height=#1]{logos/#2-logo.pdf}}
+\newcommand{\logos}[1]{%
+  \addlogo{#1}{coppe}%
+  %
+  \hfill%
+  %
+  \addlogo{#1}{smt}%
+}
+
+%% Hide navigation symbols and show my logo instead.
+\renewcommand{\MyLogo}[2]{%
+  \mode<presentation>{%
+    \setbeamertemplate{navigation symbols}{%
+      \begin{minipage}[t]{1.045\textwidth}%
+        \addlogo{#1}{#2}%
+      \end{minipage}%
+    }%
+  }%
+}
+
+%% Hide navigation symbols and show my logos instead.
+\newcommand{\MyLogos}[1]{%
+  \mode<presentation>{%
+    \setbeamertemplate{navigation symbols}{%
+      \begin{minipage}[t]{1.045\textwidth}%
+        \logos{#1}%
+      \end{minipage}%
+    }%
+  }%
+}
+
+%% -----------------------------------------------------------------------------
+%% Email and web pages
+%% -----------------------------------------------------------------------------
+
+\newcommand{\email}[1]{\href{mailto:#1}{\monotxt{#1}}}
+\newcommand{\wpage}[1]{\href{http://#1}{\monotxt{#1}}}
+
+%% -----------------------------------------------------------------------------
+%% Reference link
+%% -----------------------------------------------------------------------------
+
+\newcommand{\reflink}[2]{\hyperlink{#1}{\texthfg{#2}}}
+
+%% -----------------------------------------------------------------------------
+%% Audio
+%% -----------------------------------------------------------------------------
+
+%% Button speaker.
+\newcommand{\speakericon}{\includegraphics[width=12pt]{/button/speaker.pdf}}
+\newcommand{\buttonspeaker}[1]{\raise -2.0pt \hbox{{\speakericon}}~\texthfg{#1}}
+
+%% Audio button and label.
+\newcommand{\addaudio}[2]{%
+  %
+  % #1 - label
+  % #2 - audio path.
+  %
+  \vspace{0.1cm}%
+  \movie[externalviewer]{\buttonspeaker{#1}}{#2}%
+  \vspace{0.1cm}%
+}
+
+%% Audio preview (preview, button, and label).
+\newcommand{\addaudiopreview}[4]{%
+  %
+  % #1 - label
+  % #2 - audio path
+  %
+  % #3 - preview name (must be in <audio path>/preview)
+  % #4 - audio name
+  %
+  \addtabular{1}{C}{%
+    \movie[externalviewer]{\buttonspeaker{#1}}{#2/#4} \rowendnoline
+    \cellpic{0.90}{#2/preview/#3}
+  }%
+}
+
+%% Audio preview (preview, button, and label).
+\newcommand{\addaudiopreviewtwo}[6]{%
+  %
+  % #1 - label audio 1
+  % #2 - label audio 2
+  %
+  % #3 - audio path
+  %
+  % #4 - preview name (must be in <audio path>/preview)
+  %
+  % #5 - audio name 1
+  % #6 - audio name 2
+  %
+  \addtabular{1}{C}{%
+    \movie[externalviewer]{\buttonspeaker{#1}}{#3/#5}\hspace{0.5cm}%
+    \movie[externalviewer]{\buttonspeaker{#2}}{#3/#6} \rowendnoline
+    \cellpic{0.80}{#3/preview/#4}
+  }%
+}
+
+%% Audio preview (preview, button, and label).
+\newcommand{\addaudiopreviewthree}[8]{%
+  %
+  % #1 - label audio 1
+  % #2 - label audio 2
+  % #3 - label audio 3
+  %
+  % #4 - audio path
+  %
+  % #5 - preview name (must be in <audio path>/preview)
+  %
+  % #6 - audio name 1
+  % #7 - audio name 2
+  % #8 - audio name 3
+  %
+  \addtabular{1}{C}{%
+    \movie[externalviewer]{\buttonspeaker{#1}}{#4/#6}\hspace{0.5cm}%
+    \movie[externalviewer]{\buttonspeaker{#2}}{#4/#7}\hspace{0.5cm}%
+    \movie[externalviewer]{\buttonspeaker{#3}}{#4/#8} \rowendnoline
+    \cellpic{0.80}{#4/preview/#5}
+  }%
+}
+
+
+%% -----------------------------------------------------------------------------
+%% Video
+%% -----------------------------------------------------------------------------
+
+%% Button play.
+\newcommand{\playicon}{\includegraphics[width=12pt]{/button/play.pdf}}
+\newcommand{\buttonplay}[1]{\raise -2.0pt \hbox{{\playicon}}~\texthfg{#1}}
+
+%% Movie button and label.
+\newcommand{\addmovie}[2]{%
+  %
+  % #1 - label
+  % #2 - movie path.
+  %
+  \vspace{0.1cm}%
+  \movie[externalviewer]{\buttonplay{#1}}{#2}%
+  \vspace{0.1cm}%
+}
+
+%% Movie preview (preview, button, and label).
+\newcommand{\addmoviepreview}[4]{%
+  %
+  % #1 - label
+  % #2 - movie path
+  %
+  % #3 - preview name (must be in <movie path>/preview)
+  % #4 - movie name
+  %
+  \addtabular{1}{C}{%
+    \movie[externalviewer]{\cellpic{0.90}{#2/preview/#3}}{#2/#4} \rowendnoline
+    \texthfg{#1}%
+  }%
+}
+
+
+%% -----------------------------------------------------------------------------
+%% Theme colors and bullets
+%% -----------------------------------------------------------------------------
+
+%% Beamer color theme for SMT. -------------------------------------------------
+
+\definecolor{smtblackred}{rgb}{0.15, 0.00, 0.00}
+\definecolor{smtdarkred} {rgb}{0.25, 0.00, 0.00}
+\definecolor{smtshadred} {rgb}{0.40, 0.00, 0.00}
+\definecolor{smtmidred}  {rgb}{0.55, 0.00, 0.00}
+\definecolor{smtred}     {rgb}{0.70, 0.00, 0.00}
+
+\setbeamercolor{title}{fg=smtred}
+
+\setbeamercolor{frametitle}      {fg=white,bg=smtdarkred}
+\setbeamercolor{frametitle right}{fg=white,bg=shadred}
+
+\setbeamercolor{local structure}{fg=smtred}
+\setbeamercolor{section in toc} {fg=blue}
+
+\setbeamercolor{palette primary}   {fg=white,bg=smtblackred}
+\setbeamercolor{palette secondary} {fg=white,bg=smtdarkred}
+\setbeamercolor{palette tertiary}  {fg=white,bg=smtshadred}
+\setbeamercolor{palette quaternary}{fg=white,bg=midred}
+
+%% Possible values are ball, circle, and square.
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{subsection in toc}[square]
+
+%% Enumerate items. ------------------------------------------------------------
+
+%% First level.
+\setbeamertemplate{enumerate item}[circle]
+\setbeamerfont{item projected}{size=\tiny}
+
+%% Second level.
+\setbeamertemplate{enumerate subitem}[square]
+\setbeamerfont{subitem projected}{size=\tiny}
+
+%% Third level.
+\setbeamertemplate{enumerate subsubitem}[circle]
+\setbeamerfont{subsubitem projected}{size=\tiny}
+
+%% Itemize items. --------------------------------------------------------------
+
+%% First level.
+\setbeamertemplate{itemize item}{\large$\bullet$}
+
+%% Second level.
+\setbeamertemplate{itemize subitem}{\tiny$\blacksquare$}
+
+%% Third level.
+\setbeamertemplate{itemize subsubitem}{\scriptsize$\blacktriangleright$}
+
