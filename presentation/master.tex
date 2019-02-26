@@ -91,7 +91,7 @@
 \AtBeginSection[]
 {
 	\begin{frame}
-		\frametitle{Sumário}
+		\frametitle{Outline}
 		%\tableofcontents[currentsection, hideallsubsections]
 		\tableofcontents[currentsection]
 	\end{frame}
@@ -134,12 +134,16 @@
 				\item The arboviruses ({\bf dengue}, {\bf chikungunya}, {\bf zika}, and {\bf yellow fever})
 				are one of the leading global health problem;
 				\item the {\it Aedes aegypti} is the main {\bf vector} of such diseases;
-				\item the best form of combat is {\bf eliminating} possible mosquito {\bf foci} proliferation;
-				\item it can be {\bf expensive} and {\bf time-consuming} (therefore, {\bf inefficient});
-				\item to use {\bf aerial images} and {\bf videos} captured by an {\bf UAV};
-				\item {\bf automatic detection} of regions and objects with {potential mosquito breeding sites} in order to assist health agents;
-				\item to apply {\bf computer vision} and {\bf machine learning} techniques.
+				% \item The \textit{Aedes aegypti} is one of the most dangerous mosquito species;
+				\item it is well adapted to urban environments;
+				\item its  breeding sites are small containers with stagnant water.
 		\end{itemize}
+		\begin{figure}[b]
+			\centering
+			\includegraphics[width=.4\linewidth]{aedes.jpg}
+			% \caption[The {\it Aedes aegypti}]{The {\it Aedes aegypti}. Source:~\cite{web:aedesfiocruz}}
+			\label{fig:aedes}
+		\end{figure}
 
 	\end{frame}
 
@@ -147,44 +151,35 @@
 	%%==============================================================================
 	%% SECTION - The Aedes aegypti
 	%%==============================================================================
-	\section{The Aedes aegypti}
+	% \section{The Aedes aegypti}
 
 	\begin{frame}
-		\frametitle{Action of the Health's Department}
+		\frametitle{Plans and Actions to Combat}
 
-		The Health's Department follows an \textbf{internacional protocol} to combat arboviruses, in which they have routine actions, such as daily visits and strategic points, and emergency actions, when there is a case report.
-		\newline
-
-		The control methods are divided into
 		\begin{itemize}
-			\item Mechanical: displacement of object, sealing of water tank, etc
-			\item Chemical: larvicide and insecticide/smoke repellency
-			\item Biological: larvae and wolbachia
-			\item Legal: with the support of justice
-			\item Integrated: involving other secretariats
+			\item The best form of combat is {\bf eliminating} possible mosquito {\bf foci} proliferation;
+			\item the Brazilian Ministry of Health follows an \textbf{internacional protocol} to combat arboviruses;% in which they have routine actions, such as daily visits and strategic points, and emergency actions, when there is a case report.
+			% \item the goal is to keep vector control below 1\%;
+			\item the control methods are divided into:
+			\begin{itemize}
+				\item Mechanical: displacement of object, sealing of water tank, etc;
+				\item Chemical: larvicide and insecticide/fog repellency;
+				\item Biological: larvae and wolbachia.
+				% \item Legal: with the support of justice;
+				% \item Integrated: involving other secretariats
+			\end{itemize}
+			\item it can be {\bf expensive} and {\bf time-consuming} (therefore, {\bf inefficient}).
 		\end{itemize}
-
-		\vspace{3.5mm}
-		The goal is to keep vector control below 1\%.
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Final Product for the Government}
-
-		We expect to deliver a \textbf{decision support system} that performs a scan in a predefined area and can identify and classify possible breeding sites according to the codes defined in the control model used by SVS.
-		\newline
-
-		In this way, indicate your \textbf{geographic positions} so that the expert evaluates and defines the actions to be taken in the property he identified.
-		\newline
-
-		The \textbf{main advantage} for the secretariat is in the legal control, when there is case notification and a property near the locality is abandoned or blocked.
-	\end{frame}
 
 	\begin{frame}
-		\frametitle{Objects of Interest}
-
-
-		\begin{table}[]
+		\frametitle{Potential Breeding Sites}
+		\begin{itemize}
+			\item LIRAa: a methodology used by analyzing the quantity of real estate with the presence of containers with mosquito larvae;
+			\item classification of potential breeding sites for the {\it Aedes aegypti}:
+		\end{itemize}
+				\begin{table}[]
 			\resizebox{\textwidth}{!}{%
 			\begin{tabular}{@{}cc@{}}
 				\toprule
@@ -202,55 +197,134 @@
 	\end{frame}
 
 
+		\begin{frame}
+			\frametitle{Final Product (in the future)}
 
+			\begin{columns}
+				\begin{column}{0.55\linewidth}
+					\begin{itemize}
+						\item Using {\bf aerial images} and {\bf videos} captured by an {\bf UAV};
+						\item to deliver a \textbf{decision support system}; %that performs a scan in a predefined area and can identify and classify possible breeding sites;% according to the codes defined in the control model used by SVS.
+						\item {\bf automatic detection} of regions and objects with {potential mosquito breeding sites}
+						indicating their \textbf{geographic positions}; %so that the expert evaluates and defines the actions to be taken in the property he identified.
+						\item applying {\bf computer vision} and {\bf machine learning} techniques.
+						% \item The \textbf{main advantage} for the secretariat is in the
+						\item legal control: \textbf{abandoned} or \textbf{blocked} places.
+					\end{itemize}
+				\end{column}
+				\begin{column}{0.45\linewidth}
+					\begin{figure}[htb]
+						\centering
+						\includegraphics[width=\textwidth]{drone-persp2.png}
+						\label{fig:zframer1}
+					\end{figure}
+
+				\end{column}
+			\end{columns}
+		\end{frame}
 
 %%==============================================================================
 %% SECTION - Vision Meets Unmanned Vehicles
 %%==============================================================================
 \section{Vision Meets Unmanned Vehicles}
 
-	\subsection{Related works}
+	% \subsection{Related works}
 
 	\subsection{The CEFET dataset}
 
+	\begin{frame}\frametitle{The CEFET Dataset}
+		\begin{itemize}
+			\item Commercial UAV DJI Phantom Vision 2 Plus;
+			\item 29 videos with about 15s duration each;
+			\item 1,080 $\times$ 720 pixels at $30$~fps;
+			\item reduced the field of view (FoV) to 85 degrees;
+			\item approximately constant drone speed and height (7km/h and 5m).
+		\end{itemize}
+	\end{frame}
+
+
+	\begin{frame}\frametitle{Examples of Scenarios}
+		\begin{figure}[htb!]
+			\centering
+			\includegraphics[width=.5\linewidth, trim={0 3.2cm 0 0},clip]{base_cefet_2.png}~
+			\includegraphics[width=.5\linewidth, trim={0 0 0 2.4cm},clip]{base_cefet_3.png}\\
+			\vspace{.5mm}
+			\includegraphics[width=.5\linewidth, trim={0 0 0 3.2cm},clip]{base_cefet_1.png}
+			% \caption{Examples of scenarios contemplated by the CEFET dataset.}
+			\label{fig:base_cefet}
+		\end{figure}
+	\end{frame}
+
+
+
 	\subsection{The MBG dataset}
 
-		\begin{frame}\frametitle{}
-			Due to the nature of our problem, we decided to use
+		\begin{frame}\frametitle{The ``Mosquito Breeding Grounds'' Dataset}
+
 			\begin{itemize}
-				\item the downward vision system
-				\item constant drone speed and height
-				\item 4K (3.840 x 2.160) resolution and H.265 (maximum $30fps$)
+				\item Commercial UAV DJI Phantom Vision 4 Pro;
+				\item all camera parameters are set manually, keeping the focus fixed at infinity;
+				\item video rectification;
+				\item downward vision system;
+				\item automatic predefined  (serpetine-like) flight plan using the Litchi;
+				\item constant drone speed (15km/h) and height (10, 25 and 40m, up to now);
+				\item 3,840 $\times$ 2,160 pixels resolution at  $50$~fps.
 			\end{itemize}
 
-			\bigskip
+			% \bigskip
 
-			Some parameters were defined through a simple analyze:
-			\begin{itemize}
-				\item Height was defined as 10 meters based on object resolution, visualizing which would be the heigher altitude in which it is still possible to identify the smallest object of interest, a bottle
-				\item Speed was defined as 15km/h based on the quantity of frames that contains the whole biggest object, a pool
-			\end{itemize}
+			% Some parameters were defined through a simple analyze:
+			% \begin{itemize}
+			% 	\item Height was defined as 10 meters based on object resolution, visualizing which would be the heigher altitude in which it is still possible to identify the smallest object of interest, a bottle
+			% 	\item Speed was defined as 15km/h based on the quantity of frames that contains the whole biggest object, a pool
+			% \end{itemize}
 		\end{frame}
 
+		% \begin{frame}
+		% 	\frametitle{}
+		% 	\begin{enumerate}
+		% 		\item Select the points of interest on Google Maps or Litchi Mission Hub
+		% 		\item Define drone height (desired 10m) and speed (suggested 15km/h)
+		% 		\item Project the flight plan remotely
+		% 		\item Import it to mission hub and save it after verify general parameters:
+		% 		\begin{itemize}
+		% 			\item Finish Action: RTH (return to home)
+		% 			\item Path Mode: Straight Lines
+		% 			\item Default Gimbal Pitch Mode: Disabled
+		% 		\end{itemize}
+		% 		\item Arrange the objects in the area, if necessary
+		% 		\item Verify other parameters such as:
+		% 		\begin{itemize}
+		% 			\item Resolution: 4K (3.840 x 2.160)
+		% 			\item Focus at infinity (do it manually by touching the screen on the horizon)
+		% 			\item White balance as sunny or cloudy, depending on the weather
+		% 		\end{itemize}
+		% 		\item Record video for camera calibration
+		% 		\item Open the mission on litchi app
+		% 		\item Press play
+		% 	\end{enumerate}
+		% \end{frame}
 
-		\begin{frame}\frametitle{Flight plan details}
-			We decided to use a trajectory that:
-			\begin{itemize}
-				\item covers an rectangular area, defined as the rectangle with minimum area that surrounds the given points of interest
-				\item considers the horizontal GPS positioning accuracy, expanding the rectangular area to be sure to cover all the given points
-				\item maps the rectangular area in a ``boustrophedon'' way, i.e., from right to left and from left to right in alternate parallel lines
-				\item has an overlap that allows an object of interest not to be cut in at least one pass, considering its maximum size and aircraft vision positioning accuracy
-				\item the drone does not change its orientation, only its direction
-			\end{itemize}
-		\end{frame}
-
-
-		\begin{frame}
-			\frametitle{Some measures to meet the specifications}
-			\begin{figure}
+		\begin{frame}\frametitle{Examples of Scenarios}
+			\begin{figure}[htb!]
 				\centering
-				\includegraphics[height=6.4cm]{flightplan.png}
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{new_base_04.png}~
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{new_base_02.png}\\
+				\vspace{.5mm}
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{new_base_01.png}
+				% \caption{Examples of scenarios contemplated by the MBG dataset.}
+				\label{fig:scenarios1}
 			\end{figure}
+		\end{frame}
+
+		\begin{frame}\frametitle{Flight Plan}
+			\begin{itemize}
+				\item Covers a minimum rectangular area that surrounds the given points of interest;
+				\item considers the horizontal GPS positioning accuracy, expanding the rectangular area to be sure to cover all the given points
+				\item sweep the area in a ``serpetine'' way;
+				\item has an overlap;
+				\item the drone changes only its direction (not orientation).
+			\end{itemize}
 		\end{frame}
 
 
@@ -258,13 +332,22 @@
 			\frametitle{Example}
 			\begin{figure}
 				\centering
-				\includegraphics[height=8cm]{gremio.pdf}
+				\includegraphics[width=\linewidth, trim={0 0 0 3cm},clip]{gremio.pdf}
 			\end{figure}
 		\end{frame}
 
 
+		% \begin{frame}
+		% 	\frametitle{Some measures to meet the specifications}
+		% 	\begin{figure}
+		% 		\centering
+		% 		\includegraphics[height=6.4cm]{flightplan.png}
+		% 	\end{figure}
+		% \end{frame}
+
+
 		\begin{frame}
-			\frametitle{Flight mission}
+			\frametitle{Flight Mission}
 			\begin{figure}
 				\centering
 				\includegraphics[width=12cm]{missionlitchi.png}
@@ -272,40 +355,14 @@
 		\end{frame}
 
 
-		\begin{frame}
-			\frametitle{}
-			\begin{enumerate}
-				\item Select the points of interest on Google Maps or Litchi Mission Hub
-				\item Define drone height (desired 10m) and speed (suggested 15km/h)
-				\item Project the flight plan remotely
-				\item Import it to mission hub and save it after verify general parameters:
-				\begin{itemize}
-					\item Finish Action: RTH (return to home)
-					\item Path Mode: Straight Lines
-					\item Default Gimbal Pitch Mode: Disabled
-				\end{itemize}
-				\item Arrange the objects in the area, if necessary
-				\item Verify other parameters such as:
-				\begin{itemize}
-					\item Resolution: 4K (3.840 x 2.160)
-					\item Focus at infinity (do it manually by touching the screen on the horizon)
-					\item White balance as sunny or cloudy, depending on the weather
-				\end{itemize}
-				\item Record video for camera calibration
-				\item Open the mission on litchi app
-				\item Press play
-			\end{enumerate}
-		\end{frame}
-
-
-		\begin{frame}\frametitle{Projective Transformation}
+		\begin{frame}\frametitle{Video Rectification: Projective Transformation}
 			%
 			\begin{itemize}
 			 \item  A camera maps a point $\Mbf' = [X,Y,Z,1]^\Trm$ in the space into a point $\mbf' = [u,v,1]^\Trm$ through a projective transformation:
-			 \begin{equation}
+			 \begin{equation*}
 			\label{eq:projection}
 			s\mbf' = \Asf[\Rsf~|~\tbf]\Mbf',
-			\end{equation}
+			\end{equation*}
 			\begin{itemize}
 			 \item $s$ is an arbitrary scale factor;
 			 \item $\Rsf$ and $\tbf$ are, respectively, the rotation matrix and the translation vector (extrinsic parameters), which relate the real-world coordinate system to the camera's coordinate system.
@@ -331,21 +388,20 @@
 		\end{frame}
 
 
-		\begin{frame}
-			\frametitle{Intrinsic Parameters}
+		\begin{frame}\frametitle{Intrinsic Parameters}
 			\begin{itemize}
 			 \item $\Asf$ is the the camera calibration matrix (intrinsic parameters):
-			 \begin{equation}
+			 \begin{equation*}
 			\Asf =
 			\begin{bmatrix}
 			\alpha & \gamma & u_0\\
 			0 & \beta  & v_0\\
 			0 &     0  & 1\\
 			\end{bmatrix},
-			\end{equation}
+			\end{equation*}
 			\begin{itemize}
-			 \item $[u_0,v_0]^\Trm$ denote the coordinates of the principal point,
-			 \item $\alpha$ and $\beta$ the scaling factors in the $ u $ and $ v $ axes of the image, respectively,
+			 \item $[u_0,v_0]^\Trm$ denote the coordinates of the principal point;
+			 \item $\alpha$ and $\beta$ the scaling factors in the $ u $ and $ v $ axes of the image, respectively;
 			 \item $\gamma$ is the obliquity (degree of shear) of the two axes of the image.
 			\end{itemize}
 			\end{itemize}
@@ -362,10 +418,10 @@
 			  \item the ideal points are the projections of the points of the calibration standard according to the model given by Eq.~\eqref{eq:projection}.
 			  \item Analogously, $(x,y)$ and $(\breve{x},\breve{y})$ are the normalized coordinates in the ideal (free of distortion) and real (distorted) images, respectively.
 			  \item The radial distortion can be modeled as:
-			\begin{align}
+			\begin{align*}
 			\breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
 			\breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
-			\end{align}
+			\end{align*}
 			\item $k_1$ and $k_2$ are the radial distortion coefficients,
 			\item $r^2 = (x^2 + y^2)$.
 			 \end{itemize}
@@ -379,12 +435,10 @@
 			\begin{itemize}
 			 \item The center of the radial distortion is located at the main point.
 			 \item From $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ and $\breve{v} = \beta \breve{y} + v_0$, and assuming $\gamma = 0$:
-			  \begin{align}
-			    \label{eq:u_dist}
+			  \begin{align*}
 			    \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
-			    \label{eq:v_dist}
 			    \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
-			  \end{align}
+			  \end{align*}
 			\end{itemize}
 		\end{frame}
 
@@ -400,34 +454,137 @@
 			  \item assuming that the point images are corrupted by an i.i.d. noise
 			  \item the maximum likelihood estimate can be obtained by minimizing the functional
 			  %
-			  \begin{equation}
+			  \begin{equation*}
 			    \sum_{i=1}^{n}\sum_{j=1}^{m} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
 			    \label{eq:functional},
-			  \end{equation}
-			  \item $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ is the projection of point $\Xbf_j$, according to Eq.~\eqref{eq:projection},
-			followed by the distortion modeled according to the Eqs.~\eqref{eq:u_dist} and~\eqref{eq:v_dist}
-			  \item Minimize the functional in~\eqref{eq:functional} is a nonlinear optimization problem that can be solved through the algorithm of Levenberg-Marquardt.
+			  \end{equation*}
+				\item $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ is the projection of point $\Xbf_j$, followed by distortion;
+				%  modeled according to the Eqs.~\eqref{eq:u_dist} and~\eqref{eq:v_dist}
+			  \item Minimize this functional is a nonlinear optimization problem that can be solved through the algorithm of Levenberg-Marquardt.
 			 \end{itemize}
 			\end{itemize}
 			%
 		\end{frame}
 
 
-		\begin{frame}\frametitle{Comparison: distorted frame $\times$ undistorted}
-			\begin{figure}[htb!]
+		% \begin{frame}\frametitle{Comparison: distorted frame $\times$ undistorted}
+		% 	\begin{figure}[htb!]
+		% 		\center
+		% 		\subfloat{\includegraphics[width=0.5\textwidth]{frame_420_pts.png}
+		% 			\label{fig:keypts_1}} %\\[-0.2cm]
+		% 			\subfloat{\includegraphics[width=0.5\textwidth]{frame_420_undistorted.png}%
+		% 			\label{fig:undistort_1}} %\\[-0.2cm]
+		% 		\label{fig:undistort}
+		% 	\end{figure}
+		% \end{frame}
+
+		\begin{frame}\frametitle{Generating rectified videos}
+			\begin{itemize}
+				\item Apply calibration frame-by-frame;
+				% \item So that, we need to extract a frame and apply the transformation;
+				\item After rectify each frame we need to generate a new video;
+
+			%  \end{itemize}
+
+			%  \begin{itemize}
+
+			 \end{itemize}
+			 \begin{figure}[htb!]
 				\center
-				\subfloat[]{\includegraphics[width=0.5\textwidth]{frame_420_pts.png}
+				\subfloat{\includegraphics[width=0.5\textwidth]{frame_420_pts.png}
 					\label{fig:keypts_1}} %\\[-0.2cm]
-					\subfloat[]{\includegraphics[width=0.5\textwidth]{frame_420_undistorted.png}%
+					\subfloat{\includegraphics[width=0.5\textwidth]{frame_420_undistorted.png}%
 					\label{fig:undistort_1}} %\\[-0.2cm]
 				\label{fig:undistort}
+			\end{figure}
+
+		\end{frame}
+
+
+
+		\begin{frame}\frametitle{Compression $\times$ Quality}
+			\begin{itemize}
+				% \item We extract all frames from original videos;
+				% \item Save them in a new video using the same codec of original videos;
+				\item We compare the videos objectively and subjectively at different compression levels;
+				\item Constant Rate Factor (CRF) %\footnote{https://trac.ffmpeg.org/wiki/Encode/H.264}
+				varies from 0 to 51 (using 8 bits);
+				% \begin{itemize}
+				% 	\item where 0 is lossless and 51 is worst quality possible
+				% \end{itemize}
+				\item a subjectively sane range is 17--28; %a lower value generally leads to higher quality, and
+				\item we use a ``quality'' scale, and the conversion to CRF is done as follows:
+				\begin{equation*}
+					{\rm CRF} = 51\bigg(1 - \frac{{\rm quality}}{10}\bigg);
+				\end{equation*}
+				% \item We evaluate the quality varying from 0 to 10 with unity step.
+			\end{itemize}
+			%
+			\begin{table}[]
+				\begin{tabular}{@{}cccccccccccc@{}}
+					\toprule
+					\textbf{Quality} & \red{0}  & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9   & \green{10} \\ \midrule
+					\textbf{CRF}     & \red{51} & 45.9 & 40.8 & 35.7 & 30.6 & 25.5 & 20.4 & 15.3 & 10.2 & 5.1 & \green{0}  \\ \bottomrule
+				\end{tabular}
+			\end{table}
+		\end{frame}
+
+
+	\begin{frame}\frametitle{PSNR}
+		\begin{itemize}
+		 \item We use the Peak Signal-to-Noise Ratio (PSNR) to evaluate our results quantitatively:
+		 %
+		 \begin{equation*}
+			\textrm{PSNR} = 10\log_{10}\bigg({\frac{2^B-1}{\textrm{MSE}}}\bigg);
+		 \end{equation*}
+		%  \item where:
+		%  %
+		%  \begin{equation*}
+		% 	\textrm{MSE} = \frac{1}{mn} \sum_{i=1}^{m}\sum_{j=1}^{n} \bigg(I(i,j) - K(i,j) \bigg)^2;
+		% 	\label{eq:mse}
+		% 	\end{equation*}
+			\item Typical values for the PSNR in lossy image and video compression are between 30 and 50 dB, provided the bit depth is 8 bits.
+		\end{itemize}
+		 %
+		\end{frame}
+
+
+		% \begin{frame}%\frametitle{PSNR}
+		% 	\begin{itemize}
+		% 		\item For each video we compare the PSNR frame by frame
+		% 	\end{itemize}
+		% 	%
+		% 	\begin{figure}
+		% 		\includegraphics[width=.8\linewidth]{original_001_imageio07.pdf}
+		% 	 \end{figure}
+		%  \end{frame}
+
+
+		 \begin{frame}%\frametitle{PSNR $\times$ File Size}
+			%
+			\begin{figure}
+				\includegraphics[width=.8\textwidth,trim={0 0 0 3.2cm},clip]{comparisson_filesize.pdf}
+			 \end{figure}
+			  %
+		 \end{frame}
+
+
+		 \begin{frame}\frametitle{Visual inspection}
+			\begin{figure}[htb!]
+				\centering
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{frame_3850_orig.png}~
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{frame_3850_q0.png}\\
+				\vspace{.5mm}
+				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{frame_3850_q5.png}
+				% \caption[Compression quality comparison]{Compression quality comparison. From up to down: frame from original video, quality = 0, and quality = 5.}
+				\label{fig:compression_vis}
 			\end{figure}
 		\end{frame}
 
 
 		\begin{frame}\frametitle{Annotation}
 			\begin{itemize}
-				\item The frame-by-frame annotation of all acquired sequences is done with the Zframer system, as illustrated below.
+				\item The frame-by-frame annotation of all acquired sequences is done with Zframer.
 			\end{itemize}
 			\begin{figure}[htb]
 				\centering
@@ -436,148 +593,21 @@
 			\end{figure}
 		\end{frame}
 
-
-
-
-
-
-
-		\begin{frame}\frametitle{Objects}
-			\begin{figure}[htb]
-				\centering
-				\includegraphics[width=.1\linewidth]{garrafa1.png}
-				\includegraphics[width=.2\linewidth]{garrafa2.png}
-				\includegraphics[width=.1\linewidth]{pneu1.png}
-				\includegraphics[width=.1\linewidth]{pneu3.png}\\
-				\includegraphics[width=.1\linewidth]{pneu5.png}
-				\includegraphics[width=.1\linewidth]{water1.png}
-				\includegraphics[width=.1\linewidth]{water2.png}
-				\includegraphics[width=.1\linewidth]{water3.png}
-			% \includegraphics[width=.26\linewidth]{base4.png}
-				\label{fig:objetos1}
-			\end{figure}
-
-
-		\end{frame}
-
-
-	\subsection{Scenarios}
-
-		\begin{frame}\frametitle{Scenarios}
-			\begin{figure}[htb!]
-				\centering
-				\includegraphics[width=.35\linewidth]{base1.png}
-				\includegraphics[width=.36\linewidth]{base2.png}\\
-				\includegraphics[width=.35\linewidth]{base3.png}
-			% \includegraphics[width=.26\linewidth]{../figures/base4.png}
-				\label{fig:scenarios1}
-			\end{figure}
-
-		\end{frame}
-
-
-\subsection{Camera Calibration: Zhang's Method}
-
-% -----------------------------------------------------------------------------
-% \frame{
-%   \frametitle{Projection}
-%   %
-%   Considera-se que uma câmera mapeia um ponto $\Mbf' = [X,Y,Z,1]^\Trm$ do espaço no ponto $\mbf' = [u,v,1]^\Trm$ da imagem através de uma transformação projetiva da forma:
-%   %
-%   \begin{equation}
-%   \label{eq:projection}
-%   s\mbf' = \Asf[\Rsf~|~\tbf]\Mbf',
-%   \end{equation}
-%   %
-%   onde $s$ é um fator de escala arbitrário, $\Rsf$ e $\tbf$ são, respectivamente, a matriz de rotação e o vetor de translação (parâmetros extrínsecos),que relacionam o sistema de coordenadas do mundo real com o sistema de coordenadas da câmera.
-%   %
-%   %
-% }
-
-% -----------------------------------------------------------------------------
-
-
-% -----------------------------------------------------------------------------
-% \frame{
-%   \frametitle{Parâmetros Intrínsecos}
-%     $\Asf$ é a matriz de calibração da câmera (parâmetros intrínsecos), definida por:
-%     \begin{equation}
-%       \Asf =
-%       \begin{bmatrix}
-% 	\alpha & \gamma & u_0\\
-% 	0 & \beta  & v_0\\
-% 	0 &     0  & 1\\
-%       \end{bmatrix},
-%     \end{equation}
-%     com $[u_0,v_0]^\Trm$ denotando as coordenadas do ponto principal,
-%     $\alpha$ e $\beta$ os fatores de escala nos eixos $u$ e $v$ da imagem, respectivamente,
-%     e $\gamma$ é a obliquidade (grau de cisalhamento) dos dois eixos da imagem.
-% }
-
-% -----------------------------------------------------------------------------
-% \frame{
-%   \frametitle{Compensação de Distorção Radial}
-%    Câmeras convencionais geralmente possuem significantes distorções de lentes, especialmente distorção radial.
-%
-%    Sejam $(u,v)$ as coordenadas ideais (livre de distorção) do pixel na imagem e $(\breve{u},\breve{v})$ as coordenadas correspondentes reais de imagem observada.
-%
-%     Os pontos ideais são as projeções dos pontos do padrão de calibração de acordo com o modelo dado pela Eq.~\eqref{eq:projection}.
-%
-%    Analogamente, $(x,y)$ e $(\breve{x},\breve{y})$ são as coordenadas normalizadas nas imagens ideal (livre de distorção) e real (distorcida), respectivamente.
-%
-%    A distorção radial pode ser modelada como:
-%    \begin{align}
-%     \breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
-%     \breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
-%    \end{align}
-% onde $k_1$ e $k_2$ são os coeficientes de distorção radial e $r^2 = (x^2 + y^2)$.
-%
-%
-% }
-
-% -----------------------------------------------------------------------------
-% \frame{
-%   \frametitle{Compensação de Distorção Radial}
-%     %
-%     O centro da distorção radial está localizado no ponto principal.
-%
-%     De $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ e $\breve{v} = \beta \breve{y} + v_0$, assumindo $\gamma = 0$,
-%     pode-se escrever que
-%     %
-%     \begin{align}
-%       \label{eq:u_dist}
-%       \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
-%       \label{eq:v_dist}
-%       \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
-%     \end{align}
-%
-%
-% }
-
-% -----------------------------------------------------------------------------
-% \frame{
-%    \frametitle{Método de Zhang}
-%     %
-%     O método de Zhang consiste em fazer, primeiramente, uma estimativa grosseira dos parâmetros intrínsecos e extrínsecos da câmera para depois refiná-la através da estimativa da máxima verossimilhança.
-%
-%     Dadas $n$ imagens do padrão de calibração e considerando $m$ pontos neste padrão,
-%     assumindo que as imagens dos pontos estão corrompidas por um ruído independente e identicamente distribuído, a estimativa de máxima verossimilhança pode ser obtida minimizando o funcional
-%     %
-%     \begin{equation}
-%       \sum_{i=1}^{n}\sum_{j=1}^{m} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
-%       \label{eq:functional},
-%     \end{equation}
-%     %
-%     onde $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ é a projeção do ponto $\Xbf_j$, de acordo com a Eq.~\eqref{eq:projection},
-%     seguido da distorção modelada de acordo com as Eqs.~\eqref{eq:u_dist} e~\eqref{eq:v_dist}.
-%
-%     Minimizar o funcional em~\eqref{eq:functional} é um problema de otimização não-linear que pode ser resolvido através do algoritmo de Levenberg-Marquardt.
-%
-% }
-
-% -----------------------------------------------------------------------------
-
-
+		% \begin{frame}\frametitle{Objects}
+		% 	\begin{figure}[htb]
+		% 		\centering
+		% 		\includegraphics[width=.1\linewidth]{garrafa1.png}
+		% 		\includegraphics[width=.2\linewidth]{garrafa2.png}
+		% 		\includegraphics[width=.1\linewidth]{pneu1.png}
+		% 		\includegraphics[width=.1\linewidth]{pneu3.png}\\
+		% 		\includegraphics[width=.1\linewidth]{pneu5.png}
+		% 		\includegraphics[width=.1\linewidth]{water1.png}
+		% 		\includegraphics[width=.1\linewidth]{water2.png}
+		% 		\includegraphics[width=.1\linewidth]{water3.png}
+		% 	% \includegraphics[width=.26\linewidth]{base4.png}
+		% 		\label{fig:objetos1}
+		% 	\end{figure}
+		% \end{frame}
 
 
 
@@ -585,18 +615,196 @@
 %%==============================================================================
 %% SECTION - Object Detection with Deep Learning
 %%==============================================================================
-	\section{Object Detection with Deep Learning}
+	\section{Object Detection}
 
-		\subsection{Deep Learning}
+		\begin{frame}\frametitle{Object detection}
+			\begin{itemize}
+				\item Image classification and localization;
+				\item classical object detectors;
+				\item deep learning for object detection;
+				\item region-based object detectors.
+			\end{itemize}
+		\end{frame}
 
-			\begin{frame}\frametitle{Convolutional Neural Networks}
-				\begin{figure}[htb]
-					\centering
-					\includegraphics[width=.4\columnwidth]{conv_eng.pdf}
-					\includegraphics[width=6.5cm]{drone-persp2.png}
-					\label{fig:zframer1}
-				\end{figure}
+
+		\subsection{Region-based object detectors}
+
+		\begin{frame}\frametitle{R-CNN}
+			\begin{columns}
+				\begin{column}{0.5\textwidth}
+					\begin{itemize}
+						\item Extract RoIs (external method);
+						\item slow and inefficient.
+					\end{itemize}
+				\end{column}
+				\begin{column}{0.5\textwidth}
+					\begin{figure}[th!]
+						\centering
+						\includegraphics[width=\textwidth]{rcnn_new.pdf}
+						\label{fig:R-CNN}
+					\end{figure}
+				\end{column}
+			\end{columns}
+		\end{frame}
+
+
+
+		\begin{frame}\frametitle{Fast R-CNN}
+			\begin{itemize}
+				\item Extract RoIs (external method);
+				\item RoI pooling layer;
+				\item classification and regression layers;
+				\item multi-task loss;
+				\item region proposal method is the bottleneck.
+			\end{itemize}
+			\begin{figure}[th!]
+				\centering
+				\includegraphics[width=.6\linewidth]{fast_rcnn.png}
+				\caption{Source: {Girshick at al., 2015}.
+				}
+				\label{fig:Fast_R-CNN}
+			\end{figure}
+		\end{frame}
+
+
+		\begin{frame}\frametitle{Faster R-CNN}
+			\begin{itemize}
+				\item Descend from R-CNN and Fast R-CNN;
+				\item Fast R-CNN + Region Proposal Network (RPN);
+				\item In the terminology of Neural Networks with “attention” mechanisms:
+				RPN tells Fast R-CNN where to look.
+			\end{itemize}
+			\begin{figure}[th!]
+				\centering
+				\includegraphics[width=.4\linewidth]{faster_rcnn.png}
+				\caption{Source: {Ren at al., 2017}.
+				}
+				\label{fig:Faster_R-CNN}
+			\end{figure}
+		\end{frame}
+
+
+
+			\begin{frame}\frametitle{Region Proposal Network (RPN)}
+				\begin{itemize}
+		%     \item A FCNN that takes an image of any size and outputs boxes proposals;
+		%     \item The main goal is to share computation with Fast R-CNN;
+				\item A region proposal method;
+				\item slide a $n \times n$ window over the feature map;
+					% \begin{itemize}
+					% \item $n$ must be chosen taking receptive field into consideration !
+					% \item in the original paper $n=3$ (large effective receptive field on the input image 228 pixels for VGG);
+					% \end{itemize}
+		%      \item Each sliding window is mapped to a lower dimensional feature (e.g. 256-d or 512-d);
+				\item this feature is then fed to two FC layers.
+				% \begin{itemize}
+				% 	\item a box-regression layer (reg);
+				% 	\item a box-classification layer (cls).
+				% \end{itemize}
+
+				\begin{figure}
+			\includegraphics[width=.8\textwidth]{RPN_net_1x1.pdf}
+		%    \caption{Region Proposal Network}
+			\end{figure}
+
+
+					\end{itemize}
 			\end{frame}
+
+
+			% \begin{frame}\frametitle{RPN}
+			% 	\begin{itemize}
+			% 		\item At each sliding-window position in the feature map, RPN predicts $k$ proposals. So, per location, its outputs are:
+			% 		\begin{itemize}
+			% 			\item $4k$ coordinates;
+			% 			\item $2k$ scores that estimate the probability of object for each proposal;
+			% 		\end{itemize}
+
+			% 		\begin{figure}
+			% 			\includegraphics[width=.3\textwidth]{RoI_anchor.pdf}~
+			% 			\includegraphics[width=.3\textwidth]{RoI_anchor_pred.pdf}
+			% 		\end{figure}
+			% 	\end{itemize}
+			% \end{frame}
+
+			\begin{frame}\frametitle{Anchors}
+				\begin{itemize}
+					\item The $k$ proposals are parametrized relative to $k$ reference boxes, called anchors.
+					\item An anchor is centered at the sliding-window in question;
+					\item Each anchor is associated with a scale and aspect ratio;
+					\item For a feature map of size $W\times H$, we have $k \cdot W \cdot H$ proposals;
+					\begin{figure}
+						\includegraphics[width=.3\textwidth]{anchor_delta.pdf}~
+						\includegraphics[width=.3\textwidth]{anchors_locations.pdf}~
+						\includegraphics[width=.3\textwidth]{anchors.pdf}
+					\end{figure}
+				\end{itemize}
+			\end{frame}
+
+
+			% \begin{frame}\frametitle{Loss Function}
+			% 	%
+			% 	\begin{itemize}
+			% 	 \item We minimize the following multi-task loss:
+			% 	 %
+			% 	\begin{equation*}
+			% 	 \Lcal(\{p_i\},\{t_i\}) = \frac{1}{N_{cls}}\sum_i \Lcal_{cls}(p_i,p_i^\ast) +
+			% 					\lambda  \frac{1}{N_{reg}}\sum_i p_i^\ast \Lcal_{reg}(t_i,t_i^\ast),
+			% 	\end{equation*}
+			% 	%
+			% 	\item where:
+			% 	\begin{itemize}
+			% 	 \item $i$ is the index of an anchor in a mini-batch;
+			% 	 \item $p_i$ is the predicted probability of anchor $i$ being an object;
+			% 	 \item $p_i^\ast$ is the ground-truth label (1 for positive and 0 for negative anchor);
+			% 	 \item $t_i$ is a vector representing the 4 parametrized coordinates of the predicted bounding box;
+			% 	 \item $t_i^\ast$ is the ground-truth box associated with a positive anchor;
+			% 	 \item $L_{cls}$ is log loss over two classes (object $\times$ not object);
+			% 	 \item $L_{reg}(t_i,t_i^\ast) = \mbox{smooth}_{L_1}(t_i - t_i^\ast)$ is the robust smooth $L_1$ function as defined in Fast R-CNN;
+			% 	 \item ${N_{cls}}$ is the mini-batch size (e.g., ${N_{cls}}=256$) and ${N_{reg}}$ is the number of anchor locations (e.g., ${N_{cls}}=2400$)
+			% 	 \item $\lambda$ is a balancing factor (usually $\lambda=10$);
+			% 	\end{itemize}
+			% 	\end{itemize}
+
+			% 	\end{frame}
+
+
+			% 	\begin{frame}\frametitle{Loss Function}
+			% 	%
+			% 		\begin{itemize}
+			% 			\item Note that the term $p_i^\ast \Lcal_{reg}$ activates regression loss only for positive anchors;
+			% 			\item For bounding box regression, we use the loss:
+			% 			%
+			% 			\begin{equation*}
+			% 				\Lcal_{reg}(t_i,t_i^\ast) = \sum_{l\in\{x,y,w,h\}} \mbox{smooth}_{L_1}(t_i^{(l)} - t_i^{\ast (l)}),
+			% 			\end{equation*}
+			% 				%
+			% 			\item in which,
+			% 			%
+			% 			\begin{equation*}
+			% 				\mbox{smooth}_{\ell_1}(\mathnormal{z}) =
+			% 				\left\{
+			% 				\begin{array}{ll}
+			% 					\frac{0.5}{\gamma}\mathnormal{z}^2  & \mbox{if } |\mathnormal{z}| < \gamma \\
+			% 					|\mathnormal{z}|-0.5\gamma & \mbox{otherwise, }
+			% 				\end{array}
+			% 				\right.
+			% 			\end{equation*}
+			% 			%
+			% 		\end{itemize}
+
+			% 	\end{frame}
+
+			\begin{frame}\frametitle{RoI Align}
+				\begin{itemize}
+					\item Substitutes RoI pooling;
+					\item does not perform quantizations.
+					\begin{figure}
+						\includegraphics[width=.8\textwidth]{roi_align.pdf}
+					\end{figure}
+				\end{itemize}
+			\end{frame}
+
 
 %%==============================================================================
 %% SECTION - Results and Discussions
@@ -619,6 +827,40 @@
 
 			\end{frame}
 
+
+			\begin{frame}\frametitle{Precision \& recall}
+				\begin{itemize}
+					\item precision measures how accurate the predictions are:
+					\begin{equation*}
+						P = \frac{TP}{TP + FP} = \frac{TP}{\textrm{all detections}};
+						\label{eq:precision}
+						\end{equation*}
+					\item recall measures how well it retrieves the objects in the dataset:
+					\begin{equation*}
+						R = \frac{TP}{TP + FN} = \frac{TP}{\textrm{all ground truths}}.
+						\label{eq:recall}
+						\end{equation*}
+				\end{itemize}
+			\end{frame}
+
+
+			\begin{frame}\frametitle{(Mean) Average Precision}
+				\begin{itemize}
+					\item For a given class (or IoU threshold):
+				\begin{itemize}
+					% \item rank model's prediction;
+					% \item compute precision and recall;
+					\item take the average precision across all recall values;
+				\end{itemize}
+				\item take the mean across over classes (and/or IoU thresholds).
+				\end{itemize}
+				\begin{figure}[bh!]
+					\centering
+					\includegraphics[width=.6\linewidth]{precision_interp.pdf}
+					% \caption{Precision-recall curve with $P_{interp}$.}
+					\label{fig:prec-rec_curve_interp}
+				\end{figure}
+			\end{frame}
 
 		\subsection{Quantitative results}
 
