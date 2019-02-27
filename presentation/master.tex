@@ -479,7 +479,7 @@
 		% 	\end{figure}
 		% \end{frame}
 
-		\begin{frame}\frametitle{Generating rectified videos}
+		\begin{frame}\frametitle{Generating Rectified Videos}
 			\begin{itemize}
 				\item Apply calibration frame-by-frame;
 				% \item So that, we need to extract a frame and apply the transformation;
@@ -570,7 +570,7 @@
 		 \end{frame}
 
 
-		 \begin{frame}\frametitle{Visual inspection}
+		 \begin{frame}\frametitle{Visual Inspection}
 			\begin{figure}[htb!]
 				\centering
 				\includegraphics[width=.5\linewidth, trim={2cm 0 0 0},clip]{frame_3850_orig.png}~
@@ -618,13 +618,24 @@
 %%==============================================================================
 	\section{Object Detection}
 
-		\begin{frame}\frametitle{Object detection}
-			\begin{itemize}
-				\item Image classification and localization;
-				\item classical object detectors;
-				\item deep learning for object detection;
-				\item region-based object detectors.
-			\end{itemize}
+		\begin{frame}\frametitle{Object Detection}
+			\begin{columns}
+				\begin{column}{0.5\textwidth}
+					\begin{itemize}
+						\item Image classification and localization;
+						\item classical object detectors;
+						\item deep learning for object detection;
+						\item region-based object detectors.
+					\end{itemize}
+				\end{column}
+				\begin{column}{0.5\textwidth}
+					\begin{figure}[th!]
+						\centering
+						\includegraphics[width=.5\textwidth]{sliding_window.pdf}
+					\end{figure}
+				\end{column}
+			\end{columns}
+
 		\end{frame}
 
 
@@ -829,7 +840,7 @@
 			\end{frame}
 
 
-			\begin{frame}\frametitle{Precision \& recall}
+			\begin{frame}\frametitle{Precision \& Recall}
 				\begin{itemize}
 					\item precision measures how accurate the predictions are:
 					\begin{equation*}
@@ -865,7 +876,7 @@
 
 		\subsection{Quantitative results}
 
-		\begin{frame}\frametitle{Results for CEFET dataset}
+		\begin{frame}\frametitle{Results for CEFET Dataset}
 			\begin{table}[b!]
 				\centering
 				\resizebox{\textwidth}{!}{%
@@ -921,7 +932,7 @@
 
 	\subsection{Visual analysis}
 
-		\begin{frame}\frametitle{Hard example}
+		\begin{frame}\frametitle{Hard Example}
 			\begin{figure}[h!]
 				\centering
 				\includegraphics[width=.55\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_30.pdf}
@@ -932,7 +943,7 @@
 		\end{frame}
 
 
-		\begin{frame}\frametitle{Comparison among models}
+		\begin{frame}\frametitle{Comparison among Models}
 			\begin{figure}[htb!]
 				\centering
 				\includegraphics[width=.5\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_1.pdf}
@@ -945,7 +956,7 @@
 		\end{frame}
 
 
-		\begin{frame}\frametitle{Comparison among models}
+		\begin{frame}\frametitle{Comparison among Models}
 			\begin{figure}[htb!]
 				\centering
 				\includegraphics[width=.5\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_12.pdf}
@@ -958,7 +969,7 @@
 		\end{frame}
 
 
-		\begin{frame}\frametitle{Some false positives cases}
+		\begin{frame}\frametitle{False Positive Cases}
 			\begin{figure}[htb!]
 				\centering
 				\includegraphics[width=.5\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_78.pdf}
@@ -971,7 +982,7 @@
 		\end{frame}
 
 
-		\begin{frame}\frametitle{High occlusion example}
+		\begin{frame}\frametitle{Occlusion Example}
 			\begin{figure}[htb!]
 				\centering
 				\includegraphics[width=.5\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_127.pdf}
@@ -984,7 +995,7 @@
 		\end{frame}
 
 
-		\begin{frame}\frametitle{Wrong false positive}
+		\begin{frame}\frametitle{Wrong False Positive}
 			\begin{figure}[h!]
 				\centering
 				\includegraphics[width=.8\textwidth,trim={0 0 0 0},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_133.pdf}
@@ -1009,7 +1020,7 @@
 		\end{itemize}
 
 		\begin{itemize}
-			\item To expand the dataset;
+			\item to expand the dataset;
 			\item to employ and compare other detections algorithms;
 			\item to generate a heat map highlighting risk areas;
 		\end{itemize}
