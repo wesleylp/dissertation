@@ -162,9 +162,9 @@
 			% \item the goal is to keep vector control below 1\%;
 			\item the control methods are divided into:
 			\begin{itemize}
-				\item Mechanical: displacement of object, sealing of water tank, etc;
-				\item Chemical: larvicide and insecticide/fog repellency;
-				\item Biological: larvae and wolbachia.
+				\item mechanical: displacement of object, sealing of water tank, etc;
+				\item chemical: larvicide and insecticide/fog repellency;
+				\item biological: larvae and wolbachia;
 				% \item Legal: with the support of justice;
 				% \item Integrated: involving other secretariats
 			\end{itemize}
@@ -175,10 +175,10 @@
 
 	\begin{frame}
 		\frametitle{Potential Breeding Sites}
-		\begin{itemize}
-			\item LIRAa: a methodology used by analyzing the quantity of real estate with the presence of containers with mosquito larvae;
-			\item classification of potential breeding sites for the {\it Aedes aegypti}:
-		\end{itemize}
+		% \begin{itemize}
+		% 	\item LIRAa: a methodology used by analyzing the quantity of real estate with the presence of containers with mosquito larvae;
+		% 	\item classification of potential breeding sites for the {\it Aedes aegypti}:
+		% \end{itemize}
 				\begin{table}[]
 			\resizebox{\textwidth}{!}{%
 			\begin{tabular}{@{}cc@{}}
@@ -207,7 +207,7 @@
 						\item to deliver a \textbf{decision support system}; %that performs a scan in a predefined area and can identify and classify possible breeding sites;% according to the codes defined in the control model used by SVS.
 						\item {\bf automatic detection} of regions and objects with {potential mosquito breeding sites}
 						indicating their \textbf{geographic positions}; %so that the expert evaluates and defines the actions to be taken in the property he identified.
-						\item applying {\bf computer vision} and {\bf machine learning} techniques.
+						\item applying {\bf computer vision} and {\bf machine learning} techniques;
 						% \item The \textbf{main advantage} for the secretariat is in the
 						\item legal control: \textbf{abandoned} or \textbf{blocked} places.
 					\end{itemize}
@@ -320,7 +320,7 @@
 		\begin{frame}\frametitle{Flight Plan}
 			\begin{itemize}
 				\item Covers a minimum rectangular area that surrounds the given points of interest;
-				\item considers the horizontal GPS positioning accuracy, expanding the rectangular area to be sure to cover all the given points
+				\item considers the horizontal GPS positioning accuracy, expanding the rectangular area to be sure to cover all the given points;
 				\item sweep the area in a ``serpetine'' way;
 				\item has an overlap;
 				\item the drone changes only its direction (not orientation).
@@ -388,31 +388,31 @@
 		% \end{frame}
 
 
-		\begin{frame}\frametitle{Intrinsic Parameters}
-			\begin{itemize}
-			 \item $\Asf$ is the the camera calibration matrix (intrinsic parameters):
-			 \begin{equation*}
-			\Asf =
-			\begin{bmatrix}
-			\alpha & \gamma & u_0\\
-			0 & \beta  & v_0\\
-			0 &     0  & 1\\
-			\end{bmatrix},
-			\end{equation*}
-			\begin{itemize}
-			 \item $[u_0,v_0]^\Trm$ denote the coordinates of the principal point;
-			 \item $\alpha$ and $\beta$ the scaling factors in the $ u $ and $ v $ axes of the image, respectively;
-			 \item $\gamma$ is the obliquity (degree of shear) of the two axes of the image.
-			\end{itemize}
-			\end{itemize}
-		\end{frame}
+		% \begin{frame}\frametitle{Intrinsic Parameters}
+		% 	\begin{itemize}
+		% 	 \item $\Asf$ is the the camera calibration matrix (intrinsic parameters):
+		% 	 \begin{equation*}
+		% 	\Asf =
+		% 	\begin{bmatrix}
+		% 	\alpha & \gamma & u_0\\
+		% 	0 & \beta  & v_0\\
+		% 	0 &     0  & 1\\
+		% 	\end{bmatrix},
+		% 	\end{equation*}
+		% 	\begin{itemize}
+		% 	 \item $[u_0,v_0]^\Trm$ denote the coordinates of the principal point;
+		% 	 \item $\alpha$ and $\beta$ the scaling factors in the $ u $ and $ v $ axes of the image, respectively;
+		% 	 \item $\gamma$ is the obliquity (degree of shear) of the two axes of the image.
+		% 	\end{itemize}
+		% 	\end{itemize}
+		% \end{frame}
 
 
 		\begin{frame}\frametitle{Radial Distortion Compensation}
 			\begin{itemize}
-			 \item Conventional cameras usually have significant lens distortions, especially radial distortion.
+			 \item Conventional cameras usually have significant lens distortions, especially radial distortion;
 			%  \item Formulation:
-			 \item The radial distortion can be modeled as:
+			 \item the radial distortion can be modeled as:
 			%  \begin{itemize}
 			%   \item Let $(u,v)$ be the the ideal coordinates (free of distortion) of the pixel on the image, and
 			%   \item $(\breve{u},\breve{v})$ the actual coordinates of the observed image,
@@ -421,9 +421,9 @@
 			%   \item The radial distortion can be modeled as:
 			\begin{align*}
 			\breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
-			\breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
+			\breve{y} &= y + y(k_1 r^2 + k_2 r^4); % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
 			\end{align*}
-			\item $k_1$ and $k_2$ are the radial distortion coefficients,
+			\item $k_1$ and $k_2$ are the radial distortion coefficients;
 			\item $r^2 = (x^2 + y^2)$.
 			%  \end{itemize}
 			\end{itemize}
@@ -483,7 +483,7 @@
 			\begin{itemize}
 				\item Apply calibration frame-by-frame;
 				% \item So that, we need to extract a frame and apply the transformation;
-				\item After rectify each frame we need to generate a new video;
+				\item after rectify each frame we need to generate a new video.
 
 			%  \end{itemize}
 
@@ -516,7 +516,7 @@
 				\item a subjectively sane range is 17--28; %a lower value generally leads to higher quality, and
 				\item we use a ``quality'' scale, and the conversion to CRF is done as follows:
 				\begin{equation*}
-					{\rm CRF} = 51\bigg(1 - \frac{{\rm quality}}{10}\bigg);
+					{\rm CRF} = 51\bigg(1 - \frac{{\rm quality}}{10}\bigg).
 				\end{equation*}
 				% \item We evaluate the quality varying from 0 to 10 with unity step.
 			\end{itemize}
@@ -544,7 +544,7 @@
 		% 	\textrm{MSE} = \frac{1}{mn} \sum_{i=1}^{m}\sum_{j=1}^{n} \bigg(I(i,j) - K(i,j) \bigg)^2;
 		% 	\label{eq:mse}
 		% 	\end{equation*}
-			\item Typical values for the PSNR in lossy image and video compression are between 30 and 50 dB, provided the bit depth is 8 bits.
+			\item typical values for the PSNR in lossy image and video compression are between 30 and 50 dB, provided the bit depth is 8 bits.
 		\end{itemize}
 		 %
 		\end{frame}
@@ -589,7 +589,7 @@
 			\end{itemize}
 			\begin{figure}[htb]
 				\centering
-				\includegraphics[width=.98\columnwidth]{zframer_marking.png}
+				\includegraphics[width=.9\columnwidth]{zframer_marking.png}
 				\label{fig:zframer1}
 			\end{figure}
 		\end{frame}
@@ -672,7 +672,7 @@
 			\begin{figure}[th!]
 				\centering
 				\includegraphics[width=.6\linewidth]{fast_rcnn.png}
-				\caption{Source: {Girshick at al., 2015}.
+				\caption{Source: {Girshick et al., 2015}.
 				}
 				\label{fig:Fast_R-CNN}
 			\end{figure}
@@ -683,13 +683,13 @@
 			\begin{itemize}
 				\item Descend from R-CNN and Fast R-CNN;
 				\item Fast R-CNN + Region Proposal Network (RPN);
-				\item In the terminology of Neural Networks with “attention” mechanisms:
+				\item in the terminology of neural networks with “attention” mechanisms:
 				RPN tells Fast R-CNN where to look.
 			\end{itemize}
 			\begin{figure}[th!]
 				\centering
 				\includegraphics[width=.4\linewidth]{faster_rcnn.png}
-				\caption{Source: {Ren at al., 2017}.
+				\caption{Source: {Ren et al., 2017}.
 				}
 				\label{fig:Faster_R-CNN}
 			\end{figure}
@@ -741,10 +741,10 @@
 
 			\begin{frame}\frametitle{Anchors}
 				\begin{itemize}
-					\item The $k$ proposals are parametrized relative to $k$ reference boxes, called anchors.
-					\item An anchor is centered at the sliding-window in question;
-					\item Each anchor is associated with a scale and aspect ratio;
-					\item For a feature map of size $W\times H$, we have $k \cdot W \cdot H$ proposals;
+					\item The $k$ proposals are parametrized relative to $k$ reference boxes, called anchors;
+					\item an anchor is centered at the sliding-window in question;
+					\item each anchor is associated with a scale and aspect ratio;
+					\item for a feature map of size $W\times H$, we have $k \cdot W \cdot H$ proposals.
 					\begin{figure}
 						\includegraphics[width=.3\textwidth]{anchor_delta.pdf}~
 						\includegraphics[width=.3\textwidth]{anchors_locations.pdf}~
@@ -828,7 +828,7 @@
 			\begin{frame}\frametitle{Intersection over Union (IoU)}
 				\begin{itemize}
 					\item Evaluate the model regarding object localization;
-					\item Detections are considered as TP if the IoU $\geq$ threshold and as FP otherwise.
+					\item detections are considered as TP if the IoU $\geq$ threshold and as FP otherwise.
 				\end{itemize}
 				%
 				\begin{figure}[htb]
@@ -842,7 +842,7 @@
 
 			\begin{frame}\frametitle{Precision \& Recall}
 				\begin{itemize}
-					\item precision measures how accurate the predictions are:
+					\item Precision measures how accurate the predictions are:
 					\begin{equation*}
 						P = \frac{TP}{TP + FP} = \frac{TP}{\textrm{all detections}};
 						\label{eq:precision}
@@ -1022,7 +1022,7 @@
 		\begin{itemize}
 			\item to expand the dataset;
 			\item to employ and compare other detections algorithms;
-			\item to generate a heat map highlighting risk areas;
+			\item to generate a heat map highlighting risk areas.
 		\end{itemize}
 
 		\end{frame}
