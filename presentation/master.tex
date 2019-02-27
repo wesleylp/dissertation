@@ -361,31 +361,31 @@
 			 \item  A camera maps a point $\Mbf' = [X,Y,Z,1]^\Trm$ in the space into a point $\mbf' = [u,v,1]^\Trm$ through a projective transformation:
 			 \begin{equation*}
 			\label{eq:projection}
-			s\mbf' = \Asf[\Rsf~|~\tbf]\Mbf',
+			\mbf' = \Asf[\Rsf~|~\tbf]\Mbf',
 			\end{equation*}
 			\begin{itemize}
-			 \item $s$ is an arbitrary scale factor;
-			 \item $\Rsf$ and $\tbf$ are, respectively, the rotation matrix and the translation vector (extrinsic parameters), which relate the real-world coordinate system to the camera's coordinate system.
+			%  \item $s$ is an arbitrary scale factor;
+			 \item $\Rsf$ and $\tbf$ are, respectively, the rotation matrix and the translation vector (extrinsic parameters);% which relate the real-world coordinate system to the camera's coordinate system.
 			\end{itemize}
 			\end{itemize}
 			%
 			%
 		\end{frame}
 
-		\begin{frame}\frametitle{Pinhole Camera Model}
-			%TODO: make my own image.
-			%
-			\begin{figure}[htb!]
-				\center
-				\includegraphics[width=.7\textwidth]{pinhole_camera_model.png}
-				\label{fig:keypts_1} %\\[-0.2cm]
-				\caption{Pinhole camera model. (source: OpenCV).}
-				%\url{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}
-				\vspace{-3.5mm}
-				% \href{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}{[ref.: OpenCV documentation.]}
-				\label{fig:undistort}
-			\end{figure}
-		\end{frame}
+		% \begin{frame}\frametitle{Pinhole Camera Model}
+		% 	%TODO: make my own image.
+		% 	%
+		% 	\begin{figure}[htb!]
+		% 		\center
+		% 		\includegraphics[width=.7\textwidth]{pinhole_camera_model.png}
+		% 		\label{fig:keypts_1} %\\[-0.2cm]
+		% 		\caption{Pinhole camera model. (source: OpenCV).}
+		% 		%\url{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}
+		% 		\vspace{-3.5mm}
+		% 		% \href{https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d}{[ref.: OpenCV documentation.]}
+		% 		\label{fig:undistort}
+		% 	\end{figure}
+		% \end{frame}
 
 
 		\begin{frame}\frametitle{Intrinsic Parameters}
@@ -411,57 +411,58 @@
 		\begin{frame}\frametitle{Radial Distortion Compensation}
 			\begin{itemize}
 			 \item Conventional cameras usually have significant lens distortions, especially radial distortion.
-			 \item Formulation:
-			 \begin{itemize}
-			  \item Let $(u,v)$ be the the ideal coordinates (free of distortion) of the pixel on the image, and
-			  \item $(\breve{u},\breve{v})$ the actual coordinates of the observed image,
-			  \item the ideal points are the projections of the points of the calibration standard according to the model given by Eq.~\eqref{eq:projection}.
-			  \item Analogously, $(x,y)$ and $(\breve{x},\breve{y})$ are the normalized coordinates in the ideal (free of distortion) and real (distorted) images, respectively.
-			  \item The radial distortion can be modeled as:
+			%  \item Formulation:
+			 \item The radial distortion can be modeled as:
+			%  \begin{itemize}
+			%   \item Let $(u,v)$ be the the ideal coordinates (free of distortion) of the pixel on the image, and
+			%   \item $(\breve{u},\breve{v})$ the actual coordinates of the observed image,
+			%   \item the ideal points are the projections of the points of the calibration standard according to the model given by Eq.~\eqref{eq:projection}.
+			%   \item Analogously, $(x,y)$ and $(\breve{x},\breve{y})$ are the normalized coordinates in the ideal (free of distortion) and real (distorted) images, respectively.
+			%   \item The radial distortion can be modeled as:
 			\begin{align*}
 			\breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
 			\breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
 			\end{align*}
 			\item $k_1$ and $k_2$ are the radial distortion coefficients,
 			\item $r^2 = (x^2 + y^2)$.
-			 \end{itemize}
+			%  \end{itemize}
 			\end{itemize}
 		\end{frame}
 
 
-		\begin{frame}
-			\frametitle{Radial Distortion Compensation}
-			%
-			\begin{itemize}
-			 \item The center of the radial distortion is located at the main point.
-			 \item From $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ and $\breve{v} = \beta \breve{y} + v_0$, and assuming $\gamma = 0$:
-			  \begin{align*}
-			    \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
-			    \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
-			  \end{align*}
-			\end{itemize}
-		\end{frame}
+		% \begin{frame}
+		% 	\frametitle{Radial Distortion Compensation}
+		% 	%
+		% 	\begin{itemize}
+		% 	 \item The center of the radial distortion is located at the main point.
+		% 	 \item From $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ and $\breve{v} = \beta \breve{y} + v_0$, and assuming $\gamma = 0$:
+		% 	  \begin{align*}
+		% 	    \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
+		% 	    \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
+		% 	  \end{align*}
+		% 	\end{itemize}
+		% \end{frame}
 
 
 		\begin{frame}
 			\frametitle{Zhang's Method}
 			%
 			\begin{itemize}
-			 \item Make a first rough estimate of the intrinsic and extrinsic parameters of the camera
-			 \item refine it by estimating the maximum likelihood
-			 \begin{itemize}
-			  \item Given $ n $ images of the calibration standard and considering $ m $ points in this standard,
-			  \item assuming that the point images are corrupted by an i.i.d. noise
-			  \item the maximum likelihood estimate can be obtained by minimizing the functional
+			 \item Make a first rough estimate of the intrinsic and extrinsic parameters of the camera (DLT);
+			 \item refine it by estimating the maximum likelihood (minimizing the functional):
+			%  \begin{itemize}
+			%   \item Given $ n $ images of the calibration standard and considering $ m $ points in this standard,
+			%   \item assuming that the point images are corrupted by an i.i.d. noise
+			%   \item the maximum likelihood estimate can be obtained by minimizing the functional
 			  %
 			  \begin{equation*}
 			    \sum_{i=1}^{n}\sum_{j=1}^{m} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
-			    \label{eq:functional},
+			    \label{eq:functional};
 			  \end{equation*}
 				\item $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ is the projection of point $\Xbf_j$, followed by distortion;
 				%  modeled according to the Eqs.~\eqref{eq:u_dist} and~\eqref{eq:v_dist}
-			  \item Minimize this functional is a nonlinear optimization problem that can be solved through the algorithm of Levenberg-Marquardt.
-			 \end{itemize}
+			  \item minimize this functional is a nonlinear optimization problem that can be solved through the Levenberg-Marquardt algorithm.
+			%  \end{itemize}
 			\end{itemize}
 			%
 		\end{frame}
@@ -999,21 +1000,22 @@
 	\section{Conclusion and Future Works}
 
 		\begin{frame}
-			\frametitle{Conclusion}
-			\begin{itemize}
-				\item To deliver a decision support system
-				\item To indicate your geographic positions
-				\item To facilitate scan abandoned or blocked areas
-			\end{itemize}
+			\frametitle{Conclusion and Future Works}
 
 		\begin{itemize}
-			\item This work described the problem of automatic detection, by computer vision techniques, of mosquitoes breeding sites.
-			\item We pointed to the need to create a database to attack the problem, containing videos with several objects that accumulate clean water scattered in several scenarios.
-			\item For this, the use of a VANT was considered, which allows the acquisition of videos covering a wide geographical area.
-			\item All videos are manually annotated with the help of free software, allowing the training of different critical object detector algorithms for the application of interest.
+			\item This work described the problem of automatic detection of mosquitoes breeding sites;
+			\item a new dataset is proposed;
+			\item a detection algorithm is trained and tested;
+		\end{itemize}
+
+		\begin{itemize}
+			\item To expand the dataset;
+			\item to employ and compare other detections algorithms;
+			\item to generate a heat map highlighting risk areas;
 		\end{itemize}
 
 		\end{frame}
+
 
 		\begin{frame}
 			\frametitle{THANK YOU!}
