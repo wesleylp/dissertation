@@ -9,6 +9,9 @@ all:
 	pdflatex -shell-escape $(DIS)
 	pdflatex -shell-escape $(DIS)
 
+quick:
+	pdflatex -shel-escape $(DIS)
+
 read:
 	evince ${DIS}.pdf &
 
