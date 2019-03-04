@@ -1,7 +1,7 @@
 \chapter{Results and Discussions}
 \label{chap:results}
 %
-In this Chapter, we discuss the experimental procedures adopted.
+In this chapter, we discuss the experimental procedures adopted.
 First, we go through how we assess the performance of object detection.
 After that, we discuss the implementation details, including network architectures, as well as training and inference hyper-parameters set.
 Finally, we examine the obtained results both numerically and visually.
@@ -130,7 +130,7 @@ $\card(\Rcal)$ is cardinality of the set $\Rcal$, and;
 $P_{\rm interp}$ is defined as
 %
 %
-\symbl{\id{p_interp }$P_{interp}(R)$}{Interpolated precision at recall $R$}
+\symbl{\id{p_interp }$P_{\rm interp}(R)$}{Interpolated precision at recall $R$}
 \symbl{\id{r }$AP$}{Average Precision}
 \symbl{\id{prtilde }${P(\tilde{R})}$}{Measured precision at recall ${\tilde{R}}$.}
 %
@@ -165,6 +165,8 @@ Table~\ref{tab:ex_rank_detections} shows an example of hypothetical predictions 
 %
 \begin{table}[th]
 \centering
+\caption{Example of ranked hypothetical detections.}
+\label{tab:ex_rank_detections}
 \begin{tabular}{ccccc}
 \toprule
 Rank &  Confidence &  Correct? &  Precision &  Recall \\
@@ -181,8 +183,6 @@ Rank &  Confidence &  Correct? &  Precision &  Recall \\
 10 &   0.62 &      True &   0.50 &     1.0 \\
 \bottomrule
 \end{tabular}
-\caption{Example of ranked hypothetical detections.}
-\label{tab:ex_rank_detections}
 \end{table}
 %
 The column ``Correct?'' shows if the detection match the ground truth for an IoU equal or higher than a threshold of, say 50\%~\cite{Everingham10}.
@@ -203,30 +203,30 @@ The Figure~\ref{fig:prec-rec_curve} shows the precision-recall curve, obtained b
 
 Again, one may view AP as the AUC of the precision-recall curve.
 Remember that we approximate the computation by first smoothing the precision oscillations according to Equation~\eqref{eq:p_interp}, which is better understandable in Figure~\ref{fig:prec-rec_curve_interp_ex},
-where we give an example of computing $P_{interp}(0.7)$.
+where we give an example of computing $P_{\rm interp}(0.7)$.
 %
 %
 \begin{figure}[th!]
 	\centering
 	\includegraphics[width=.73\linewidth]{precision_interp_r.pdf}
-	\caption[Example of computing $P_{interp}$]{Example of computing $P_{interp}$. In this case, $P_{interp}(0.7) = 0.57$.}
+	\caption[Example of computing $P_{\rm interp}$]{Example of computing $P_{\rm interp}$. In this case, $P_{\rm interp}(0.7) = 0.57$.}
 	\label{fig:prec-rec_curve_interp_ex}
 \end{figure}
 %
-The Figure~\ref{fig:prec-rec_curve_interp} presents the curve of $P_{interp}$ computed across all recall values.
+The Figure~\ref{fig:prec-rec_curve_interp} presents the curve of $P_{\rm interp}$ computed across all recall values.
 %
 %
 \begin{figure}[bh!]
 	\centering
 	\includegraphics[width=.63\linewidth]{precision_interp.pdf}
-	\caption{Precision-recall curve with $P_{interp}$.}
+	\caption{Precision-recall curve with $P_{\rm interp}$.}
 	\label{fig:prec-rec_curve_interp}
 \end{figure}
 %
 Finally, we may compute the AP of our example, using Equation~\eqref{eq:AP}. Since we varied the recall from $0$ to $1$ with $R_s=0.1$, $\card(\Rcal)=11$.
 \begin{equation*}
 \begin{split}
-AP &= \frac{1}{11}\bigg(P_{interp}(0.0)+P_{interp}(0.1)+...+P_{interp}(1.0)\bigg) =\\
+AP &= \frac{1}{11}\bigg(P_{\rm interp}(0.0)+P_{\rm interp}(0.1)+...+P_{\rm interp}(1.0)\bigg) =\\
    &= \frac{1}{11}\bigg(1.00 + 1.00 + 1.00 + 1.00 + 1.00 + 0.60 + 0.60 + 0.57 + 0.57 + 0.50 + 0.50 \bigg) =\\
    &= 0.7582.
 \end{split}
@@ -243,7 +243,7 @@ mAP = \frac{1}{M}\sum_{m\,\in\,M}AP_m,
 where $AP_m$ is the Average Precision computed at each class and/or IoU threshold $m$.
 %
 Depending on the competition this procedure of computing the mAP may differ.
-In the next Section we discuss two famous online object detections competitions.
+In the next section we discuss two famous online object detections competitions.
 
 \subsection{Online challenges}
 %
@@ -284,6 +284,8 @@ From now on, unless otherwise noted, the (m)AP is averaged over the multiple IoU
 We summarize the MSCOCO metrics based on AP in Table~\ref{tab:metrics}.
 %
 \begin{table}[h]
+\caption{Summary of MSCOCO metrics based on AP.}
+\label{tab:metrics}
 \centering
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -305,8 +307,6 @@ mAP$_{\textrm{L}}$           & mAP for large objects (area $ > 96^2$)\\
 % AR$_{\textrm{L}}$           & AR for large objects (area $ > 96^2$)\\
 \bottomrule
 \end{tabular}
-\caption{Summary of MSCOCO metrics based on AP.}
-\label{tab:metrics}
 \end{table}
 
 %
@@ -399,7 +399,7 @@ We set the number of proposals as 300, run predictions on those, and suppress am
 
 \section{Results}
 %
-In this Section, we analyze our results both quantitatively and qualitatively.
+In this section, we analyze our results both quantitatively and qualitatively.
 For the first one, we plot the precision-recall curve for results obtained from the test set.
 Also, we summarize these curves into single numbers as discussed in Section~\ref{sec:eval}.
 Moreover, we make a visual analysis of our results by looking at the detection outputs from our models.
@@ -407,8 +407,8 @@ Moreover, we make a visual analysis of our results by looking at the detection o
 
 \subsection{Quantitative results}
 %
-It took about $2h$ to train the models with R-50-C4 backbone while the models with R-101-C4 took about $3.5h$.
-For inference, the models with R-50-C4 backbone took about $90ms$ per image against $140mss$ for R-101-C4.
+It took about $2$~h to train the models with R-50-C4 backbone while the models with R-101-C4 took about $3.5$~h.
+For inference, the models with R-50-C4 backbone took about $90$~ms per image against $140$~ms for R-101-C4.
 %
 
 The Table~\ref{tab:results_CEFET} shows the result for the CEFET dataset.
@@ -418,6 +418,8 @@ Except mentioned otherwise, we keep this data augmentation method for the other 
 %~
 \begin{table}[b!]
 \centering
+\caption{Main results for CEFET dataset.}
+\label{tab:results_CEFET}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}c|l|c|ccc|cc@{}}
 \toprule
@@ -433,8 +435,6 @@ Except mentioned otherwise, we keep this data augmentation method for the other 
 \bottomrule
 \end{tabular}
 }
-\caption{Main results for CEFET dataset.}
-\label{tab:results_CEFET}
 \end{table}
 
 We also observe that Faster R-CNN with R-101-C4 backbone obtained the best result.
@@ -460,10 +460,10 @@ That happens because as we increase the IoU threshold we only accept more accura
 as a consequence, the precision and recall drops drastically.
 We can observe that we still can achieve satisfactory results at IoU up to $0.75$ from which we achieve precision higher than $0.9$ for all models.
 Unfortunately, all models do not achieve high precisions for high recalls.
-By analyzing the Equation~\eqref{eq:recall} this may be due to high rate of FN in our results.
+By analyzing the Equation~\eqref{eq:recall}, this result may be due to high rate of FN in our results.
 
 
-We show Figures~\ref{fig:prec-rec_curve_50} and~\ref{fig:prec-rec_curve_75}, for better analyzing the models at single IoU thresholds.
+We show Figures~\ref{fig:prec-rec_curve_50} and~\ref{fig:prec-rec_curve_75} for better analyzing the models at single IoU thresholds.
 As can be notice, R-101-C4 keeps higher precisions for higher recalls if compared to models with R-50-C4 backbone.
 % %
 % \begin{figure*}[htb!]
@@ -661,8 +661,8 @@ As can be notice, R-101-C4 keeps higher precisions for higher recalls if compare
 \newpage
 \subsection{Visual analysis}\label{sec:res_vis}
 %
-In this Section, we discuss some visual results by analyzing the detections in the images.
-We try to associate the visualization with the numerical results obtained in the previous Section.
+In this section, we discuss some visual results by analyzing the detections in the images.
+We try to associate the visualization with the numerical results obtained in the previous section.
 To do so, we plot the ground truth bounding boxes in blue and overlay the models detection in red, along with the label and confidence scores.
 
 As mentioned, the recall is low for all models, which may due to high rate of FN in our results.
@@ -680,7 +680,7 @@ In this image none of the models were capable to detect any tire.
 
 % improvement
 %
-Another interesting fact can be observed in Figure~\ref{fig:improv_1} where the same tire (the most right one) was not detected by the R-50-C4 model without data augmentation; detected with a low confidence score ($0.28$) by the model with R-50-C4, using data augmentation; and detected with a high confidence score ($1.00$) by the model with R-101-C4, also using data augmentation.
+Another interesting fact can be observed in Figure~\ref{fig:improv_1} where the same tire (the rightmost one) was not detected by the R-50-C4 model without data augmentation; detected with a low confidence score ($0.28$) by the model with R-50-C4, using data augmentation; and detected with a high confidence score ($1.00$) by the model with R-101-C4, also using data augmentation.
 All models found the leftmost tire with the same confidence score and none of them found the tire at the top.
 Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, where both models with R-50-C4 were not capable of finding the tire, while the model with R-101-C4 detected it with a high confidence score ($0.97$).
 %
@@ -891,7 +891,7 @@ Although is has been correctly detect, it was counted as a FP.
 
 \section{Conclusions}
 %
-In this Chapter we apply deep-learning based models to detect potential mosquito breeding sites, particularly tires.
+In this chapter we apply deep-learning based models to detect potential mosquito breeding sites, particularly tires.
 We have seen that deeper models achieved better results.
 Some further adjustments in the model can improve even more them.
 Nevertheless, the obtained results have shown promising and that resulting models trained with CEFET dataset may be useful in detecting potential mosquitoes breeding sites.

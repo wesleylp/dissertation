@@ -1,7 +1,7 @@
 \chapter{Vision Meets Unmanned Vehicles}
 \label{chap:database}
 
-In this Chapter, we briefly review some works related to our problem, with focus on those ones that perform mosquito breeding sites directly.
+In this chapter, we briefly review some works related to our problem, with focus on those ones that perform mosquito breeding sites directly.
 Particularly, we also talk about those directly interested in detecting mosquito breeding sites.
 Lastly, we describe in details our new dataset.
 
@@ -20,8 +20,8 @@ It also uses a pair of cameras to separate regions of the image that are candida
 It also presents a fusion rule to combine these features and segment the region of interest containing water.
 
 In~\cite{Rankin2010a} one finds a methodology to asses the performance of water detectors used in images from unmanned vehicles.
-Two types of evaluations are presented: one that evaluates the intersection between the region of the detector outputs and the ground truth, and another one that evaluates the georeferencing accuracy.
-The authors in~\cite{Rankin2010b} observed that, to detect water bodies, the reflections of the sky are more useful in images whose objects are distant from the camera and colors have more discriminative power in the shorter range.
+Two types of evaluations are presented: one that considers the intersection between the region of the detector outputs and the ground truth, and another one that assess the georeferencing accuracy.
+The authors in~\cite{Rankin2010b} observed that, to detect water bodies, the reflections of the sky are more useful in images whose objects are distant from the camera while colors have more discriminative power in the shorter range.
 
 The authors of~\cite{Zhang2010b} propose a shape descriptor in images which is invariant to scale, rotation, affine transformations, mirroring and non-rigid distortions such as ripple effects.
 This descriptor is quantitatively and qualitatively compared with other methods,
@@ -45,7 +45,7 @@ First, they construct a new feature space using moments invariant to motion dist
 In this new space of characteristics, they apply the algorithms to minimize the cost of reflection in low frequencies together with discrimination of  {\it curvelets}  coefficients in high frequencies.
 By doing so, they classify the water reflection and detect the reflection axis in the images with a hit rate ranging from 80\% to 95\%.
 
-\subsection{Mosquitoes breeding grounds}
+\subsection{Mosquito breeding grounds}
 %
 Regarding mosquito breeding grounds detection we point out references~\cite{Agarwal2014a, Prasad2015a, Mehra2016a}.
 %
@@ -65,8 +65,8 @@ The work in~\cite{Mehra2016a} use thermal and gray level images to detect stagna
 From each image, they compute a 128-bit vector using speeded-up robust features (SURF)
 \abbrev{\id{SURF}SURF}{Speeded-Up Robust Features}
 descriptor.
-This vector is then reduced to a 64-bit vector using principal component analysis (PCA)
-\abbrev{\id{PCA}PCA}{Principal Component Analysis}.
+This vector is then reduced to a 64-bit vector using principal component analysis (PCA).
+\abbrev{\id{PCA}PCA}{Principal Component Analysis}
 The computed vectors are used to train an ensemble of naive Bayes classifiers to identify potential mosquitoes breeding grounds.
 
 In this work, we propose a methodology for mosquitoes breeding grounds detection that applies machine learning techniques using videos acquired by an Unmanned Aerial Vehicle (UAV)\abbrev{\id{UAV}UAV}{Unmanned Aerial Vehicle}, also known as a drone.
@@ -87,11 +87,11 @@ This UAV camera model presents high distortions, specially the radial one.
 In order to mitigate this problem, they reduced the field of view (FoV)\abbrev{\id{FOV}FOV}{Field of View} to 85 degrees.
 By doing so, the flight time increases since the drone would take more time to cover a region.
 
-All the videos, with about $15~s$ duration, were recorded with the camera at downward position with the drone following a specified route at
+All the videos, with about 15~s duration, were recorded with the camera at downward position with the drone following a specified route at
 %three different
-approximately constant $5~m$ altitude.
+approximately constant 5~m altitude.
 % (5, 10 and $15~m$).
-The speed is set to be $7~km/h$ constant.
+The speed is set to be 7~km/h constant.
 They point out that the parameters may vary over the course due environmental interference such as wind.
 
 The drone telemetry measurements (\eg position, velocity and altitude) are extracted using the third-party application Litchi~\cite{web:litchi}.
@@ -160,14 +160,14 @@ However, in this work, we propose a different split that we mention in Chapter~\
 % %
 % \end{itemize}
 %
-In this Section we present the description of our dataset named as ``Mosquito Breeding Grounds'' (MBG) \abbrev{\id{MBG}MBG}{Mosquito Breeding Grounds dataset}.
+In this section we present the description of our dataset named as ``Mosquito Breeding Grounds'' (MBG). \abbrev{\id{MBG}MBG}{Mosquito Breeding Grounds dataset}
 We use the commercial Phantom Vision 4 PRO UAV from DJI Company for acquiring the aerial videos in which may have potential mosquito breeding sites.
 %
 This UAV has approximately 30 minutes of flight autonomy and is capable of executing a predefined flight plan.
 One may retrieve all telemetry information (\eg altitude, latitude, longitude, speed, etc) from a \verb|.csv| file using a 3rd party software.
 It is equipped with a high-definition camera with passive and active stabilization (dampers and gimbal).
 %
-The camera has many parameters that can be adjusted and can generate videos up to 4096p at 60Hz.
+The camera has many parameters that can be adjusted and can generate videos up to 4096~p at 60~Hz.
 %
 Since the telemetry sampling rate is higher than the camera frame rate, we employ a decimation in the signals obtained from the \verb|.csv| file in order to associate each video frame to its respective telemetry measurement.
 %
@@ -183,15 +183,15 @@ The dataset has the following technical specifications:
   \item We turn off the camera auto adjustment and set all the parameters manually,
   keeping the focus fixed at infinity and
   %We also reduce the field of view (FoV)\abbrev{\id{FOV}FOV}{Field of View} to lessen the effect of radial distortions.
-  setting the video scan to 3840p at 50~frames per second (fps)\abbrev{\id{fps}fps}{frames per second}.
+  setting the video scan to 3840~p at 50~frames per second (fps)\abbrev{\id{fps}fps}{frames per second}.
 %
   \item Before starting a flight, we record a calibration video using a calibration pattern, as described in Section~\ref{sec:calibration}.
 %
   \item The altitude is approximately constant in each video.
-  Currently, the dataset has videos acquired at different altitudes, \eg $10$, $25$, $40~m$, all of them predefined in the flight plan through Litchi.
+  Currently, the dataset has videos acquired at different altitudes, \eg $10$, $25$, $40$~m, all of them predefined in the flight plan through Litchi.
   Small variations in altitude caused by the limited accuracy of telemetry, wind, etc are within acceptable ranges.
 %
-  \item Speed approximately constant of $15~km/h$ is preset via Litchi.
+  \item Speed approximately constant of $15$~km/h is preset via Litchi.
   Again, the variations caused by the instruments' limited accuracy, wind, and interferences of unknown nature are within acceptable thresholds.
 %
   \item The dataset includes two types of terrain: green vegetation, to simulate the environment of a wasteland, and asphalt, to simulate urban environment, as depicted in Figure~\ref{fig:scenarios1}.
@@ -334,12 +334,12 @@ The ideal points are projections of calibration pattern points according to the 
 Likewise, $(x,y)$ and $(\breve{x},\breve{y})$ are, respectively, the ideal and real normalized image coordinates.
 Hence, the radial distortion may be modeled as~\cite{Zhang2000a}:
 %
-\begin{align}
- \breve{x} &= x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
- \breve{y} &= y + y(k_1 r^2 + k_2 r^4), % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
-\end{align}
-
-
+\begin{equation}
+  \begin{cases}
+    \breve{x} = x + x(k_1 r^2 + k_2 r^4) \\% + k_3 r^6)\\% + 2p_1 x y + p_2(r^2 + 2x^2), \\
+    \breve{y} = y + y(k_1 r^2 + k_2 r^4) % + k_3 r^6),% + p_1(r^2 + 2y^2) + 2 p_2 x y,
+   \end{cases},
+\end{equation}
 %
 where $k_1$ and $k_2$ are radial distortions coefficients and $r^2 = (x^2 + y^2)$.
 Higher order distortion models do not presents significant improvements and may lead to numerical instability~\cite{Zhang2000a}.
@@ -348,24 +348,26 @@ From
 $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ and $\breve{v} = \beta \breve{y} + v_0$, assuming $\gamma = 0$,
 we may write
 %
-\begin{align}
-  \label{eq:u_dist}
-  \breve{u} &= u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
-  \label{eq:v_dist}
-  \breve{v} &= v + (v-v_0)(k_1 r^2 + k_2 r^4 ).
-\end{align}
+\begin{equation}
+\begin{cases}
+  \breve{u} = u + (u-u_0)(k_1 r^2 + k_2 r^4 ) \\
+  \breve{v} = v + (v-v_0)(k_1 r^2 + k_2 r^4 )
+\end{cases}.
+\label{eq:u_dist}
+% \label{eq:v_dist}
+\end{equation}
 
 Zhang's algorithm~\cite{Zhang2000}
 first makes a coarse estimation of the camera extrinsic and intrinsic parameters and refine them through maximum likelihood estimation.
 Given $n$ calibration pattern images, considering we have $m$ points in this pattern, and the image points are corrupted by independent and identically distributed (i.i.d.) noise,
-the maximum likelihood estimation may be obtained by minimizing the following functional~\cite{Zhang2000a}
+the maximum likelihood estimation may be obtained by minimizing the following function~\cite{Zhang2000a}
 %
 \begin{equation}
   \sum_{i=1}^{m}\sum_{j=1}^{n} \Vert \xbf_{ij} - \breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j) \Vert^2
  \label{eq:functional},
 \end{equation}
 where $\breve{\xbf}(\Asf, k_1, k_2, \Rsf_i, \tbf_i, \Xbf_j)$ is the projection of point $\Xbf_j$ in image $i$, according to Equation~\eqref{eq:projection},
-following the distortion model in Equations~\eqref{eq:u_dist} and~\eqref{eq:v_dist}.
+following the distortion model in Equations~\eqref{eq:u_dist}. %and~\eqref{eq:v_dist}.
 The minimization of the functional given in Equation~\eqref{eq:functional}, is an nonlinear optimization problem that may be solved with the Levenberg-Marquardt algorithm.
 
 %\subsection{Resumo}
@@ -439,14 +441,14 @@ is clearer from the observation of the chessboard calibration pattern.
   We evaluate the quality varying from 0 to 10 with unity step, according to Table~\ref{tab:crfxqual}.
 %
 \begin{table}[htb!]
+\caption{Quality indexes evaluated and respective CRF values~\cite{web:ffmpeg}.}
+\label{tab:crfxqual}
 \centering
 \begin{tabular}{@{}cccccccccccc@{}}
 \toprule
 \textbf{Quality} & 0  & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9   & 10 \\ \midrule
 \textbf{CRF}     & 51 & 45.9 & 40.8 & 35.7 & 30.6 & 25.5 & 20.4 & 15.3 & 10.2 & 5.1 & 0  \\ \bottomrule
 \end{tabular}
-\caption{Quality indexes evaluated and respective CRF values~\cite{web:ffmpeg}.}
-\label{tab:crfxqual}
 \end{table}
 
 To evaluate our results quantitatively, we use the peak signal-to-noise ratio (PSNR), defined as
@@ -490,13 +492,13 @@ but, as video encoders are essentially lossy, the PSNRs reach a saturation level
 	\centering
 	\includegraphics[width=\textwidth,trim={0 0 0 3.2cm},clip]{comparisson_filesize.pdf}
 	\caption[Video compression and file size comparison]{Video compression and file size comparison between original and frames after compression.
-	The most left bean represents quality$=0$ and most right  quality$=10$}
+	The leftmost bin represents quality$=0$ and rightmost quality$=10$.}
 	\label{fig:compression_comp}
 \end{figure}
 %
 
 We also visually evaluate the videos generated.
-As shown in Figure~\ref{fig:compression_vis}, at quality = 0 the image is seriously damaged, as expected.
+As shown in Figure~\ref{fig:compression_vis}, at zero quality the image is seriously damaged, as expected.
 We chose the quality parameter that gives the best balance between quality and file size.
 The quantitative and qualitative results have shown the quality was not significantly compromised when we use quality factor around 5 (CRF = $25.5$).
 Therefore, we use this factor when storing the new videos with the rectified frames.
@@ -543,7 +545,7 @@ Therefore, we use this factor when storing the new videos with the rectified fra
 
   \section{Conclusions}
 %
-In this Chapter, we discussed works that are direct and indirectly related to our problem.
+In this chapter, we discussed works that are direct and indirectly related to our problem.
 We have seen that many of them are concerned about helping develop intelligent systems.
 In particular, we have gone through those that are of interest to detecting mosquitoes foci.
 However, since none of them provided a consolidated dataset available,

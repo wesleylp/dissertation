@@ -1,7 +1,7 @@
 \chapter{Object Detection with Deep Learning}
 \label{chap:system}
 %
-In this Chapter, we discuss object detectors and make a brief comparison among them.
+In this chapter, we discuss object detectors and make a brief comparison among them.
 Then, we go deeper into the method used to detect the mosquito breeding sites: the region-based convolutional neural network (RCNN),
 \abbrev{\id{R-CNN}R-CNN}{Region-Based Convolution Neural Network}
 particularly the Faster R-CNN.
@@ -336,7 +336,7 @@ The $\lambda$ parameter balances the two loss terms, and is usually set to 1~\ci
 
 \subsection{Training and testing Fast R-CNN}\label{sec:train_fast_rcnn}
 %
-One may train Fast R-CNN using back-propagation and stochastic gradient descent (SGD)~\cite{LeCun1989}.
+One may train the Fast R-CNN using back-propagation and stochastic gradient descent (SGD)~\cite{LeCun1989}.
 \abbrev{\id{SGD}SGD}{Stochastic Gradient Descent}
 Each mini-batch is hierarchically sampled, by first sampling $N$ images and then $S/N$ RoIs from each image, where $S$ is the total number of RoI samples.
 This sampling scheme reduces the computation, since RoIs from the same image share computations during forward and backward passes~\cite{Girshick2015}.
@@ -360,12 +360,12 @@ Both R-CNN and Fast R-CNN use an external method to generate the proposals~\cite
 The region proposal methods generally run on CPU and are time-consuming, affecting the network performance~\cite{Ren2017fasterpami}.
 This stage is, up to now, the bottleneck of the region-based detectors.
 
-Faster R-CNN~\cite{Ren2017fasterpami} presents a new mechanism that eliminates the need for an external region proposal method:
+The Faster R-CNN~\cite{Ren2017fasterpami} presents a new mechanism that eliminates the need for an external region proposal method:
 the region proposal network (RPN),
 \abbrev{\id{RPN}RPN}{Region Proposal Network}
 which is a convolutional network that learns the regions derived from the feature maps.
 
-Faster R-CNN works akin to Fast R-CNN. First, the image is fed into a ConvNet that outputs the convolutional feature maps.
+The Faster R-CNN works akin to Fast R-CNN. First, the image is fed into a ConvNet that outputs the convolutional feature maps.
 Based on these maps, the RPN then predicts the proposals, which are warped by the RoI pooling layer and then delivered to the FC layers that classify the RoIs and refine them by predicting an offset for the bounding boxes.
 Hence, Faster R-CNN comprises two modules: RPN, to generate the proposals, and Fast R-CNN detector, as shown in the Figure~\ref{fig:Faster_R-CNN}.
 %
@@ -437,12 +437,12 @@ The original implementation of Faster R-CNN uses three scales and three aspect r
 %
 Faster R-CNN predicts offsets $\delta_x$, $\delta_y$ that are relative to those anchors.
 We illustrate the anchors positions, scales and aspect ratios, and offsets, in Figure~\ref{fig:anchors}.
-We represent the anchors at only 3 different spatial locations (that is for illustration purposes, however anchors exist for every single position in the feature map).
+We represent the anchors at only 3 different spatial locations (that is for illustration purposes; however, anchors exist for every single position in the feature map).
 In Figure~\ref{fig:anchors_b}, we show the anchors at different scales and aspect ratios for a specific spatial position;
 where the 3 different colors are different scales (\eg $32^2, 64^2, 128^2$ pixels) and for each color, we have 3 aspect ratios (\eg 1:1, 1:2, 2:1).
 Lastly, in Figure~\ref{fig:anchors_c}, we illustrate the prediction and anchor offset.
 %
-Figure~\ref{fig:rpn} shows RPN at a single position along with the $\beta$ anchors boxes.
+Figure~\ref{fig:rpn} shows the RPN at a single position along with the $\beta$ anchors boxes.
 %
 \begin{figure}[th!]
   \centering
@@ -493,7 +493,7 @@ We keep the first condition to ensure that we have positive examples in case the
 One should notice that a single ground truth box may assign positive labels to multiple anchors~\cite{Ren2017fasterpami}.
 The negative anchors are those with IoU ratio lower than $0.3$ with all ground truth boxes~\cite{Ren2017fasterpami}.
 Anchors outside these conditions do not influence the training phase.
-Given these definitions, we aim to minimize the loss function $\Lcal( \{\hat p_i\}, \{\tbfh_i\} )$, defined in Equation~\eqref{eq:loss_RPN} \wrt the outputs $\{\hat p_i\}$ and ${\{\tbfh_i\}}$ of the {\it cls} and {\it reg} layers, respectively, following the multi-task loss in Fast R-CNN (Section~\ref{sec:fast_r-cnn_loss})~\cite{Ren2017fasterpami},
+Given these definitions, we aim to minimize the loss function $\Lcal( \{\hat p_i\}, \{\tbfh_i\} )$, defined in Equation~\eqref{eq:loss_RPN} \wrt the outputs $\{\hat p_i\}$ and ${\{\tbfh_i\}}$ of the {\it cls} and {\it reg} layers, respectively, following the multi-task loss in Fast R-CNN (section~\ref{sec:fast_r-cnn_loss})~\cite{Ren2017fasterpami},
 %
 \symbl{\id{loss}$\Lcal\{\cdot\}$}{loss function}
 \begin{equation}
