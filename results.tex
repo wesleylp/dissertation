@@ -71,7 +71,7 @@ otherwise. Typically, this threshold is set to $50\%$; however, evaluations with
 A false negative (FN) \abbrev{\id{FN}FN}{False Negative} is a not detected ground truth object.
 In the object detection context, a true negative (TN) \abbrev{\id{TN}TN}{True Negative} does not make sense since it would be all image regions that were
 correctly considered as background, which would amount to a infinite number of possible bounding boxes.
-Although we only consider bounding boxes, IoU is also applicable to pixel-wise segmentation~\cite{He2017mask}.
+Although, in this work, we only consider bounding boxes, IoU is also applicable to pixel-wise segmentation~\cite{He2017mask}.
 
 \subsection{Precision \& recall}
 %
@@ -256,7 +256,7 @@ The mAP in PASCAL VOC is calculated by computing the AP as discussed previously,
 %
 
 %http://cocodataset.org/#detection-eval
-Latest works~\cite{He2017mask}, including this one, tend to report results for the Microsoft Common Objects in Context (MSCOCO) dataset~\cite{MSCOCO2014} only.
+Latest works~\cite{He2017mask}, tend to report results for the Microsoft Common Objects in Context (MSCOCO) dataset~\cite{MSCOCO2014} only.
 \abbrev{\id{MSCOCO}MSCOCO}{Microsoft Common Objects in Context dataset}
 There are 12 metrics to assess the performance of an object detector on MSCOCO.
 Nevertheless, we only focus on the 6 metrics based on AP.
@@ -269,7 +269,7 @@ In MSCOCO dataset $41\%$ of objects are considered small (area $< 32^2$ pixels),
 The object size affects the model accuracy substantially~\cite{Everingham10}.
 In~\cite{Everingham10, He2017mask}, it is possible to observe the performance of the methods increasing as object size increases.
 The MSCOCO challenge presents three metrics which considers objects size: mAP$_{\textrm{S}}$, mAP$_{\textrm{M}}$, mAP$_{\textrm{L}}$, in order to evaluate the detections for small, medium and large objects areas.
-For those metrics, detections of objects with an area outside of determined threshold are unconsidered.
+For those metrics, detections of objects with an area outside of a determined threshold are unconsidered.
 The area is computed as the number of pixels of the ground truth bounding box.
 
 %
@@ -329,7 +329,7 @@ Again, the train-test split of this dataset is included in the annotation files.
 % We noticed that they cut the videos in parts, which they call ``Tomada''.
 In the CEFET dataset, each video is cut into several parts.
 Two parts of the same video, for example, appear one in the training set and the other in the test set.
-As we are using an imaging approach instead of video, this split may facilitate the task of our detector since in two ``Tomadas'' of the same video we have the same background and objects placed at the same place.
+As we are using an approach based on isolated images instead of video, this split may facilitate the task of our detector since in two takes of the same video we have the same background and objects placed at the same place.
 %
 Therefore, in this work, we adopted a train-test split based on the videos \ie all the parts of a video are either in train or test set.
 Having split the videos, we extract images every 30 frames.
@@ -343,7 +343,7 @@ In total, there are 419 images, containing 374 tires,  for training and 144 imag
 
 %
 \subsection{Network architectures}
-We instantiate Faster R-CNN with different networks architectures.
+We instantiate Faster R-CNN with different network architectures.
 We define the Faster R-CNN as composed of two parts:
 (i) the network backbone: the convolutional network architecture (\eg VGG~\cite{Simonyan2015VGG}, ResNet~\cite{He2016deep}) responsible for the feature extraction task over images; and
 (ii) the network head: responsible for image classification and bounding box regression tasks~\cite{He2017mask}.
@@ -460,7 +460,7 @@ That happens because as we increase the IoU threshold we only accept more accura
 as a consequence, the precision and recall drops drastically.
 We can observe that we still can achieve satisfactory results at IoU up to $0.75$ from which we achieve precision higher than $0.9$ for all models.
 Unfortunately, all models do not achieve high precisions for high recalls.
-By analyzing the Equation~\eqref{eq:recall} it may be due to high rate of FN in our results.
+By analyzing the Equation~\eqref{eq:recall} this may be due to high rate of FN in our results.
 
 
 We show Figures~\ref{fig:prec-rec_curve_50} and~\ref{fig:prec-rec_curve_75}, for better analyzing the models at single IoU thresholds.
@@ -681,7 +681,7 @@ In this image none of the models were capable to detect any tire.
 % improvement
 %
 Another interesting fact can be observed in Figure~\ref{fig:improv_1} where the same tire (the most right one) was not detected by the R-50-C4 model without data augmentation; detected with a low confidence score ($0.28$) by the model with R-50-C4, using data augmentation; and detected with a high confidence score ($1.00$) by the model with R-101-C4, also using data augmentation.
-All models found the most left tire with the same confidence score and none of them found the tire at the top.
+All models found the leftmost tire with the same confidence score and none of them found the tire at the top.
 Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, where both models with R-50-C4 were not capable of finding the tire, while the model with R-101-C4 detected it with a high confidence score ($0.97$).
 %
 \begin{figure}[th!]
@@ -768,8 +768,8 @@ Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, wher
 %
 %
 In Figure~\ref{fig:FP_cases}, we observe some case of false positives.
-For the same image, only the model with R-50-C4 backbone and data augmentation output the correct detections.
-The other two models output one FP each. The R-50-C4 (no aug.) wrongly output a tire with low confidence score ($0.05$) between two true tires; while the R-101-C4 predicted the yellow garbage bin as a tire with high confidence score ($1.00$).
+For the same image, only the model with R-50-C4 backbone and data augmentation outputs the correct detections.
+The other two models output one FP each. The R-50-C4 (no aug.) wrongly outputs a tire with low confidence score ($0.05$) between two true tires; while the R-101-C4 predicted the yellow garbage bin as a tire with high confidence score ($1.00$).
 %
 % 78
 \begin{figure}[ht!]
@@ -858,7 +858,7 @@ Besides, the dataset does not have many occlusions examples, which makes detecti
   \label{fig:occlusion}
 \end{figure}
 
-In Figure~\ref{fig:wrong_fp} all models detect, with a high confidence score ($1.00$), a tire that have not been annotated in the dataset.
+In Figure~\ref{fig:wrong_fp} all models detect, with a high confidence score ($1.00$), a tire that had not been annotated in the dataset.
 Although is has been correctly detect, it was counted as a FP.
 
 % 133
