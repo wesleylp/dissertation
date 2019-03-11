@@ -324,7 +324,7 @@ The experiments were performed in a machine equipped with 4 GTX 1080 GPUs, 64GB 
 \subsection{Dataset}
 %
 % Unfortunately, we do not use our MBG dataset here, since it is still under labeling process.
-Since the MBG dataset described in Section~\ref{sec:new_data} is still being labeled, we use the publicly available CEFET dataset\footnote{from: \url{https://drive.google.com/open?id=1tDOVdb_vALUnD_cY3lQf0ggoiM1F63Jl}.}.
+Since the MBG dataset described in Section~\ref{sec:new_data} is still being labeled, we use the publicly available CEFET dataset\footnote{from: \url{https://drive.google.com/open?id=1tDOVdb_vALUnD_cY3lQf0ggoiM1F63Jl}.} to train and evaluate our models.
 % only the videos recorded at $5m$ are public available.
 Again, the train-test split of this dataset is included in the annotation files.
 % We noticed that they cut the videos in parts, which they call ``Tomada''.
@@ -690,21 +690,21 @@ Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, wher
   \centering
   \begin{subfigure}[t]{.9\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_1.pdf}
+    \includegraphics[width=\textwidth,trim={0 8.5cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_1.pdf}
     \caption{R-50-C4 (no aug.).}
     \label{fig:improv_50N}
   \end{subfigure}\\
   %
   \begin{subfigure}[t]{0.9\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_1.pdf}
+    \includegraphics[width=\textwidth,trim={0 8.5cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_1.pdf}
     \caption{R-50-C4.}
     \label{fig:improv_50}
   \end{subfigure}
   %
   \begin{subfigure}[t]{0.9\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_1.pdf}
+    \includegraphics[width=\textwidth,trim={0 8.5cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_1.pdf}
     \caption{R-101-C4.}
     \label{fig:improv_101}
   \end{subfigure}
@@ -716,23 +716,23 @@ Following this, we can observe a similar case in Figure~\ref{fig:improv_2}, wher
 % only R-101 detected
 \begin{figure}[th!]
   \centering
-  \begin{subfigure}[t]{.9\linewidth}
+  \begin{subfigure}[t]{.49\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_12.pdf}
+    \includegraphics[width=.7\textwidth,trim={2cm 2.9cm 11.5cm 8.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle_NO-AUG/img_12.pdf}
     \caption{R-50-C4 (no aug.).}
     \label{fig:improv_50N}
-  \end{subfigure}\\
+  \end{subfigure}~
   %
-  \begin{subfigure}[t]{0.9\linewidth}
+  \begin{subfigure}[t]{0.49\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_12.pdf}
+    \includegraphics[width=.7\textwidth,trim={2cm 2.9cm 11.5cm 8.4cm},clip]{_vis_results/e2e_faster_rcnn_R_50_C4_1x_cocostyle/img_12.pdf}
     \caption{R-50-C4.}
     \label{fig:improv_50}
-  \end{subfigure}
+  \end{subfigure}\\
   %
-  \begin{subfigure}[t]{0.9\linewidth}
+  \begin{subfigure}[t]{0.49\linewidth}
     \centering
-    \includegraphics[width=\textwidth,trim={0 2.9cm 0 2.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_12.pdf}
+    \includegraphics[width=.7\textwidth,trim={2cm 2.9cm 11.5cm 8.4cm},clip]{_vis_results/e2e_faster_rcnn_R_101_C4_1x_cocostyle/img_12.pdf}
     \caption{R-101-C4.}
     \label{fig:improv_101}
   \end{subfigure}
