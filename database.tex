@@ -1,7 +1,7 @@
 \chapter{Vision Meets Unmanned Vehicles}
 \label{chap:database}
 
-In this chapter, we briefly review some works related to our problem, with focus on those ones that perform mosquito breeding sites directly.
+In this chapter, we briefly review some works related to our problem, with focus on those ones that detect mosquito breeding sites directly.
 Particularly, we also talk about those directly interested in detecting mosquito breeding sites.
 Lastly, we describe in details our new dataset.
 
@@ -13,8 +13,9 @@ Moreover, we highlight works that directly perform mosquito breeding grounds det
 %
 \subsection{Stagnant water detection}
 Image-based water detection systems can be useful for many applications~\cite{Rankin2006, Rankin2010a, Rankin2010b, Zhang2010b, Rankin2011a, Santana2012a, Zhong2013a}.
+In our problem specifically, this approach could also be applied since \textit{Aedes aegypti} reproduces in stagnant water.
 
-For instance, the method in~\cite{Rankin2006} uses a water detection system to assist in the navigation of autonomous off-road vehicles.
+The method in~\cite{Rankin2006} uses a water detection system to assist in the navigation of autonomous off-road vehicles.
 The system is based on several types of features, including texture and others using the HSV color space.
 It also uses a pair of cameras to separate regions of the image that are candidates to be as reflective as water (regions whose depth is estimated as greater than the depth of the neighborhood).
 It also presents a fusion rule to combine these features and segment the region of interest containing water.
@@ -56,9 +57,10 @@ the scale-invariant feature transform (SIFT) descriptor.
 \abbrev{\id{SIFT}SIFT}{Scale-Invariant Feature Transform}
 Afterwards, a support vector machine (SVM) classifier is trained to identify whether the
 \abbrev{\id{SVM}SVM}{Support Vector Machine}
-images contain potential mosquitoes breeding sites or not.
+images contain potential mosquitoes breeding sites (stagnant water, open tyres or containers, bushes, etc) or not (running water, manicured lawns, tyres attached to vehicles, etc).
 Finally, the system outputs a heat map where the regions with the highest risk of having mosquitoes habitats are indicated.
 %
+
 The authors of~\cite{Prasad2015a} use a trained SVM classifier to detect water puddles in images obtained from videos that can have stagnant water, acquired by a quadcopter.
 %
 The work in~\cite{Mehra2016a} use thermal and gray level images to detect stagnant water.
@@ -73,6 +75,7 @@ In this work, we propose a methodology for mosquitoes breeding grounds detection
 %
 To our knowledge, there is not a big public dataset to train a model for this task.
 However, the dataset proposed in~\cite{casfinal2018} is interesting but with some drawbacks, which we describe in Section~\ref{sec:cefet_data}.
+They train a Random Forest classifier using features (H channel from HSV  color  space for detecting tires and histograms from S and V channels from the same space for detecting stagnant water) extracted from the images.
 Taking~\cite{casfinal2018} as inspiration, we propose to design and acquire a new dataset, described in Section~\ref{sec:new_data}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,26 +94,28 @@ All the videos, with about 15~s duration, were recorded with the camera at downw
 %three different
 approximately constant 5~m altitude.
 % (5, 10 and $15~m$).
-The speed is set to be 7~km/h constant.
+The speed is set to be 7~km/h.
 They point out that the parameters may vary over the course due environmental interference such as wind.
 
 The drone telemetry measurements (\eg position, velocity and altitude) are extracted using the third-party application Litchi~\cite{web:litchi}.
 For each video, there is a text file containing the frame-by-frame of objects annotations.
 Another limitation of this dataset is that it only contains tires annotated.
 
-Their dataset, including the 29 videos in \verb|mp4| format and corresponding text annotation files, is public available
+Their dataset, including the 29 videos in \verb|mp4| format and corresponding text annotation files, is publicly available
 \footnote{\url{https://drive.google.com/open?id=1tDOVdb_vALUnD_cY3lQf0ggoiM1F63Jl}.}.
 We show some examples of scenarios of this dataset in Figure~\ref{fig:base_cefet}
-The train-test split is included in annotation files.
+The train-test split is included in the annotation files.
 However, in this work, we propose a different split that we mention in Chapter~\ref{chap:results}.
 
 \begin{figure*}[htb!]
 	\centering
-	\includegraphics[width=.9\linewidth, trim={0 3.2cm 0 0},clip]{base_cefet_2.png}\\
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={10cm 3.2cm 0 0},clip]{base_cefet_2.png}~
 	\vspace{2mm}
-	\includegraphics[width=.9\linewidth, trim={0 0 0 3.2cm},clip]{base_cefet_3.png}\\
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={0 0 0 2.2cm},clip]{base_cefet_3.png}\\
 	\vspace{2mm}
-	\includegraphics[width=.9\linewidth, trim={0 0 0 3.2cm},clip]{base_cefet_1.png}\\
+  \includegraphics[width=.49\linewidth, height=.3\linewidth, trim={0 0 0 3.2cm},clip]{base_cefet_1.png}~
+  \vspace{2mm}
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={0 5.0cm 0 5.0cm},clip]{base_cefet_4.png}\\
 % 	\includegraphics[width=.5\linewidth]{base4.png}
 	\caption{Examples of scenarios contemplated by the CEFET dataset.}
 	\label{fig:base_cefet}
@@ -161,7 +166,7 @@ However, in this work, we propose a different split that we mention in Chapter~\
 % \end{itemize}
 %
 In this section we present the description of our dataset named as ``Mosquito Breeding Grounds'' (MBG). \abbrev{\id{MBG}MBG}{Mosquito Breeding Grounds dataset}
-We use the commercial Phantom Vision 4 PRO UAV from DJI Company for acquiring the aerial videos in which may have potential mosquito breeding sites.
+We use the commercial Phantom Vision 4 PRO UAV from DJI Company for acquiring the aerial videos that might depict potential mosquito breeding sites.
 %
 This UAV has approximately 30 minutes of flight autonomy and is capable of executing a predefined flight plan.
 One may retrieve all telemetry information (\eg altitude, latitude, longitude, speed, etc) from a \verb|.csv| file using a 3rd party software.
@@ -184,19 +189,25 @@ The dataset has the following technical specifications:
   keeping the focus fixed at infinity and
   %We also reduce the field of view (FoV)\abbrev{\id{FOV}FOV}{Field of View} to lessen the effect of radial distortions.
   setting the video scan to 3840~p at 50~frames per second (fps)\abbrev{\id{fps}fps}{frames per second}.
+  This step is important because we want to keep all camera parameters constant in order to perform camera calibration.
 %
   \item Before starting a flight, we record a calibration video using a calibration pattern, as described in Section~\ref{sec:calibration}.
 %
   \item The altitude is approximately constant in each video.
   Currently, the dataset has videos acquired at different altitudes, \eg $10$, $25$, $40$~m, all of them predefined in the flight plan through Litchi.
-  Small variations in altitude caused by the limited accuracy of telemetry, wind, etc are within acceptable ranges.
+  Small variations in altitude ($\pm 0.5$m, according to the manufacturer~\cite{web:djip4prospec}) caused by the limited accuracy of telemetry, wind, etc are within acceptable ranges.
 %
   \item Speed approximately constant of $15$~km/h is preset via Litchi.
-  Again, the variations caused by the instruments' limited accuracy, wind, and interferences of unknown nature are within acceptable thresholds.
+  This parameters can suffer small variations caused by wind, for example.
+  However, our drone has a $10$m/s maximum wind speed resistance~\cite{web:djip4prospec}.
 %
-  \item The dataset includes two types of terrain: green vegetation, to simulate the environment of a wasteland, and asphalt, to simulate urban environment, as depicted in Figure~\ref{fig:scenarios1}.
+  \item The dataset includes different types of terrains.
+  Currently, it contains high and low grass, asphalt, wasteland and buildings, as depicted in Figure~\ref{fig:scenarios1}.
+  % green vegetation, to simulate the environment of a wasteland, and asphalt, to simulate urban environment
 %
-  \item The videos have the following objects randomly arranged on the recording area: tires, bottles, and objects that can accumulate water such as buckets and plastic pools, as seen in Figure~\ref{fig:objects1}.
+  \item The videos have about 15 objects manually inserted objects, randomly arranged on the recording area, including tires, bottles, and other objects that can accumulate water such as buckets and plastic pools.
+  The videos also have objects that originally were part of the places such as water tanks.
+  We show examples of these objects in Figure~\ref{fig:objects1}.
 %
   \item Afterward, we compensate the videos' distortions, as described in Section~\ref{sec:calibration} and manually annotate them using the Zframer software, according to Section~\ref{sec:annot}.
 %
@@ -204,11 +215,17 @@ The dataset has the following technical specifications:
 
 \begin{figure*}[htb!]
 	\centering
-	\includegraphics[width=.8\linewidth, trim={2cm 0 0 0},clip]{new_base_04.png}\\
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={2cm 0 0 0},clip]{new_base_04.png}~
 	\vspace{2mm}
-	\includegraphics[width=.8\linewidth, trim={2cm 0 0 0},clip]{new_base_02.png}\\
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={2cm 0 0 0},clip]{new_base_02.png}\\
 	\vspace{2mm}
-	\includegraphics[width=.8\linewidth, trim={2cm 0 0 0},clip]{new_base_01.png}
+  \includegraphics[width=.49\linewidth, height=.3\linewidth, trim={2cm 0 0 0},clip]{new_base_01.png}~
+  \vspace{2mm}
+  \includegraphics[width=.49\linewidth, height=.3\linewidth, trim={2cm 0 0 0},clip]{new_base_03.png}\\
+	\vspace{2mm}
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={0 0 0 2cm},clip]{new_base_05.png}~
+	\vspace{2mm}
+	\includegraphics[width=.49\linewidth, height=.3\linewidth, trim={2cm 0 0 0},clip]{new_base_06.png}
 % 	\includegraphics[width=.5\linewidth]{base4.png}
 	\caption{Examples of scenarios contemplated by the MBG dataset.}
 	\label{fig:scenarios1}
@@ -293,7 +310,7 @@ We lower the image resolution by $40$\% to reduce detection time.
 
 
 
-\subsubsection{Camera's model}\label{sec:cam_model}
+\subsubsection{Camera model}\label{sec:cam_model}
 %
 Having detected the key points in the calibration pattern, one may estimate the camera projection matrix from the coordinates of these points in the real world and the image.
 Therefore, we consider that a camera maps a world point $\Mbf' = [X,Y,Z,1]^\Trm$ to an image point $\mbf' = [u,v,1]^\Trm$ through a projective transformation of the form~\cite{Hartley2004}
@@ -342,7 +359,7 @@ Hence, the radial distortion may be modeled as~\cite{Zhang2000a}:
 \end{equation}
 %
 where $k_1$ and $k_2$ are radial distortions coefficients and $r^2 = (x^2 + y^2)$.
-Higher order distortion models do not presents significant improvements and may lead to numerical instability~\cite{Zhang2000a}.
+Higher order distortion models do not present significant improvements and may lead to numerical instability~\cite{Zhang2000a}.
 The center of the radial distortion is located at the principal point.
 From
 $\breve{u} = \alpha \breve{x} + \gamma \breve{y} + u_0 $ and $\breve{v} = \beta \breve{y} + v_0$, assuming $\gamma = 0$,
@@ -385,7 +402,7 @@ The minimization of the functional given in Equation~\eqref{eq:functional}, is a
 
 The Figure~\ref{fig:undistort_1} shows an example of the original (distorted) image with detected calibration pattern corners overlaid,
 and Figure~\ref{fig:undistort_2} shows the corresponding image after applying Zhang's algorithm to undistort the image.
-Is it interesting to note that the ``barrel'' effect was eliminated of the image, which
+It is interesting to note that the ``barrel'' effect was eliminated of the image, which
 is clearer from the observation of the chessboard calibration pattern.
 %
 \begin{figure}[th!]
@@ -423,7 +440,7 @@ is clearer from the observation of the chessboard calibration pattern.
 
   First, we extract all frames from the original, not rectified videos.
   We save them as new videos using the same codec (X264) of the original videos, through
-  \verb|imageio| python library (a \verb|FFMPEG| wrapper).
+  \verb|imageio| python library~\cite{imageio} (a \verb|FFMPEG| wrapper).
   \verb|FFMPEG| is a software that can save, convert and create video and audio streams in various formats~\cite{web:ffmpeg}.
   Lastly, we compare the videos both objectively and subjectively.
 
@@ -433,7 +450,7 @@ is clearer from the observation of the chessboard calibration pattern.
   mode that varies from 0 to 51 (using 8 bits), where 0 is lossless and 51 is the worst quality possible.
   A lower value leads to higher quality, and a subjectively sane range tends to be $17$--$28$~\cite{web:ffmpeg}.
   By using this mode we want to keep the best quality without caring much about the final file size.
-  In this brief experiment, we use a “quality” scale in which the conversion to CRF is done as follows:
+  In this brief experiment, we use a “quality” scale~\cite{imageio} in which the conversion to CRF is done as follows:
   \begin{equation}
      \textrm{CRF} = 51\bigg(1 - \frac{\textrm{quality}}{10}\bigg).
     \end{equation}
@@ -466,17 +483,19 @@ where, $B$ is the number of bits used to represent a pixel (in our case, $B=8$) 
 \end{equation}
 %
 %
-Good-quality compressed images present typical values of PSNR between 30 and 50 dB, provided the bit depth is 8 bits, where higher is better.
+Good-quality compressed images present typical values of PSNR between 30 and 50 dB, provided the bit depth is 8 bits, where higher is better~\cite{Welstead20019compression}.
 
-For each video and each quality level, we compare the frame by frame PSNR extracted from original and compressed video, as shown in Figure~\ref{fig:vid_psnr}, and we take their mean (red dashed line).
+For each video and each quality level, we compare the frame by frame PSNR extracted from original and compressed video
+%, as shown in Figure~\ref{fig:vid_psnr},
+and we take their mean. % (red dashed line).
 %
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=\textwidth]{original_001_imageio07.pdf}
-	\caption[Frame-by-frame PSNR between original and compressed frames after compression.]
-	{Frame-by-frame PSNR between original and compressed frames after compression; the dashed line represents their mean.}
-	\label{fig:vid_psnr}
-\end{figure}
+% \begin{figure}[htb]
+% 	\centering
+% 	\includegraphics[width=\textwidth]{original_001_imageio07.pdf}
+% 	\caption[Frame-by-frame PSNR between original and compressed frames after compression.]
+% 	{Frame-by-frame PSNR between original and compressed frames after compression; the dashed line represents their mean.}
+% 	\label{fig:vid_psnr}
+% \end{figure}
 %
 We run this experiment for 4 videos; Video 1 is calibration video and the other 3 are videos recorded on grass area (we choose these last 3 since grass is a texture that is hard to compress).
 We show the average PSNR values along with the final video compressed size in Figure~\ref{fig:compression_comp}.

@@ -13,8 +13,9 @@ Finally, we examine the obtained results both numerically and visually.
 % https://medium.com/@jonathan_hui/map-mean-average-precision-for-object-detection-45c121a31173
 % https://github.com/rafaelpadilla/Object-Detection-Metrics
 
-Assessing the performance of object detectors may seem easy at first sight.
-However, it is a complex task since the models must be evaluated for both image classification (whether an object is on image)  and localization (where the object appears on the image, \ie bounding box regression).
+Assessing the performance of object detectors
+% may seem easy at first sight. However, it
+is a complex task since the models must be evaluated for both image classification (whether an object is on the image)  and localization (where the object appears on the image, \ie bounding box regression).
 
 Moreover, typical datasets have many classes with significantly nonuniform prior distribution over classes.
 Thus, a simple accuracy-based metric is not appropriate as it will introduce biases.
@@ -44,7 +45,7 @@ To measure that, we use the IoU,
 which may be used to evaluate any algorithm that outputs bounding boxes.
 
 The IoU is based on the Jaccard index~\cite{jaccard1912distribution}, also referred to as the Jaccard similarity coefficient, which is a standard for evaluating the similarity between finite sample sets.
-One may compute the IoU as follows: given a predicted bounding box $B_{p}$ associated to a ground truth bounding box $B_{gt}$, the IoU is the ratio of the overlap to the union of the boxes areas,
+One may compute the IoU as follows: given a predicted bounding box $B_{p}$ associated to a ground truth bounding box $B_{gt}$, the IoU is the ratio of the area of the intersection to the union of the boxes areas,
 % ; as shown in Equation~\eqref{eq:IoU},
 %
 \begin{equation}
@@ -70,7 +71,7 @@ if the IoU between a proposal and the ground truth of the object is equal to or 
 otherwise. Typically, this threshold is set to $50\%$; however, evaluations with thresholds up to 95\% are found in the literature.
 A false negative (FN) \abbrev{\id{FN}FN}{False Negative} is a not detected ground truth object.
 In the object detection context, a true negative (TN) \abbrev{\id{TN}TN}{True Negative} does not make sense since it would be all image regions that were
-correctly considered as background, which would amount to a infinite number of possible bounding boxes.
+correctly considered as background, which would amount to a large number of possible bounding boxes.
 Although, in this work, we only consider bounding boxes, IoU is also applicable to pixel-wise segmentation~\cite{He2017mask}.
 
 \subsection{Precision \& recall}
@@ -153,7 +154,7 @@ In this work, following~\cite{He2017mask}, we employ step size $R_s=0.01$,  so t
 By lowering $R_s$, we aim to better approximate the AUC \abbrev{\id{AUC}AUC}{Area under Curve}
 of the precision-recall graph.
 
-One may notice that to obtain a high score, a method must have high precision at all recall levels -- this penalizes methods which retrieve only a subset of examples with high precision (\eg side view of cars)~\cite{Everingham10}.
+One may notice that to obtain a high score, a method must have high precision at all recall levels -- this penalizes methods which retrieve only a subset of examples with high precision (\eg an object in a certain position)~\cite{Everingham10}.
 Also, remember that the IoU has a direct impact on AP since it determines if a detection is a TP or FP.
 
 % It all sounds complicated but gets more comfortable as we illustrated this procedure with an example, as follows.
@@ -382,6 +383,7 @@ We use weight decay of 0.0001 and momentum of 0.9.
 
 % To train RPN, we consider as positive the anchors with $IoU\geq 0.7$ and negative with $IoU\leq 0.3$~\cite{Ren2017fasterpami}.
 We use RPN anchors at 5 scales (32, 64, 128, 256, and 512) and 3 aspect ratios (1:2, 1:1, and 2:1) with respect to the resized images input~\cite{Lin2017pyramid}.
+
 We set number of proposals of RPN ouput to $600$.
 These boxes highly overlap.
 In order to reduce the redundancy caused by these overlaps,
@@ -412,7 +414,7 @@ For inference, the models with R-50-C4 backbone took about $90$~ms per image aga
 %
 
 The Table~\ref{tab:results_CEFET} shows the result for the CEFET dataset.
-We report the mAP (averaged over multiple IoUs), mAP$_{50}$, mAP$_{75}$, mAP$_{\textrm{S}}$, mAP$_{\textrm{M}}$, mAP$_{\textrm{L}}$ metrics, summarized in Table~\ref{tab:metrics}.
+We report the mAP (averaged over multiple IoUs), mAP$_{50}$, mAP$_{75}$, mAP$_{\textrm{M}}$, mAP$_{\textrm{L}}$ metrics, summarized in Table~\ref{tab:metrics}.
 We can notice an improvement of almost 5 points in mAP by only adopting a random horizontal flip, with probability of 50\%, as data augmentation strategy in R-50-C4 backbone.
 Except mentioned otherwise, we keep this data augmentation method for the other experiments.
 %~
@@ -665,7 +667,7 @@ In this section, we discuss some visual results by analyzing the detections in t
 We try to associate the visualization with the numerical results obtained in the previous section.
 To do so, we plot the ground truth bounding boxes in blue and overlay the models detection in red, along with the label and confidence scores.
 
-As mentioned, the recall is low for all models, which may due to high rate of FN in our results.
+As mentioned, the recall is low for all models, which may be due to high rate of FN in our results.
 By looking at an example in Figure~\ref{fig:hard}, one may notice that there are many hard-to-detect tires in the dataset, even for humans.
 In this image none of the models were capable to detect any tire.
 %
