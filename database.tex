@@ -16,7 +16,7 @@ Image-based water detection systems can be useful for many applications~\cite{Ra
 In our problem specifically, this approach could also be applied since \textit{Aedes aegypti} reproduces in stagnant water.
 
 The method in~\cite{Rankin2006} uses a water detection system to assist in the navigation of autonomous off-road vehicles.
-The system is based on several types of features, including texture and others using the HSV color space.
+The system is based on several types of features, including texture and others using the HSV (hue, saturation and value) color space.
 It also uses a pair of cameras to separate regions of the image that are candidates to be as reflective as water (regions whose depth is estimated as greater than the depth of the neighborhood).
 It also presents a fusion rule to combine these features and segment the region of interest containing water.
 
@@ -205,7 +205,7 @@ The dataset has the following technical specifications:
   % green vegetation, to simulate the environment of a wasteland, and asphalt, to simulate urban environment
 %
   \item The videos have about 15 objects manually inserted objects, randomly arranged on the recording area, including tires, bottles, and other objects that can accumulate water such as buckets and plastic pools.
-  The videos also have objects that originally were part of the places such as water tanks.
+  The videos also have objects that originally were part of the recorded scenes such as water tanks.
   We show examples of these objects in Figure~\ref{fig:objects1}.
 %
   \item Afterward, we compensate the videos' distortions, as described in Section~\ref{sec:calibration} and manually annotate them using the Zframer software, according to Section~\ref{sec:annot}.
