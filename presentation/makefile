@@ -1,5 +1,5 @@
 DIS=master
-IMG=/home/wesley/Dropbox/Mestrado/dissertation/text/v0/images/
+IMG=../images/
 
 .PHONY: clean
 
