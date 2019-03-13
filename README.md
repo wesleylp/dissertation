@@ -24,7 +24,29 @@ small dataset, and is capable of finding potential mosquito foci. This model ach
 49.31 points of average precision, which is promising, indicating that new and better
 models can be trained for this task.
 
-## Cite
+# Compiling
+1. Open terminal and type:
+```python
+# clone the repository
+$ git clone https://github.com/wesleylp/dissertation.git
+$ cd dissertation
+```
+
+2.  Download the [zip](https://drive.google.com/open?id=1pf2yXcRG-GbvqYI_-WUFJYBXKuRvqYrB) file containing the images and extract the folder to `dissertation`.
+
+## Text
+In the terminal type:
+```
+$ make
+```
+
+## Presesentation
+In the terminal type:
+```
+$ cd presentation
+$ make
+```
+# Cite
 ```
 @PhdThesis{passos2019,
   Title                    = {Automatic Aedes aegypti breeding grounds detection using computer vision techniques},
