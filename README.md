@@ -48,7 +48,7 @@ $ make
 ```
 # Cite
 ```
-@PhdThesis{passos2019,
+@MastersThesis{passos2019,
   Title                    = {Automatic Aedes aegypti breeding grounds detection using computer vision techniques},
   Author                   = {Passos, Wesley Lobato},
   School                   = {COPPE/UFRJ},
