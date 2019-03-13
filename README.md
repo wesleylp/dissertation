@@ -26,7 +26,7 @@ models can be trained for this task.
 
 # Compiling
 1. Open terminal and type:
-```python
+```
 # clone the repository
 $ git clone https://github.com/wesleylp/dissertation.git
 $ cd dissertation
