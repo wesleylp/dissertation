@@ -7,14 +7,12 @@ in Electrical Engineering.
 
 ## Abstract
 
-Every year, thousands of people are infected with diseases such as dengue, chi-
-kungunya, zika, and yellow fever. These diseases are transmitted by the Aedes
-aegypti, which usually reproduces in containers with accumulated clean water, such
-as tires, bottles, water tanks, etc. The use of intelligent tools can be employed to
-assist health agents in a search for these objects, providing more efficiency and co-
-verage in this process. This work addresses the problem of automatic detection of
-such mosquito breeding grounds using computer vision and machine learning techni-
-ques. In this context, a new aerial videos dataset is devised including such objects in
+Every year, thousands of people are infected with diseases such as dengue, chikungunya, zika, and yellow fever.
+These diseases are transmitted by the Aedes aegypti, which usually reproduces in containers with accumulated clean water, such
+as tires, bottles, water tanks, etc.
+The use of intelligent tools can be employed to assist health agents in a search for these objects, providing more efficiency and coverage in this process.
+This work addresses the problem of automatic detection of
+such mosquito breeding grounds using computer vision and machine learning techniques. In this context, a new aerial videos dataset is devised including such objects in
 different scenarios: distinct backgrounds, altitudes, object displacement, and so on.
 The videos are rectified in order to compensate for camera distortions and manually
 annotated, frame-by-frame, enabling the development of an automatic detector for
@@ -40,7 +38,7 @@ In the terminal type:
 $ make
 ```
 
-## Presesentation
+## Presentation
 In the terminal type:
 ```
 $ cd presentation
